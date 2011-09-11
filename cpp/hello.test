@@ -1,0 +1,11 @@
+# -*- mode:python; coding:utf-8 -*-
+
+server = TestBG('$testdir/Server --Ice.Config=$basedir/hello.cfg',
+                shell=True, signal=2, save_stdout=True,
+                post = FileContains('Hello, World!'))
+
+client = Test('$testdir/Client "$(head -1 %s)"' % server.stdout,
+              shell=True,
+              pre = Poll(TaskRunning(server)))
+
+TaskTerminator(server, delay=1)
