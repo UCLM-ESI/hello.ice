@@ -13,7 +13,7 @@ clean:
 
 run-server: Server.class
 	java -classpath .:/usr/share/java/Ice.jar \
-		Server --Ice.Config=hello.cfg | tee proxy.out
+		Server --Ice.Config=../hello.cfg | tee proxy.out
 
 run-client: Client.class
 	java -classpath .:/usr/share/java/Ice.jar \
