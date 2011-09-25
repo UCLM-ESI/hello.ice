@@ -1,8 +1,9 @@
+CLASSPATH=-classpath /usr/share/java/Ice.jar:.
 
 all: UCLM Server.class Client.class
 
 %.class: %.java
-	javac -classpath /usr/share/java/Ice.jar:. $<
+	javac $(CLASSPATH) $<
 
 UCLM: ../Hello.ice
 	slice2java $<
@@ -12,9 +13,9 @@ clean:
 	$(RM) -r UCLM
 
 run-server: Server.class
-	java -classpath .:/usr/share/java/Ice.jar \
+	java $(CLASSPATH) \
 		Server --Ice.Config=../hello.cfg | tee proxy.out
 
 run-client: Client.class
-	java -classpath .:/usr/share/java/Ice.jar \
+	java $(CLASSPATH) \
 	    Client "$(shell head -1 proxy.out)"
