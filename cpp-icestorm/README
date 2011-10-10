@@ -1,0 +1,17 @@
+
+- Se requiere Ice v3.0
+
+
+USO
+---
+   // En un terminal
+   $ icebox --Ice.Config=icebox.config
+
+   // En otro terminal.
+   // Creamos el topic HelloWorld y ejecutamos el Subscriber.
+   $ icestormadmin --Ice.Config=icestorm.config -e "create HelloTopic"
+   $ ./subscriber
+
+   // En un terminal diferente ejecutamos el publisher
+   $ ./publisher
+
