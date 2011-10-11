@@ -2,7 +2,8 @@
 
 SUBDIRS = $(shell ls -d */)
 SUBDIRS = \
-	cpp py java
+	py java \
+	cpp cpp-icestorm
 
 all:     RULE = all
 install: RULE = install
