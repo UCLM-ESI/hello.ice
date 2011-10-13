@@ -36,14 +36,21 @@ start: db/icestorm /usr/bin/icebox /usr/bin/icestormadmin
 	icebox --Ice.Config=icebox.config &
 
 stop:
-	killall icebox
+	-killall icebox
+	-killall Server
 	sleep 2
 	$(RM) -r db
 
 run-server: Server
 	./Server --Ice.Config=server.cfg > factory.proxy &
 
-factory.proxy: run-server
+run-create: factory.proxy
+	./Create "$(shell cat factory.proxy)" > obj.proxy
 
-run-create: factory.proxy Create
-	./Create "$(cat factory.proxy)"
+run-monitor: Monitor obj.proxy
+	@echo Keep this console open
+	./Monitor --Ice.Config=monitor.cfg "$(shell cat obj.proxy)"
+
+run-modify: Modify
+	./Modify "$(shell cat obj.proxy)" true
+	./Modify "$(shell cat obj.proxy)" false
