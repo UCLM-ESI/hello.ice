@@ -27,7 +27,7 @@ clean:
 	$(RM) *.o *~ $(GENERATED)
 	$(RM) -rf bin
 
-	$(RM) factory.proxy
+	$(RM) factory.proxy obj.proxy
 
 db/%:
 	mkdir -p $@
