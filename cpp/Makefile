@@ -20,3 +20,4 @@ vpath %.ice ../
 clean:
 	$(RM) Server Client *.o
 	$(RM) $(STUBS) *~
+	$(RM) *.bz2 IcePatch2.sum

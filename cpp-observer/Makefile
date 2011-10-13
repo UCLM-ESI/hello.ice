@@ -3,18 +3,9 @@ CXXFLAGS=-I.
 
 SLICES=$(wildcard *.ice)
 GENERATED=$(SLICES:.ice=.cpp) $(SLICES:.ice=.h)
+TARGET=Server Create Modify Monitor
 
-# NWSRC=\
-#	Bool.ice \
-#	BoolPersistent.ice \
-#	BoolFactory.ice \
-#	Server.cpp \
-#	Client.cpp \
-#	Create.cpp \
-#	Modify.cpp \
-#	Monitor.cpp
-
-all: Server Create Modify Monitor
+all: $(TARGET)
 
 Server: Server.o Bool.o BoolPersistent.o BoolFactory.o
 Server.o: Server.cpp Bool.h BoolPersistent.h BoolFactory.h
@@ -28,10 +19,31 @@ Modify.o: Modify.cpp Bool.h
 Monitor: Monitor.o Bool.o BoolPersistent.o
 Monitor.o: Monitor.cpp BoolPersistent.h Bool.h
 
-clean:
-	$(RM) *.o *~ Client Server $(GENERATED)
-	$(RM) Create Modify Monitor
-	$(RM) -rf bin
-
 %.h %.cpp: %.ice
 	slice2cpp -I/usr/share/Ice/slice $<
+
+clean:
+	$(RM) $(TARGET)
+	$(RM) *.o *~ $(GENERATED)
+	$(RM) -rf bin
+
+	$(RM) factory.proxy
+
+db/%:
+	mkdir -p $@
+
+start: db/icestorm /usr/bin/icebox /usr/bin/icestormadmin
+	icebox --Ice.Config=icebox.config &
+
+stop:
+	killall icebox
+	sleep 2
+	$(RM) -r db
+
+run-server: Server
+	./Server --Ice.Config=server.cfg > factory.proxy &
+
+factory.proxy: run-server
+
+run-create: factory.proxy Create
+	./Create "$(cat factory.proxy)"
