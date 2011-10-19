@@ -82,23 +82,21 @@ public:
                             const ObjectPtr& obj) {
     }
 };
+
+
 namespace IBool {
 
-class RWRemoteFactoryI : public RWRemoteFactory
-{
+class RWRemoteFactoryI : public RWRemoteFactory {
 public:
     RWRemoteFactoryI(const EvictorPtr& e,
-                     const TopicManagerPrx& mgr)
-        : _e(e), _mgr(mgr) {}
+                     const TopicManagerPrx& mgr) : _e(e), _mgr(mgr) {}
 
     virtual ObjectPrx create(const Current& c) {
-        return _e->add(new RWPersistentI(_mgr),
-                       c.adapter->getCommunicator()
-                       ->stringToIdentity(generateUUID()));
+        Ice::Identity identity = c.adapter->getCommunicator()->stringToIdentity(generateUUID());
+	return _e->add(new RWPersistentI(_mgr), identity);
     }
 
-    virtual void destroy(const ObjectPrx& obj,
-                         const Current&) {
+    virtual void destroy(const ObjectPrx& obj, const Current&) {
         _e->remove(obj->ice_getIdentity());
     }
 
@@ -115,6 +113,7 @@ public:
         PropertiesPtr prop = communicator()->getProperties();
         string id = prop->getPropertyWithDefault("IceStorm.TopicManager.Proxy",
                                                  "IceStorm/TopicManager");
+
         ObjectPrx o = communicator()->stringToProxy(id);
         TopicManagerPrx mgr = TopicManagerPrx::checkedCast(o);
         communicator()->addObjectFactory(new RWObjectFactory(mgr),
@@ -140,5 +139,4 @@ public:
 int main (int argc, char* argv[]) {
   Server* app = new Server();
   app->main(argc, argv);
-  exit(0);
 }
