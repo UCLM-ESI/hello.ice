@@ -1,0 +1,29 @@
+
+Command('mkdir -p db/icestorm')
+
+TestBG('icebox --Ice.Config=icebox.config')
+
+factory = TestBG(
+    './Factory --Ice.Config=factory.cfg',
+    save_stdout = True,
+    stdout = 'factory.proxy',
+    shell = True)
+
+TestBG(
+    './Create "$(head -1 factory.proxy)"',
+    stdout = 'obj.proxy',
+    shell = True,
+    pre = Poll(FileContains('factory', 'factory.proxy')))
+
+TestBG(
+    './Monitor --Ice.Config=monitor.cfg "$(head -1 obj.proxy)"',
+    shell = True,
+    pre = Poll(FileContains('tcp', 'obj.proxy')),
+    post = StdOutContains('new value: 1'))
+
+Test(
+    './Modify "$(head -1 obj.proxy)" true',
+    shell = True,
+    post = StdOutContains([
+            'previous value: 0',
+            'new value: 1']))

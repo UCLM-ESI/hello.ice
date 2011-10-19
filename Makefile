@@ -3,7 +3,7 @@
 SUBDIRS = $(shell ls -d */)
 SUBDIRS = \
 	py java \
-	cpp cpp-icestorm \
+	cpp cpp-icestorm cpp-observer \
 	icegrid
 
 all:     RULE = all
