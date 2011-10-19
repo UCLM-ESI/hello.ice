@@ -1,28 +1,29 @@
 
-Command('mkdir -p db/icestorm')
+Command('mkdir -p $testdir/db/icestorm')
 
-TestBG('icebox --Ice.Config=icebox.config')
+TestBG('icebox --Ice.Config=icebox.config',
+       cwd = '$testdir')
 
-factory = TestBG(
-    './Factory --Ice.Config=factory.cfg',
+TestBG(
+    '$testdir/Factory --Ice.Config=$testdir/factory.cfg',
     save_stdout = True,
-    stdout = 'factory.proxy',
+    stdout = '$testdir/factory.proxy',
     shell = True)
 
 TestBG(
-    './Create "$(head -1 factory.proxy)"',
-    stdout = 'obj.proxy',
+    '$testdir/Create "$(head -1 $testdir/factory.proxy)"',
+    stdout = '$testdir/obj.proxy',
     shell = True,
-    pre = Poll(FileContains('factory', 'factory.proxy')))
+    pre = Poll(FileContains('factory', '$testdir/factory.proxy')))
 
 TestBG(
-    './Monitor --Ice.Config=monitor.cfg "$(head -1 obj.proxy)"',
+    '$testdir/Monitor --Ice.Config=$testdir/monitor.cfg "$(head -1 $testdir/obj.proxy)"',
     shell = True,
-    pre = Poll(FileContains('tcp', 'obj.proxy')),
+    pre = Poll(FileContains('tcp', '$testdir/obj.proxy')),
     post = StdOutContains('new value: 1'))
 
 Test(
-    './Modify "$(head -1 obj.proxy)" true',
+    '$testdir/Modify "$(head -1 $testdir/obj.proxy)" true',
     shell = True,
     post = StdOutContains([
             'previous value: 0',
