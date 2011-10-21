@@ -5,7 +5,8 @@ TestBG('icebox --Ice.Config=icebox.config',
        cwd = '$testdir')
 
 TestBG(
-    '$testdir/Factory --Ice.Config=$testdir/factory.cfg',
+    './Factory --Ice.Config=factory.cfg',
+    cwd = '$testdir',
     save_stdout = True,
     stdout = '$testdir/factory.proxy',
     shell = True)

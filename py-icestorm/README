@@ -1,0 +1,23 @@
+
+- Se requiere Ice v3.0
+
+
+USO
+---
+   // Preparamos el terreno para cargar el hello.ice
+   $ make
+
+   $ mkdir db
+
+   // Ejecutar en un terminal.	
+   $ icebox --Ice.Config=config_icebox
+
+   // En otro terminal.	
+   // Creamos el topic HelloWorld y ejecutamos el Subscriber.
+   $ icestormadmin --Ice.Config=config -e "create HelloTopic"
+
+   $ python subscriber.py --Ice.Config=config
+
+   // En un terminal diferente ejecutamos el publisher
+   $ python publisher.py --Ice.Config=config
+
