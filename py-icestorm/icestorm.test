@@ -1,0 +1,35 @@
+# -*- mode:python; coding:utf-8 -*-
+
+import signal
+
+Command('mkdir $testdir/db')
+
+icebox = Test('icebox --Ice.Config=./icebox.config',
+         cwd='$testdir', detach=True, signal=signal.SIGINT, timeout=10)
+icebox.pre += FileExists('/usr/bin/icebox')
+
+admin = Command('icestormadmin --Ice.Config=$testdir/icestorm.config -e "destroy HelloTopic"',
+             shell=True)
+admin.pre += FileExists('/usr/bin/icestormadmin')
+admin.pre += Poll(OpenPort(10000))
+
+admin = Test('icestormadmin --Ice.Config=$testdir/icestorm.config -e "create HelloTopic"',
+             shell=True)
+admin.pre += Poll(OpenPort(10000))
+
+s = Test('./subscriber.py --Ice.Config=icestorm.config',
+         cwd='$testdir', detach=True, signal=signal.SIGINT)
+s.post += FileContains('Waiting events...')
+s.post += FileContains('Event received: Hello world!', times=10)
+
+p = Test('./publisher.py --Ice.Config=icestorm.config', cwd='$testdir')
+p.pre += Poll(TaskRunning(s))
+p.post += FileContains("publishing 10 'Hello World' events")
+
+TaskTerminator(s)
+
+admin = Test('icestormadmin --Ice.Config=$testdir/icestorm.config -e "destroy HelloTopic"',
+             shell=True)
+admin.pre += Poll(OpenPort(10000))
+
+TaskTerminator(icebox)
