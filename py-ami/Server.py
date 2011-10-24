@@ -2,16 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import sys, Ice
-import time
-Ice.loadSlice('ami.ice')
-import Demo
+Ice.loadSlice('../ami.ice')
+import UCLM
 
 
-class DemoI(Demo.Employees):
-    def getName(self, key, current=None):
-        print('-> getName({})'.format(key))
-        time.sleep(1)
-        return "John Doe"
+def factorial(n):
+    if n == 0:
+        return 1
+
+    return n * factorial(n - 1)
+
+
+class MathI(UCLM.Math):
+    def factorial(self, n, current=None):
+        return str(factorial(n))
 
 
 class Server(Ice.Application):
@@ -19,7 +23,7 @@ class Server(Ice.Application):
         ic = self.communicator()
 
         oa = ic.createObjectAdapter("OA")
-        base = oa.add(DemoI(), ic.stringToIdentity("hello1"))
+        base = oa.add(MathI(), ic.stringToIdentity("hello1"))
         oa.activate()
 
         print base
