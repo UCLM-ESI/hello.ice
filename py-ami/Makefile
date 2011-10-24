@@ -2,10 +2,10 @@
 all:
 
 clean:
-	$(RM) *~ proxy.out
+	$(RM) *~ server.proxy
 
 run-server:
-	./Server.py --Ice.Config=../hello.cfg | tee proxy.out
+	./Server.py --Ice.Config=../hello.cfg | tee server.proxy
 
 run-client:
-	./Client.py "$(shell head -1 proxy.out)"
+	./Client-end.py "$(shell head -1 server.proxy)" 4
