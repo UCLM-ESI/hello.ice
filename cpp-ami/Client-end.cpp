@@ -1,7 +1,7 @@
 // -*- coding:utf-8; tab-width:4; mode:cpp -*-
 
 #include <Ice/Ice.h>
-#include <ami.h>
+#include <factorial.h>
 
 using namespace Ice;
 using namespace std;
@@ -12,8 +12,7 @@ class Client: public Ice::Application {
     ObjectPrx obj = communicator()->stringToProxy(argv[1]);
     UCLM::MathPrx prx = UCLM::MathPrx::checkedCast(obj);
 
-	Ice::AsyncResultPtr async_result = \
-	  prx->begin_factorial(atoi(argv[2]));
+	Ice::AsyncResultPtr async_result = prx->begin_factorial(atoi(argv[2]));
 	cout << "this was async call" << endl;
 
 	cout << prx->end_factorial(async_result) << endl;

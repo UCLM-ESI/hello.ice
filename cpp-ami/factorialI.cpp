@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include <amiI.h>
+#include <factorialI.h>
 
 int
 factorial_(int n) {

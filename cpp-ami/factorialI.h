@@ -1,7 +1,7 @@
-#ifndef __amiI_h__
-#define __amiI_h__
+#ifndef __factorialI_h__
+#define __factorialI_h__
 
-#include <ami.h>
+#include <factorial.h>
 
 namespace UCLM
 {
