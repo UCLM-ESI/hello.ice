@@ -3,7 +3,7 @@
 "usage: {} <server> <value>"
 
 import sys, Ice
-Ice.loadSlice('amd.ice')
+Ice.loadSlice('../factorial-amd.ice')
 import UCLM
 
 

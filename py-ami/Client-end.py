@@ -3,7 +3,7 @@
 "usage: {} <server> <value>"
 
 import sys, Ice
-Ice.loadSlice('../ami.ice')
+Ice.loadSlice('../factorial.ice')
 import UCLM
 
 

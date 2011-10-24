@@ -1,13 +1,16 @@
 # -*- coding:utf-8; tab-width:4; mode:python -*-
 
 TestBG('./Server.py --Ice.Config=../hello.cfg',
-       stdout = 'server.proxy')
+       cwd = '$testdir',
+       stdout = '$testdir/server.proxy')
 
 Test('./Client-end.py "$(head -1 server.proxy)" 4',
      shell = True,
-     pre = Poll(FileContains('hello1', 'server.proxy')),
+     cwd = '$testdir',
+     pre = Poll(FileContains('hello1', '$testdir/server.proxy')),
      post = StdOutContains('24'))
 
 Test('./Client-callback.py "$(head -1 server.proxy)" 4',
      shell = True,
+     cwd = '$testdir',
      post = StdOutContains('24'))

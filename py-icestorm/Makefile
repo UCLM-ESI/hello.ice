@@ -1,13 +1,9 @@
 
+all:
+
 clean:
 	$(RM) *~
 	$(RM) -r db
-
-run-publisher:  icestorm.config
-	./publisher.py --Ice.Config=icestorm.config
-
-run-subscriber: icestorm.config
-	./subscriber.py --Ice.Config=icestorm.config
 
 start:  icebox.config icestorm.config
 	@if ! [ -d db ]; then mkdir db; fi
@@ -18,3 +14,9 @@ start:  icebox.config icestorm.config
 stop: icestorm.config
 	icestormadmin --Ice.Config=icestorm.config -e "destroy HelloTopic"
 	killall icebox
+
+run-publisher:  icestorm.config
+	./publisher.py --Ice.Config=icestorm.config
+
+run-subscriber: icestorm.config
+	./subscriber.py --Ice.Config=icestorm.config

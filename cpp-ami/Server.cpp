@@ -1,7 +1,7 @@
 // -*- coding:utf-8; tab-width:4; mode:cpp -*-
 
 #include <Ice/Ice.h>
-#include <amiI.h>
+#include <factorialI.h>
 using namespace Ice;
 
 class Server: public Ice::Application {

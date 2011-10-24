@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys, Ice
-Ice.loadSlice('../ami.ice')
+Ice.loadSlice('../factorial.ice')
 import UCLM
 
 

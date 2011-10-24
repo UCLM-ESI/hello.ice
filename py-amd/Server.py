@@ -5,7 +5,7 @@ import sys, Ice
 import time
 from threading import Thread
 from Queue import Queue
-Ice.loadSlice('amd.ice')
+Ice.loadSlice('../factorial-amd.ice')
 import UCLM
 
 

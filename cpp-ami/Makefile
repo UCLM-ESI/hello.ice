@@ -2,7 +2,7 @@ CC=g++
 CXXFLAGS=-I.
 LDLIBS=-lIce -lIceUtil
 
-SLICE=ami
+SLICE=factorial
 STUBS=$(addprefix $(SLICE), .h .cpp)
 
 all: Server Client-end
