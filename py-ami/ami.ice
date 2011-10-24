@@ -1,7 +1,7 @@
 // -*- mode:c++ -*-
 
 module Demo {
-    interface Employees {
-        string getName(int number);
-    };
+  interface Employees {
+    string getName(int number);
+  };
 };
