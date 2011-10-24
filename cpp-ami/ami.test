@@ -1,0 +1,9 @@
+# -*- coding:utf-8; tab-width:4; mode:python -*-
+
+TestBG('./Server --Ice.Config=../hello.cfg',
+       stdout = 'server.proxy')
+
+Test('./Client-end "$(head -1 server.proxy)" 4',
+     shell = True,
+     pre = Poll(FileContains('hello1', 'server.proxy')),
+     post = StdOutContains('24'))
