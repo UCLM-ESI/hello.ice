@@ -45,12 +45,12 @@ run-factory: Factory
 	./Factory --Ice.Config=factory.cfg > factory.proxy &
 
 run-create: factory.proxy
-	./Create "$(shell cat factory.proxy)" > obj.proxy
+	./Create "$$(cat factory.proxy)" > obj.proxy
 
 run-monitor: Monitor obj.proxy
 	@echo Keep this console open
-	./Monitor --Ice.Config=monitor.cfg "$(shell cat obj.proxy)"
+	./Monitor --Ice.Config=monitor.cfg "$$(cat obj.proxy)"
 
 run-modify: Modify
-	./Modify "$(shell cat obj.proxy)" true
-	./Modify "$(shell cat obj.proxy)" false
+	./Modify "$$(cat obj.proxy)" true
+	./Modify "$$(cat obj.proxy)" false
