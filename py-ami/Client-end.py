@@ -17,7 +17,7 @@ class Client(Ice.Application):
             raise RuntimeError("Invalid proxy")
 
         async_result = prx.begin_factorial(argv[2])
-        print 'this was a async call'
+        print 'this was an async call'
 
         print prx.end_factorial(async_result)
 

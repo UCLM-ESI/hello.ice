@@ -3,12 +3,12 @@ CXXFLAGS=-I.
 
 SLICES=$(wildcard *.ice)
 GENERATED=$(SLICES:.ice=.cpp) $(SLICES:.ice=.h)
-TARGET=Factory Create Modify Monitor
+TARGET=Server Create Modify Monitor
 
 all: $(TARGET)
 
-Factory: Factory.o Bool.o BoolPersistent.o BoolFactory.o
-Factory.o: Factory.cpp Bool.h BoolPersistent.h BoolFactory.h
+Server: Server.o Bool.o BoolPersistent.o BoolFactory.o
+Server.o: Server.cpp Bool.h BoolPersistent.h BoolFactory.h
 
 Create: Create.o BoolFactory.o
 Create.o: Create.cpp BoolFactory.h
@@ -37,12 +37,12 @@ start: db/icestorm /usr/bin/icebox /usr/bin/icestormadmin
 
 stop:
 	-killall icebox
-	-killall Factory
+	-killall Server
 	sleep 2
 	$(RM) -r db
 
-run-factory: Factory
-	./Factory --Ice.Config=factory.cfg > factory.proxy &
+run-factory: Server
+	./Server --Ice.Config=factory.cfg > factory.proxy &
 
 run-create: factory.proxy
 	./Create "$$(cat factory.proxy)" > obj.proxy

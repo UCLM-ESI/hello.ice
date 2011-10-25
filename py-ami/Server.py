@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys, Ice
+import time
 Ice.loadSlice('../factorial.ice')
 import UCLM
 
