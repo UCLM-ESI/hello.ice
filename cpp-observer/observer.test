@@ -5,11 +5,12 @@ TestBG('icebox --Ice.Config=icebox.config',
        cwd = '$testdir')
 
 TestBG(
-    './Factory --Ice.Config=factory.cfg',
+    './Server --Ice.Config=server.cfg',
     cwd = '$testdir',
     save_stdout = True,
     stdout = '$testdir/factory.proxy',
-    shell = True)
+    shell = True,
+    pre = FileExists('$testdir/server.cfg'))
 
 TestBG(
     '$testdir/Create "$(head -1 $testdir/factory.proxy)"',

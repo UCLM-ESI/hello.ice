@@ -6,8 +6,8 @@ Ice.loadSlice('../factorial.ice')
 import UCLM
 
 
-def factorialCB(name):
-    print "Name is: " + name
+def factorialCB(value):
+    print "Value is: " + value
 
 
 def failureCB(ex):
@@ -25,7 +25,7 @@ class Client(Ice.Application):
             raise RuntimeError("Invalid proxy")
 
         prx.begin_factorial(argv[2], factorialCB, failureCB)
-        print 'this was a async call'
+        print 'this was an async call'
 
         return 0
 
