@@ -3,7 +3,7 @@
 SUBDIRS = $(shell ls -d */)
 SUBDIRS = \
 	py py-icestorm py-ami py-amd \
-	java \
+	java java-freeze \
 	cpp cpp-icestorm cpp-observer cpp-ami \
 	icegrid
 

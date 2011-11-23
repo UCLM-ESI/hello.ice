@@ -1,0 +1,29 @@
+# -*- mode:python; coding:utf-8 -*-
+
+
+def create_server(name, post):
+    return TestBG(
+        '%s Server --Ice.Config=config' % java,
+        stdout = name + '.out',
+        save_stdout=True,
+        signal=2, expected=130,
+        post=post)
+
+def create_client(server_out):
+    return Test(
+        '%s Client "$(head -1 %s)"' % (java, server_out), shell=True,
+        pre = Poll(FileContains("Ready", server_out)))
+
+
+java = 'java -classpath $testdir:/usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:/usr/share/java/libdb4.7-java.jar'
+
+Command('rm -rf db')
+Test('mkdir db')
+
+server0 = create_server('server0', StdOutContains('Hello (i=0): Hello, World!'))
+create_client(server0.stdout)
+TaskTerminator(server0, delay=1)
+
+server1 = create_server('server1', StdOutContains('Hello (i=1): Hello, World!'))
+create_client(server0.stdout)
+TaskTerminator(server1, delay=1)
