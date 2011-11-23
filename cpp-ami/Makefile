@@ -26,4 +26,4 @@ run-server:
 	./Server --Ice.Config=../hello.cfg | tee server.proxy
 
 run-client:
-	./Client "$(shell head -1 server.proxy)" 4
+	./Client-end "$(shell head -1 server.proxy)" 4
