@@ -27,7 +27,7 @@ clean:
 	$(RM) *.o *~ $(GENERATED)
 	$(RM) -rf db
 
-	$(RM) factory.proxy obj.proxy
+	$(RM) server.proxy obj.proxy
 
 db/%:
 	mkdir -p $@
@@ -41,11 +41,11 @@ stop:
 	sleep 2
 	$(RM) -r db
 
-run-factory: Server
-	./Server --Ice.Config=factory.cfg > factory.proxy &
+run-server: Server
+	./Server --Ice.Config=server.cfg > server.proxy &
 
 run-create: factory.proxy
-	./Create "$$(cat factory.proxy)" > obj.proxy
+	./Create "$$(cat server.proxy)" > obj.proxy
 
 run-monitor: Monitor obj.proxy
 	@echo Keep this console open
