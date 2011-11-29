@@ -1,0 +1,27 @@
+# -*- mode:python; coding:utf-8 -*-
+
+
+def create_server(name, post):
+    return TestBG(
+        '$testdir/Server --Ice.Config=$testdir/config',
+        stdout = name + '.out',
+        save_stdout=True,
+        signal=2,
+        post=post)
+
+def create_client(server_out):
+    return Test(
+        '$testdir/Client "$(head -1 %s)"' % (server_out), shell=True,
+        pre = Poll(FileContains("Ready", server_out)))
+
+
+Command('rm -rf db')
+Test('mkdir db')
+
+server0 = create_server('server0', StdOutContains('Hello0 (i=0): Hello, World!'))
+create_client(server0.stdout)
+TaskTerminator(server0, delay=1)
+
+server1 = create_server('server1', StdOutContains('Hello0 (i=1): Hello, World!'))
+create_client(server0.stdout)
+TaskTerminator(server1, delay=1)
