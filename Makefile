@@ -4,7 +4,7 @@ SUBDIRS = $(shell ls -d */)
 SUBDIRS = \
 	py py-icestorm py-ami py-amd \
 	java java-freeze \
-	cpp cpp-icestorm cpp-observer cpp-ami \
+	cpp cpp-icestorm cpp-observer cpp-ami cpp-freeze \
 	icegrid
 
 all:     RULE = all
