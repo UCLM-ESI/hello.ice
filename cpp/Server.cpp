@@ -2,17 +2,18 @@
 
 #include <Ice/Ice.h>
 #include <HelloI.h>
+
+using namespace std;
 using namespace Ice;
 
-class Server: public Ice::Application {
+class Server: public Application {
   int run(int argc, char* argv[]) {
-
-    ObjectAdapterPtr oa = communicator()->createObjectAdapter("OA");
-    ObjectPrx prx = oa->add(new UCLM::HelloI(),
+    ObjectAdapterPtr adapter = communicator()->createObjectAdapter("OA");
+    ObjectPrx prx = adapter->add(new UCLM::HelloI(),
 							communicator()->stringToIdentity("hello1"));
-    oa->activate();
+    cout << communicator()->proxyToString(prx) << endl;
 
-    std::cout << communicator()->proxyToString(prx) << std::endl;
+    adapter->activate();
 
     shutdownOnInterrupt();
     communicator()->waitForShutdown();
