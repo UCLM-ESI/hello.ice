@@ -13,11 +13,11 @@ Client.class: Client.java Hello.java
 	slice2java $<
 
 
-run-server: Server.class db
-	java $(CLASSPATH) $(<:.class=) --Ice.Config=config | tee server.out
+run-server: Server db
+	./Server --Ice.Config=config | tee server.out
 
-run-client: Client.class
-	java $(CLASSPATH) $(<:.class=) "$(shell head -1 server.out)"
+run-client: Client
+	./Client "$(shell head -1 server.out)"
 
 db:
 	mkdir db

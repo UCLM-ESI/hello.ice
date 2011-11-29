@@ -3,11 +3,13 @@
 
 def create_server(name, post):
     return TestBG(
-        '%s Server --Ice.Config=config' % java,
-        stdout = name + '.out',
+        pre      = DebPkgInstalled('libdb4.7-java'),
+        cmd      = '%s Server --Ice.Config=$testdir/config' % java,
+        stdout   = name + '.out',
         save_stdout=True,
-        signal=2, expected=130,
-        post=post)
+        signal   = 2,
+        expected = 130,
+        post     = post)
 
 def create_client(server_out):
     return Test(
