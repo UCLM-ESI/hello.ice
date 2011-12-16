@@ -7,18 +7,13 @@ import UCLM
 
 class Publisher(Ice.Application):
     def get_topic_manager(self):
-        properties = self.communicator().getProperties()
+        key = 'IceStormAdmin.TopicManager.Default'
+        base = self.communicator().propertyToProxy(key)
+        if base is None:
+            print "property", key, "not set"
+            return None
 
-        prop_key = "IceStormAdmin.TopicManager.Default"
-        strproxy = properties.getProperty(prop_key)
-
-        if not strproxy:
-            print "property", prop_key, "not set"
-            return 0
-
-        print "Using IceStorm in '%s'" % strproxy
-
-        base = self.communicator().stringToProxy(strproxy)
+        print("Using IceStorm in: '%s'" % base)
         return IceStorm.TopicManagerPrx.checkedCast(base)
 
     def run(self, argv):

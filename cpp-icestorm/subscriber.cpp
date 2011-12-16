@@ -18,20 +18,15 @@ class HelloI : public Hello {
 class Subscriber : public Application {
 
   TopicManagerPrx get_topic_manager() {
-    PropertiesPtr properties = communicator()->getProperties();
-
-    const string prop_key = "IceStormAdmin.TopicManager.Default";
-    string strproxy = properties->getProperty(prop_key);
-
-    if (strproxy.empty()) {
-      cerr << appName() << ": property `" << prop_key << "' not set" << endl;
+    string key = "IceStormAdmin.TopicManager.Default";
+    ObjectPrx base = communicator()->propertyToProxy(key);
+    if (!base) {
+      cerr << "property " << key << " not set." << endl;
       return 0;
     }
 
-    cout << "Using IceStorm in '" << strproxy << "' " << endl;
-
-    ObjectPrx base = communicator()->stringToProxy(strproxy);
-    return TopicManagerPrx::checkedCast(base);
+    cout << "Using IceStorm in: '" << key << "' " << endl;
+    return TopicManagerPrx::checkedCast(base);    
   }
 
 public:
