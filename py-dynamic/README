@@ -1,0 +1,307 @@
+h2. Dynamic Ice on Python
+
+The current version of the Ice manual states:
+
+> The dynamic invocation and dispatch interfaces allow you to write
+> generic clients and servers that need not have compile-time knowledge
+> of the Slice types used by an application. This makes it possible to
+> create applications such as object browsers, protocol analyzers, or
+> protocol bridges. In addition, the dynamic invocation and dispatch
+> interfaces permit services such as IceStorm to be implemented without
+> the need to unmarshal and remarshal every message, with considerable
+> performance improvements.
+
+So, it's clear why to use this aproach. But, again, it notes:
+
+> The streaming interfaces are not defined in Slice, but are rather a
+> collection of native classes provided by each language mapping. The
+> streaming interfaces are currently supported in C++, Java, and
+> .NET.
+
+The streaming interfaces are needed to serialize data (the arguments
+in our invocations or the return value) to a buffer, which will be
+sent to the other endpoint. They are essential to use Dynamic Ice. It
+happens that Python does not have such classes (@InputStream@ nor
+@OutputStream@) :(. We will try to do our best without them.
+
+h2. First, our non-needed interfaces
+
+We will to build two examples: the first using Dynamic Invocation, and
+the second, with Dynamic Dispatching. Nothing forbids you to build a
+new one using both ;) To acomplish this, we need some simple
+interface. In the Dynamic Invocation example, the interface will be
+used on the servant part (in the object's implementation). When using
+Dynamic Dispatching, the client will use it instead. Let's define
+it. It is a _Hello World!_ example, so it will be very simple:
+
+<pre>
+module Example {
+  interface Hello {
+    bool say(string message);
+  };
+};
+</pre>
+
+h2. The standard way
+
+In the source code, there are two programs that use this interface
+following the standard mechanism. Both need to know the module
+_Example_, and cast the correspondient proxy to the interface
+_Hello_. The server is called @standard-dispatching.py@ and the client
+is @standard-invocation.py@. You can try it now. First, launch the
+_server_:
+
+<pre>
+$ ./standard-dispatching.py
+Use proxy: 'StandardDispatching -t:tcp -h 192.168.1.130 -p 1234'
+</pre>
+
+It tells you the proxy where is waiting events. As it is a standard
+example, I will not explain it. If you have any doubt about what is
+doing, just see the code! :) Now, launch the client (in other
+console), as follows:
+
+<pre>
+$ ./standard-invocation.py
+USAGE: ./standard-invocation.py <proxy> <message>
+$ ./standard-invocation.py 'StandardDispatching -t:tcp -h 192.168.1.130 -p 1234' 'Hello World!'
+</pre>
+
+As you can see, the client expect two arguments: a @proxy@ and a
+@message@. If you look at the server's console, you will find something
+like that:
+
+<pre>
+$ ./standard-dispatching.py
+Use proxy: 'StandardDispatching -t:tcp -h 192.168.1.130 -p 1234'
+say: Hello World!
+</pre>
+
+Ok, nothing special. Let's get more Dyanmic!
+
+h2. The Dyanmic way: invocation
+
+Alongside with the previous Python scripts, are two more
+programs. We will start with the Dynamic Invocation.
+
+The client is almost the same. Only those things related to our
+@Example@ interface are changed. Thus, now there is no @loadSlice@, nor
+any casting of the given proxy. And... how then should I call to @say@
+method? Well, with Dynamic Ice, your pal is the method
+@ice_invoke@. This method is defined on @ObjectPrx@. If it were to be
+defined on Slice, it would look like this:
+
+<pre>
+sequence<byte> ByteSeq;
+
+bool ice_invoke(
+    string operation,
+    Ice::OperationMode mode,
+    ByteSeq inParams,
+    out ByteSeq outParams
+);
+</pre>
+
+There, you should pass all the requiered information, and expect return
+params as well. Let's see each field:
+
+* @string operation@: this is the name of the operation to call. In our
+  example, this would be the string "say". If you want to "ping" an
+  object, then should be "ice_ping". This is the easiest one :)
+
+* @Ice::OperationMode mode@: this is the mode, as defined on the
+  slice. It can be: _Normal_ or _Idempotent_ (_Nonmutating_ is
+  deprecated). Use the constants defined on Ice:
+  @Ice.OperationMode.Idempotent@ and @Ice.OperationMode.Normal@
+  (maybe, you just can pass 0 or 2, but I've not checked it out, and
+  this is more clear).
+
+* @ByteSeq inParams@: this is the hardest part. Here, @ice_invoke@
+  expects a ByteSeq (or a @buffer@, in Python lands). The problem is
+  how to create such a buffer. We will discuss it later.
+
+* @ByteSeq outParams@: the same could be said as for @inParams@. In
+  Python, this will be a return value, alongside with the proper
+  retval.
+
+It will return a tuple, containing two values: return value (bool),
+which will be True if success and False on error; and @outParams@, a
+_buffer_ with returning data. In Python, the method will look like
+this:
+
+<pre>
+  ice_invoke(operation, mode, inParams) -> bool, outParams
+</pre>
+
+h3. Marshalling data
+
+To use Dynamic Ice on Python, ZeroC gives us almost everything. The
+only lacking tool to acomplish it correctly are the marshalling and
+unmarshalling methods. These are the _stream interfaces_ mentioned
+above.
+
+In the vast major of circumstances, there is no need for this. You
+just receive the invocation, makes whatever you need, and forward it
+to another object, which can handle it properly. This is the case, for
+example, of a router, or a traffic logger. For this, there is no need
+to know anything about the data transferred: for us this data is a
+'blob'.
+
+In this case (Dynamic Invocation as a pure client), we really know
+what the server object needs, but it is not specified on a
+interface. This is a very rare situation. In order to acomplish it, we
+must pay the bill. Here, we should know a lot about Ice Encoding to
+understand what we need. Otherwise, you will have ending with a
+@Ice::MarshallException@.
+
+For this example, I've writen a simple marshaller. It is a very simple
+and rude implementation of what would be the InputStream for Python,
+but it works as expected. Only supports what was needed for this
+tutorial. I presume you wouldn't need it for real
+scenarios. Otherwise, you should build a good one, using TDD and every
+other tool you need.
+
+h3. Invoke Ice
+
+Ok, as far as this point, we haven't done anything. Time to code! This
+is the only interesting part:
+
+<pre>
+    ...
+    operation = "say"
+    mode = Ice.OperationMode.Normal
+    inParams = OutputStream()
+    inParams.writeString(args[2])
+
+    ok, outParams = self.prx.ice_invoke(operation, mode, inParams)
+    if ok:
+        result = InputStream(outParams).readBool()
+	assert result
+
+    else:
+        print "An error ocurred!"
+</pre>
+
+We build the operation name and mode without problems. Then, build an
+@OutputStream@ called @inParams@. This is _output_ in the sense of
+_marshalling_, which has methods to _write_ data. We pass the given
+string and call @ice_invoke@. If everything is ok, we read the method
+return value, a bool, which indicates whether the operation could be
+performed or not. If @ok@ is False, then there were some error, and I
+omit it.
+
+As you can see, the only special things here are the marshaller and
+unmarshaller needed to send the arguments and read the return value of
+the remote method. If this is implemented inside another object which
+uses Dynamic Dispatching, these arguments are received directly, as we
+will see in the next section.
+
+h2. The Dyanmic way: dispatching
+
+The key here is the implementation of the _servant_. We have not an
+interface, but still need an object to whom inherit our servant, and a
+method to be called. This is provided by Ice, with Ice.Blobject. The
+slice is defined like this:
+
+<pre>
+sequence<byte> ByteSeq;
+
+interface Blobject {
+    bool ice_invoke(ByteSeq inParams, out ByteSeq outParams);
+};
+</pre>
+
+As we will be using Python, the out param is return directly, after
+the return value of the operation. So, in Python, this method will be
+like:
+
+<pre>
+    def ice_invoke(self, inParams, current):
+        ...
+	return retval, outParams
+</pre>
+
+The name of the operation, the mode and some other information is
+delegated on the Context (here, accesible by the @current@
+argument). You just need add whatever you need to do. If you need to
+unmarshall data, you'll have the same problem as above. Check the code
+for an ad-hoc implementation of this Stream Interfaces:
+
+<pre>
+    inParams = InputStream(bytes)
+    message = inParams.readString()
+
+    print "{0}: {1}".format(current.operation, message)
+
+    out = OutputStream()
+    out.writeBool(True)
+    outParams = out.finished()
+
+    return True, outParams
+</pre>
+
+Here, we know that in @inParams@ a string is encapsulated, so I use
+the InputStream to get it. To return from this method, there needs two
+values: a boolean (here, a True, indicating the local engine that
+everything is ok), and another boolean, the return value of the method
+@say@, in our interface. For this, I use OutputStream.
+
+h3. Checked Casting
+
+The implementation of @ice_invoke@ must handle every invocation to the
+object, specially those defined in @Ice.Object@ (everyone starting
+with @ice_@). When doing a _checked_cast_, Ice internally issues an
+@ice_isA()@ operation on the object. Thus, if you want to allow this
+type of casting, you need to respond correctly to this operation. The
+problem is that you haven't any interface (that's why you use Dynamic
+Ice, isn't it?). So, you will need to say 'yes' to every @ice_isA@
+invocation, and be prepared to handle correctly every other
+invocation.
+
+For simplicity's sake, in the examples, all castings are unchecked.
+
+h2. Go on!
+
+If you launch both programs, they will behave exactly the same as the
+_standard_ version, but using Dynamic Ice :D
+
+On one console, launch the server:
+
+<pre>
+$ ./dynamic-dispatching.py
+Use proxy: 'DynamicDispatching -t:tcp -h 192.168.1.130 -p 1234'
+</pre>
+
+On another console, launch the client:
+
+<pre>
+$ ./dynamic-invocation.py 'DynamicDispatching -t:tcp -h 192.168.1.130 -p 1234' 'Hello Dynamic World!'
+</pre>
+
+And you should get in the first console something like this:
+
+<pre>
+$ ./dynamic-dispatching.py
+Use proxy: 'DynamicDispatching -t:tcp -h 192.168.1.130 -p 1234'
+say: Hello Dynamic World!
+</pre>
+
+This brief tutorial presented what can be done using Dynamic Ice on
+Python: Invocation and Dispatching of synchronous calls. Nevertheless,
+there are more things you can do: AMI and AMD (asynchronous
+calls). This time, I left the joy of discovering it for yourself ;)
+
+h2. References
+
+* Ice manual:
+** "Dynamic Ice":http://doc.zeroc.com/display/Ice/Dynamic+Ice
+** "Dynamic Invocation and Dispatch":http://doc.zeroc.com/display/Ice/Dynamic+Invocation+and+Dispatch
+** "Data Encoding":http://doc.zeroc.com/display/Ice/Data+Encoding
+
+This documentation and full source code can be retrieved using the
+following command (located on @py-dynamic/@ folder):
+
+<pre>
+hg clone ssh://hg@bitbucket.org/arco_group/ice-hello
+</pre>
+
