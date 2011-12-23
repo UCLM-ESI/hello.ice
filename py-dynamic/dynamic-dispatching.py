@@ -33,7 +33,7 @@ class DynamicDispatching(Ice.Application):
 
     def create_adapter(self):
         self.oa = self.ic.createObjectAdapterWithEndpoints(
-            "Adapter", "tcp -p 1234")
+            "Adapter", "tcp -h 127.0.0.1 -p 1234")
         self.oa.activate()
 
     def append_servant(self):

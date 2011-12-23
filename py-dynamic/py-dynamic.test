@@ -1,0 +1,17 @@
+# -*- mode: python; coding: utf-8 -*-
+
+text = "some text to say!"
+port = 1234
+proxy = "DynamicDispatching -t:tcp -h 127.0.0.1 -p {0}".format(port)
+
+
+s = Test("$testdir/dynamic-dispatching.py", detach=True)
+s.pre += Not(OpenPort(port))
+s.post += FileContains("say: {0}".format(text))
+
+
+c = Test("$testdir/dynamic-invocation.py '{0}' '{1}'".format(proxy, text))
+c.pre += TaskRunning(s)
+c.pre += Poll(OpenPort(port), 0.1)
+
+TaskTerminator(s)

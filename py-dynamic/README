@@ -203,7 +203,7 @@ h2. References
 ** "Dynamic Invocation and Dispatch":http://doc.zeroc.com/display/Ice/Dynamic+Invocation+and+Dispatch
 ** "Data Encoding":http://doc.zeroc.com/display/Ice/Data+Encoding
 
-This documentation and full source code can be retrieved using the following command (located on @py-dynamic/@ folder):
+This documentation and full source code (located on @py-dynamic/@ folder) can be retrieved using the following command:
 
 <pre>
 hg clone ssh://hg@bitbucket.org/arco_group/ice-hello
