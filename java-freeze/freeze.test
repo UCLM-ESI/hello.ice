@@ -3,8 +3,8 @@
 
 def create_server(name, post):
     return TestBG(
-        pre      = DebPkgInstalled('libdb4.7-java'),
-        cmd      = '%s Server --Ice.Config=$testdir/config' % java,
+        pre      = DebPkgInstalled('libdb-java'),
+        cmd      = '%s Server --Ice.Config=$testdir/config' % java_cmd,
         stdout   = name + '.out',
         save_stdout=True,
         signal   = 2,
@@ -13,11 +13,21 @@ def create_server(name, post):
 
 def create_client(server_out):
     return Test(
-        '%s Client "$(head -1 %s)"' % (java, server_out), shell=True,
+        '%s Client "$(head -1 %s)"' % (java_cmd, server_out), shell=True,
         pre = Poll(FileContains("Ready", server_out)))
 
 
-java = 'java -classpath $testdir:/usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:/usr/share/java/libdb4.7-java.jar'
+classpath = str.join(':', [
+        '$testdir',
+        '/usr/share/java/Ice.jar',
+        '/usr/share/java/Freeze.jar',
+        '/usr/share/java/db.jar'])
+
+library_path = '/usr/lib/i386-linux-gnu'
+
+java_cmd = 'java -classpath {0} -Djava.library.path={1}'.format(
+    classpath, library_path)
+
 
 Command('rm -rf db')
 Test('mkdir db')
