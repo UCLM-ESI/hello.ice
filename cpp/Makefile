@@ -2,22 +2,19 @@ CC=g++
 CXXFLAGS=-I.
 LDLIBS=-lIce -lIceUtil
 
-SLICE=Hello
-STUBS=$(addprefix $(SLICE), .h .cpp)
+APP=Hello
+STUBS=$(addprefix $(APP), .h .cpp)
 
 all: Server Client
 
-Server: Server.o $(SLICE)I.o $(SLICE).o
-Client: Client.o $(SLICE).o
+Server: Server.o $(APP)I.o $(APP).o
+Client: Client.o $(APP).o
 
 Server.cpp Client.cpp: $(STUBS)
-
-vpath %.ice ../
 
 %.cpp %.h: %.ice
 	slice2cpp $<
 
 clean:
-	$(RM) Server Client *.o
-	$(RM) $(STUBS) *~
+	$(RM) Server Client $(STUBS) *.o *~
 	$(RM) *.bz2 IcePatch2.sum

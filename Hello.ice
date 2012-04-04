@@ -1,7 +1,5 @@
-// -*- mode:c++ -*-
-
-module UCLM {
+module Example {
   interface Hello {
-    void puts(string str);
+    void puts(string message);
   };
 };

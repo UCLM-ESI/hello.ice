@@ -6,7 +6,7 @@
 using namespace std;
 using namespace Ice;
 using namespace IceStorm;
-using namespace UCLM;
+using namespace Example;
 
 
 class HelloI : public Hello {
@@ -16,9 +16,8 @@ class HelloI : public Hello {
 };
 
 class Subscriber : public Application {
-
   TopicManagerPrx get_topic_manager() {
-    string key = "IceStormAdmin.TopicManager.Default";
+    string key = "IceStorm.TopicManager.Proxy";
     ObjectPrx base = communicator()->propertyToProxy(key);
     if (!base) {
       cerr << "property " << key << " not set." << endl;
@@ -26,43 +25,39 @@ class Subscriber : public Application {
     }
 
     cout << "Using IceStorm in: '" << key << "' " << endl;
-    return TopicManagerPrx::checkedCast(base);    
+    return TopicManagerPrx::checkedCast(base);
   }
 
 public:
   virtual int run(int argc, char* argv[]) {
-
     TopicManagerPrx topic_mgr = get_topic_manager();
     if (!topic_mgr) {
       cerr << appName() << ": invalid proxy" << endl;
       return EXIT_FAILURE;
     }
 
-    // Create the servant to receive the events.
-    ObjectAdapterPtr adapter = communicator()->createObjectAdapter("Hello.Subscriber");
     ObjectPtr servant = new HelloI;
+    ObjectAdapterPtr adapter = \
+      communicator()->createObjectAdapter("HelloAdapter");
+    ObjectPrx subscriber = adapter->addWithUUID(servant);
 
-    // Add a Servant for the Ice Object.
-    ObjectPrx base = adapter->addWithUUID(servant);
+    string topic_name = "HelloTopic";
     TopicPrx topic;
-
     try {
-      topic = topic_mgr->retrieve("HelloTopic");
-      QoS qos;
-      topic->subscribeAndGetPublisher(qos, base);
-    }
-    catch(const NoSuchTopic& e) {
-      cerr << appName() << ": " << e << " name: " << e.name << endl;
-      return EXIT_FAILURE;
+      topic = topic_mgr->retrieve(topic_name);
+    } catch(const NoSuchTopic& e) {
+      topic = topic_mgr->create(topic_name);
     }
 
-    cout << "Waiting events... " << base << endl;
+    topic->subscribeAndGetPublisher(QoS(), subscriber);
+
+    cout << "Waiting events... " << subscriber << endl;
 
     adapter->activate();
     shutdownOnInterrupt();
     communicator()->waitForShutdown();
 
-    topic->unsubscribe(base);
+    topic->unsubscribe(subscriber);
 
     return EXIT_SUCCESS;
   }

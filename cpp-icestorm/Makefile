@@ -1,20 +1,16 @@
-
 CC=g++
-CXX=g++
 CXXFLAGS = -I.
 LDLIBS = -lIce -lIceUtil -lIceStorm
 
-SLICE = Hello
-STUBS=$(addprefix $(SLICE), .h .cpp)
+APP=Hello
+STUBS=$(addprefix $(APP), .h .cpp)
 
 all: publisher subscriber
 
-publisher: publisher.o $(SLICE).o
-subscriber: subscriber.o $(SLICE).o
+publisher: publisher.o $(APP).o
+subscriber: subscriber.o $(APP).o
 
 publisher.cpp subscriber.cpp: $(STUBS)
-
-vpath %.ice ../
 
 %.h %.cpp: %.ice
 	slice2cpp $<
@@ -25,10 +21,10 @@ clean:
 
 
 run-subscriber: subscriber
-	./subscriber --Ice.Config=icestorm.config
+	./subscriber --Ice.Config=subscriber.config
 
 run-publisher: publisher
-	./publisher --Ice.Config=icestorm.config
+	./publisher --Ice.Config=publisher.config
 
 start: /usr/bin/icebox /usr/bin/icestormadmin
 	@if ! [ -d db ]; then mkdir db; fi

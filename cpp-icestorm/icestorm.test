@@ -5,7 +5,7 @@ import signal
 Command('mkdir $testdir/db')
 
 icebox = TestBG('icebox --Ice.Config=./icebox.config',
-                cwd='$testdir', signal=signal.SIGINT,
+                cwd='$testdir',
                 pre = FileExists('/usr/bin/icebox'))
 
 admin = Command('icestormadmin --Ice.Config=$testdir/icestorm.config -e "destroy HelloTopic"',
@@ -17,13 +17,13 @@ admin = Test('icestormadmin --Ice.Config=$testdir/icestorm.config -e "create Hel
              shell=True)
 admin.pre += Poll(OpenPort(10000))
 
-s = Test('$testdir/subscriber --Ice.Config=$testdir/icestorm.config',
+s = Test('$testdir/subscriber --Ice.Config=$testdir/subscriber.config',
          detach=True, signal=signal.SIGINT)
 s.pre += FileExists('$testdir/subscriber')
 s.post += FileContains('Waiting events...')
 s.post += FileContains('Event received: Hello World!', times=10)
 
-p = Test('$testdir/publisher --Ice.Config=$testdir/icestorm.config')
+p = Test('$testdir/publisher --Ice.Config=$testdir/publisher.config')
 p.pre += FileExists('$testdir/publisher')
 p.pre += Poll(TaskRunning(s))
 p.post += FileContains("publishing 10 'Hello World' events")
