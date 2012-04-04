@@ -3,17 +3,13 @@
 
 #include <Hello.h>
 
-namespace UCLM
-{
+namespace Example {
 
-class HelloI : virtual public Hello
-{
-public:
-
+  class HelloI : virtual public Hello {
+  public:
     virtual void puts(const ::std::string&,
-                      const Ice::Current&);
-};
-
+		      const Ice::Current&);
+  };
 }
 
 #endif

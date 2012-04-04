@@ -2,8 +2,7 @@ import Ice.*;
 
 public class Server extends Ice.Application {
     public int run(String[] args) {
-
-	ObjectAdapter oa = communicator().createObjectAdapter("OA");
+	ObjectAdapter oa = communicator().createObjectAdapter("HelloAdapter");
 	ObjectPrx prx = oa.add(new HelloI(), Util.stringToIdentity("hello1"));
 	oa.activate();
 
