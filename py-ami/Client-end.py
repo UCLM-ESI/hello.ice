@@ -2,24 +2,24 @@
 # -*- coding: utf-8 -*-
 "usage: {} <server> <value>"
 
-import sys, Ice
-Ice.loadSlice('../factorial.ice')
-import UCLM
+import sys
+import Ice
+Ice.loadSlice('./factorial.ice')
+import Example
 
 
 class Client(Ice.Application):
     def run(self, argv):
-        base = self.communicator().stringToProxy(argv[1])
+        proxy = self.communicator().stringToProxy(argv[1])
+        math = Example.MathPrx.checkedCast(proxy)
 
-        prx = UCLM.MathPrx.checkedCast(base)
-
-        if not prx:
+        if not math:
             raise RuntimeError("Invalid proxy")
 
-        async_result = prx.begin_factorial(argv[2])
+        async_result = math.begin_factorial(argv[2])
         print 'this was an async call'
 
-        print prx.end_factorial(async_result)
+        print math.end_factorial(async_result)
 
         return 0
 

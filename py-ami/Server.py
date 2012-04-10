@@ -1,10 +1,11 @@
 #!/usr/bin/python -u
 # -*- coding: utf-8 -*-
 
-import sys, Ice
-import time
-Ice.loadSlice('../factorial.ice')
-import UCLM
+import sys
+import Ice
+
+Ice.loadSlice('./factorial.ice')
+import Example
 
 
 def factorial(n):
@@ -14,21 +15,21 @@ def factorial(n):
     return n * factorial(n - 1)
 
 
-class MathI(UCLM.Math):
+class MathI(Example.Math):
     def factorial(self, n, current=None):
-        return str(factorial(n))
+        return factorial(n)
 
 
 class Server(Ice.Application):
     def run(self, argv):
         ic = self.communicator()
 
-        oa = ic.createObjectAdapter("OA")
-        base = oa.add(MathI(), ic.stringToIdentity("hello1"))
-        oa.activate()
+        adapter = ic.createObjectAdapter("HelloAdapter")
+        base = adapter.add(MathI(), ic.stringToIdentity("hello1"))
 
         print base
 
+        adapter.activate()
         self.shutdownOnInterrupt()
         ic.waitForShutdown()
 

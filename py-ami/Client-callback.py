@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, Ice
-Ice.loadSlice('../factorial.ice')
+import sys
+import Ice
+Ice.loadSlice('./factorial.ice')
 import UCLM
 
 
 def factorialCB(value):
-    print "Value is: " + value
+    print "Value is: %s" % value
 
 
 def failureCB(ex):
@@ -15,16 +16,14 @@ def failureCB(ex):
 
 
 class Client(Ice.Application):
-
     def run(self, argv):
-        base = self.communicator().stringToProxy(argv[1])
+        proxy = self.communicator().stringToProxy(argv[1])
+        math = UCLM.MathPrx.checkedCast(proxy)
 
-        prx = UCLM.MathPrx.checkedCast(base)
-
-        if not prx:
+        if not math:
             raise RuntimeError("Invalid proxy")
 
-        prx.begin_factorial(argv[2], factorialCB, failureCB)
+        math.begin_factorial(argv[2], factorialCB, failureCB)
         print 'this was an async call'
 
         return 0
