@@ -1,0 +1,22 @@
+# -*- coding:utf-8; tab-width:4; mode:python -*-
+
+java = 'java -classpath $testdir:/usr/share/java/Ice.jar'
+
+TestBG(
+    '%s Server --Ice.Config=./hello.cfg' % java,
+    cwd = '$testdir',
+    stdout = '$testdir/server.proxy')
+
+Test(
+    '%s Client_end "$(head -1 server.proxy)" 4' % java,
+    shell = True,
+    cwd = '$testdir',
+    pre = Poll(FileContains('hello1', '$testdir/server.proxy')),
+    post = StdOutContains('24'))
+
+Test(
+    '%s Client_callback "$(head -1 server.proxy)" 4' % java,
+    shell = True,
+    cwd = '$testdir',
+    pre = Poll(FileContains('hello1', '$testdir/server.proxy')),
+    post = StdOutContains('24'))
