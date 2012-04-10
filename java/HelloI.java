@@ -1,4 +1,7 @@
-public final class HelloI extends Example._HelloDisp
+
+package Example;
+
+public final class HelloI extends _HelloDisp
 {
     public HelloI() {}
 
