@@ -21,6 +21,11 @@ public class Client_callback extends Ice.Application {
     }
 
     static public void main(String[] args) {
+        if (args.length != 2) {
+            System.err.println(appName() + ": usage: <server> <value>");
+            return;
+        }
+
 	Client_callback app = new Client_callback();
 	app.main("Client", args);
     }

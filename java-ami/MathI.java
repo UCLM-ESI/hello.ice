@@ -6,7 +6,7 @@ public final class MathI extends Example._MathDisp
 	if (n == 0)
 	    return 1;
 
-	return n * factorial(n-1);
+	return n * factorial_(n-1);
     }
 
     public long
