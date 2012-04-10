@@ -2,8 +2,10 @@ import Ice.*;
 
 public class Server extends Ice.Application {
     public int run(String[] args) {
-	ObjectAdapter adapter = communicator().createObjectAdapter("HelloAdapter");
-	ObjectPrx prx = adapter.add(new HelloI(), Util.stringToIdentity("hello1"));
+	ObjectAdapter adapter =
+	    communicator().createObjectAdapter("HelloAdapter");
+	ObjectPrx prx = adapter.add(
+            new HelloI(), Util.stringToIdentity("hello1"));
 
 	System.out.println(communicator().proxyToString(prx));
 

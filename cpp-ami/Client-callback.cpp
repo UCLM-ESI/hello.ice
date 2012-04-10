@@ -24,8 +24,8 @@ public:
 
     Example::Callback_Math_factorialPtr factorial_cb =
       Example::newCallback_Math_factorial(new FactorialCB,
-										  &FactorialCB::response,
-										  &FactorialCB::failure);
+                                          &FactorialCB::response,
+                                          &FactorialCB::failure);
 
     math->begin_factorial(atoi(argv[2]), factorial_cb);
     return 0;

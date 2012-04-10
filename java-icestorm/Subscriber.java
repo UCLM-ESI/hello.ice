@@ -58,8 +58,7 @@ public class Subscriber extends Application {
         return 0;
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         Subscriber app = new Subscriber();
         int status = app.main("Subscriber", args);
         System.exit(status);
