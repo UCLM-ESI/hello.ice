@@ -6,7 +6,7 @@ using namespace std;
 
 class FactorialCB : public IceUtil::Shared {
 public:
-  void factorial(const Ice::Long retval) {
+  void response(const Ice::Long retval) {
     cout << "Callback: Value is " << retval << endl;
   }
 
@@ -24,7 +24,7 @@ public:
 
     Example::Callback_Math_factorialPtr factorial_cb =
       Example::newCallback_Math_factorial(new FactorialCB,
-										  &FactorialCB::factorial,
+										  &FactorialCB::response,
 										  &FactorialCB::failure);
 
     math->begin_factorial(atoi(argv[2]), factorial_cb);

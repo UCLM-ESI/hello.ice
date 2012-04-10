@@ -2,9 +2,9 @@
 
 SUBDIRS = $(shell ls -d */)
 SUBDIRS = \
-	cpp cpp-icestorm cpp-ami cpp-freeze cpp-observer \
-	java java-icestorm java-freeze \
-	py py-icestorm py-ami py-amd \
+	cpp   cpp-icestorm  cpp-ami  cpp-freeze cpp-observer \
+	java java-icestorm java-ami java-freeze \
+	py    py-icestorm    py-ami   py-amd \
 	icegrid
 
 all:     RULE = all
