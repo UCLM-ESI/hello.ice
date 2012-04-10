@@ -8,7 +8,7 @@ class Client: public Ice::Application {
   int run(int argc, char* argv[]) {
 
     ObjectPrx obj = communicator()->stringToProxy(argv[1]);
-    UCLM::MathPrx prx = UCLM::MathPrx::checkedCast(obj);
+    Example::MathPrx prx = Example::MathPrx::checkedCast(obj);
 
 	Ice::AsyncResultPtr async_result = prx->begin_factorial(atoi(argv[2]));
 	cout << "this was async call" << endl;
