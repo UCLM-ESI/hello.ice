@@ -1,6 +1,6 @@
 CLASSPATH=-classpath /usr/share/java/Ice.jar:.
 
-all: Example Server.class Client_end.class
+all: Example Server.class Client_end.class Client_callback.class
 
 %.class: %.java
 	javac $(CLASSPATH) $<
@@ -19,3 +19,7 @@ run-server: Server.class
 run-client-end: Client_end.class
 	java $(CLASSPATH) \
 	    Client_end "$(shell head -1 proxy.out)" 6
+
+run-client-callback: Client_callback.class
+	java $(CLASSPATH) \
+	    Client_callback "$(shell head -1 proxy.out)" 6
