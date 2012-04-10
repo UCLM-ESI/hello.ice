@@ -8,7 +8,7 @@ class Server: public Ice::Application {
   int run(int argc, char* argv[]) {
 
     ObjectAdapterPtr oa = communicator()->createObjectAdapter("OA");
-    ObjectPrx prx = oa->add(new UCLM::MathI(),
+    ObjectPrx prx = oa->add(new Example::MathI(),
 							communicator()->stringToIdentity("hello1"));
     oa->activate();
 

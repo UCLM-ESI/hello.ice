@@ -1,1 +1,1 @@
-../Hello.ice
+../cpp/Hello.ice

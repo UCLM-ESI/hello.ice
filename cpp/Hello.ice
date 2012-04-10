@@ -1,1 +1,5 @@
-../Hello.ice
+module Example {
+  interface Hello {
+    void puts(string message);
+  };
+};

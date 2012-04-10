@@ -3,15 +3,15 @@
 
 #include <factorial.h>
 
-namespace UCLM
+namespace Example
 {
 
 class MathI : virtual public Math
 {
 public:
 
-    virtual ::std::string factorial(::Ice::Int,
-                                    const Ice::Current&);
+    virtual ::Ice::Long factorial(::Ice::Int,
+                                  const Ice::Current&);
 };
 
 }
