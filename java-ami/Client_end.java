@@ -12,6 +12,11 @@ public class Client_end extends Ice.Application {
     }
 
     static public void main(String[] args) {
+        if (args.length != 2) {
+            System.err.println(appName() + ": usage: <server> <value>");
+            return;
+        }
+
 	Client_end app = new Client_end();
 	app.main("Client", args);
     }
