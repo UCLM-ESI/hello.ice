@@ -1,5 +1,3 @@
-// -*- coding:utf-8; tab-width:4; mode:cpp -*-
-
 #include <Ice/Ice.h>
 #include <factorial.h>
 
