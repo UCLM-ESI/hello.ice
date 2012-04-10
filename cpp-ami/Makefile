@@ -5,12 +5,13 @@ LDLIBS=-lIce -lIceUtil
 SLICE=factorial
 STUBS=$(addprefix $(SLICE), .h .cpp)
 
-all: Server Client-end
+all: Server Client-end Client-callback
 
 Server: Server.o $(SLICE)I.o $(SLICE).o
 Client-end: Client-end.o $(SLICE).o
+Client-callback: Client-callback.o $(SLICE).o
 
-Server.cpp Client-end.cpp: $(STUBS)
+Server.cpp Client-end.cpp Client-callback.cpp: $(STUBS)
 
 vpath %.ice ../
 

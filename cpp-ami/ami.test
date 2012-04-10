@@ -11,3 +11,11 @@ Test(
     cwd = '$testdir',
     pre = Poll(FileContains('hello1', '$testdir/server.proxy')),
     post = StdOutContains('24'))
+
+Test(
+    './Client-callback "$(head -1 server.proxy)" 4',
+    shell = True,
+    cwd = '$testdir',
+    pre = Poll(FileContains('hello1', '$testdir/server.proxy')),
+    post = StdOutContains('24'))
+
