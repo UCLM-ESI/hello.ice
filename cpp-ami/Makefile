@@ -9,10 +9,9 @@ all: Server Client-end Client-callback
 
 Server: Server.o $(SLICE)I.o $(SLICE).o
 Client-end: Client-end.o $(SLICE).o
+Client-callback: Client-callback.o $(SLICE).o
 
-Server.cpp Client-end.cpp Client-callback: $(STUBS)
-
-vpath %.ice ../
+Server.cpp Client-end.cpp Client-callback.cpp: $(STUBS)
 
 %.cpp %.h: %.ice
 	slice2cpp $<
@@ -25,5 +24,5 @@ clean:
 run-server:
 	./Server --Ice.Config=../hello.cfg | tee server.proxy
 
-run-client:
+run-client-end:
 	./Client-end "$(shell head -1 server.proxy)" 4
