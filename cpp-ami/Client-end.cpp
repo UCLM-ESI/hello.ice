@@ -1,19 +1,18 @@
 #include <Ice/Ice.h>
-#include <factorial.h>
+#include "factorial.h"
 
-using namespace Ice;
 using namespace std;
+using namespace Ice;
 
 class Client: public Ice::Application {
   int run(int argc, char* argv[]) {
+    ObjectPrx proxy = communicator()->stringToProxy(argv[1]);
+    Example::MathPrx math = Example::MathPrx::checkedCast(proxy);
 
-    ObjectPrx obj = communicator()->stringToProxy(argv[1]);
-    Example::MathPrx prx = Example::MathPrx::checkedCast(obj);
+    Ice::AsyncResultPtr async_result = math->begin_factorial(atoi(argv[2]));
+    cout << "this was an async call" << endl;
 
-	Ice::AsyncResultPtr async_result = prx->begin_factorial(atoi(argv[2]));
-	cout << "this was async call" << endl;
-
-	cout << prx->end_factorial(async_result) << endl;
+    cout << math->end_factorial(async_result) << endl;
 
     return 0;
   }
@@ -22,10 +21,10 @@ class Client: public Ice::Application {
 
 int main(int argc, char* argv[]) {
   if (argc != 3) {
-	cerr << "usage: " << argv[0] << "<server> <value>" << endl;
-	return 1;
+    cerr << "usage: " << argv[0] << "<server> <value>" << endl;
+    return 1;
   }
 
-  Ice::Application* app = new Client();
-  return app->main(argc, argv);
+  Client app;
+  return app.main(argc, argv);
 }

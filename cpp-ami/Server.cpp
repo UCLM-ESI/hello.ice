@@ -1,19 +1,21 @@
-// -*- coding:utf-8; tab-width:4; mode:cpp -*-
-
 #include <Ice/Ice.h>
-#include <factorialI.h>
+#include "factorialI.h"
+
+using namespace std;
 using namespace Ice;
 
 class Server: public Ice::Application {
   int run(int argc, char* argv[]) {
+	Example::MathPtr servant = new Example::MathI();
 
-    ObjectAdapterPtr oa = communicator()->createObjectAdapter("OA");
-    ObjectPrx prx = oa->add(new Example::MathI(),
-							communicator()->stringToIdentity("hello1"));
-    oa->activate();
+    ObjectAdapterPtr adapter = \
+	  communicator()->createObjectAdapter("HelloAdapter");
+    ObjectPrx prx = adapter->add(
+      servant, communicator()->stringToIdentity("hello1"));
 
-    std::cout << communicator()->proxyToString(prx) << std::endl;
+    cout << communicator()->proxyToString(prx) << endl;
 
+    adapter->activate();
     shutdownOnInterrupt();
     communicator()->waitForShutdown();
 
@@ -23,6 +25,6 @@ class Server: public Ice::Application {
 
 
 int main(int argc, char* argv[]) {
-  Ice::Application* app = new Server();
-  return app->main(argc, argv);
+  Server app;
+  return app.main(argc, argv);
 }
