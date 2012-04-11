@@ -13,14 +13,14 @@ clean:
 	$(RM) *.class server.out proxy.out *~
 	$(RM) -r Counter db
 
+run-server: Server.class db
+	java $(LIBRARYPATH) $(CLASSPATH) \
+	    Server --Ice.Config=server.cfg | tee server.out
+
 run-client: Client.class
 	grep -v "^--" server.out > proxy.out
 	java $(LIBRARYPATH) $(CLASSPATH) \
 	    Client "$$(head -1 proxy.out)"
-
-run-server: Server.class db
-	java $(LIBRARYPATH) $(CLASSPATH) \
-	    Server --Ice.Config=server.cfg | tee server.out
 
 db:
 	mkdir $@
