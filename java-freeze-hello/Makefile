@@ -1,22 +1,21 @@
-CLASSPATH=-classpath .:/usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:/usr/share/java/libdb4.7-java.jar
+CLASSPATH=-classpath .:/usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:/usr/share/java/db.jar
 
-all: Client.class Server.class
+all: UCLM Client.class Server.class
 
-Server.class: Server.java Hello.java
-Client.class: Client.java Hello.java
-
-%.class:
+%.class: %.java
 	javac $(CLASSPATH) $<
 
-%.java: %.ice
+UCLM: Hello.ice
 	slice2java $<
 
 
-run-server: Server db
-	./Server --Ice.Config=config | tee server.out
+run-server: Server.class db
+	java $(CLASSPATH) \
+	    Server --Ice.Config=server.cfg | tee server.out
 
-run-client: Client
-	./Client "$(shell head -1 server.out)"
+run-client: Client.class
+	java $(CLASSPATH) \
+	    Client "$(shell head -1 server.out)"
 
 db:
 	mkdir db

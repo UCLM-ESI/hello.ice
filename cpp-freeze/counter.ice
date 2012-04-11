@@ -8,6 +8,6 @@ module Counter {
   };
 
   class RWPersistent implements R, W {
-    int value;
+    int status;
   };
 };
