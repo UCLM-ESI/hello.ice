@@ -1,1 +1,0 @@
-../java/Hello.ice
