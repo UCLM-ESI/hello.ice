@@ -1,0 +1,46 @@
+<project name="hello-ice" default="all" basedir=".">
+
+  <taskdef name="slice2java" 
+           classpath="/usr/share/ant/lib/ant-ice.jar" 
+           classname="Slice2JavaTask"/>
+
+  <target name="generate">
+    <mkdir dir="generated"/>
+    <slice2java outputdir="generated">
+      <fileset dir="." includes="Hello.ice"/>
+    </slice2java>
+  </target>
+
+  <target name="compile" depends="generate">
+    <mkdir dir="classes"/>
+    <javac srcdir=".:generated" destdir="classes" includeantruntime="false">
+      <exclude name="generated/**"/>
+      <classpath path="/usr/share/java/Ice.jar"/>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile">
+    <mkdir dir="jar"/>
+    <jar destfile="jar/HelloClient.jar" basedir="classes">
+      <manifest>
+        <attribute name="Main-Class" value="Client"/>
+        <attribute name="Class-Path" value="/usr/share/java/Ice.jar"/>
+      </manifest>
+    </jar>
+    <jar destfile="jar/HelloServer.jar" basedir="classes">
+      <manifest>
+        <attribute name="Main-Class" value="Server"/>
+        <attribute name="Class-Path" value="/usr/share/java/Ice.jar"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="all" depends="jar"/>
+  
+  <target name="clean">
+    <delete dir="generated"/>
+    <delete dir="classes"/>    
+    <delete dir="jar"/>    
+  </target>
+
+</project>
