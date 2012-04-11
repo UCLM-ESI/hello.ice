@@ -1,4 +1,3 @@
-
 class FactorialCB extends Example.Callback_Math_factorial {
     public void response(long value) {
         System.out.println("Callback: Value is: " + value);
@@ -16,7 +15,6 @@ public class Client_callback extends Ice.Application {
 
 	FactorialCB factorial_cb = new FactorialCB();
 	math.begin_factorial(Integer.parseInt(args[1]), factorial_cb);
-
 	return 0;
     }
 

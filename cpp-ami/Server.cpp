@@ -18,7 +18,6 @@ class Server: public Ice::Application {
     adapter->activate();
     shutdownOnInterrupt();
     communicator()->waitForShutdown();
-
     return 0;
   }
 };
