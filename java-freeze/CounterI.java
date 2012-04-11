@@ -10,5 +10,4 @@ public class CounterI extends Counter.RWPersistent {
         status += 1;
 	System.out.println("Value set to " + status);
     }
-
 }
