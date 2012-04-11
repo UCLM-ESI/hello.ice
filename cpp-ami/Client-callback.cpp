@@ -1,8 +1,9 @@
 #include <Ice/Ice.h>
 #include <factorial.h>
 
-using namespace Ice;
 using namespace std;
+using namespace Ice;
+using namespace Example;
 
 class FactorialCB : public IceUtil::Shared {
 public:
@@ -20,12 +21,12 @@ public:
   int run(int argc, char* argv[]) {
 
     ObjectPrx proxy = communicator()->stringToProxy(argv[1]);
-    Example::MathPrx math = Example::MathPrx::checkedCast(proxy);
+    MathPrx math = MathPrx::checkedCast(proxy);
 
-    Example::Callback_Math_factorialPtr factorial_cb =
-      Example::newCallback_Math_factorial(new FactorialCB,
-                                          &FactorialCB::response,
-                                          &FactorialCB::failure);
+    Callback_Math_factorialPtr factorial_cb =
+      newCallback_Math_factorial(new FactorialCB,
+				 &FactorialCB::response,
+				 &FactorialCB::failure);
 
     math->begin_factorial(atoi(argv[2]), factorial_cb);
     return 0;

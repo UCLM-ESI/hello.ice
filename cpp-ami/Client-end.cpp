@@ -13,7 +13,6 @@ class Client: public Ice::Application {
     cout << "this was an async call" << endl;
 
     cout << math->end_factorial(async_result) << endl;
-
     return 0;
   }
 };
