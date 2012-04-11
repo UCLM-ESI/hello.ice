@@ -1,4 +1,5 @@
-CLASSPATH=-classpath .:/usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:/usr/share/java/db.jar
+CLASSPATH=-classpath /usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:.
+LIBRARYPATH=-Djava.library.path=/usr/lib/i386-linux-gnu
 
 all: UCLM Client.class Server.class
 
@@ -10,11 +11,11 @@ UCLM: Hello.ice
 
 
 run-server: Server.class db
-	java $(CLASSPATH) \
+	java $(LIBRARYPATH) $(CLASSPATH) \
 	    Server --Ice.Config=server.cfg | tee server.out
 
 run-client: Client.class
-	java $(CLASSPATH) \
+	java $(LIBRARYPATH) $(CLASSPATH) \
 	    Client "$(shell head -1 server.out)"
 
 db:
