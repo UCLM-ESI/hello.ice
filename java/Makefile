@@ -1,4 +1,4 @@
-CLASSPATH=-classpath /usr/share/java/Ice.jar:.
+CLASSPATH=-classpath .:/usr/share/java/Ice.jar
 
 all: Example Server.class Client.class
 
