@@ -21,13 +21,13 @@
 
   <target name="jar" depends="compile">
     <mkdir dir="jar"/>
-    <jar destfile="jar/HelloClient.jar" basedir="classes">
+    <jar destfile="jar/Client.jar" basedir="classes">
       <manifest>
         <attribute name="Main-Class" value="Client"/>
         <attribute name="Class-Path" value="/usr/share/java/Ice.jar"/>
       </manifest>
     </jar>
-    <jar destfile="jar/HelloServer.jar" basedir="classes">
+    <jar destfile="jar/Server.jar" basedir="classes">
       <manifest>
         <attribute name="Main-Class" value="Server"/>
         <attribute name="Class-Path" value="/usr/share/java/Ice.jar"/>
