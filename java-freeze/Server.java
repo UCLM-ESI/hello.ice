@@ -10,7 +10,7 @@ public class Server extends Ice.Application {
 
 	adapter = communicator().createObjectAdapter("HelloAdapter");
         evictor = Freeze.Util.createBackgroundSaveEvictor(
-            adapter, "db", "hello",
+            adapter, "db", "counters",
 	    new CounterInitializer(), null, true);
 
 	for (int i=0; i<5; ++i) {
@@ -33,7 +33,7 @@ public class Server extends Ice.Application {
 	if (evictor.hasObject(identity))
 	    return adapter.createProxy(identity);
 
-	System.out.println("-- Creating object " + identity_str);
+	System.out.println("-- New counter " + identity_str);
 	return evictor.add(new CounterI(), identity);
     }
 
