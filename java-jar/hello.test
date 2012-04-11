@@ -1,0 +1,13 @@
+# -*- mode:python; coding:utf-8 -*-
+
+java = 'java -jar'
+
+server = TestBG('%s jar/Server.jar --Ice.Config=hello.cfg' % java,
+                save_stdout=True, signal=2, expected=130,
+                post = FileContains('Hello, World!'))
+
+client = Test('%s jar/Client.jar "$(head -1 %s)"' % (java, server.stdout),
+              shell=True,
+              pre = Poll(FileContains("hello1", server.stdout)))
+
+TaskTerminator(server, delay=1)
