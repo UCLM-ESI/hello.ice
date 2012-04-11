@@ -1,27 +1,26 @@
-CLASSPATH=-classpath /usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:/usr/share/java/libdb5.1-java.jar:.
+CLASSPATH=-classpath /usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:.
+LIBRARYPATH=-Djava.library.path=/usr/lib/i386-linux-gnu
 
-all: Client.class Server.class
+all: Counter Client.class Server.class
 
-Server.class: Server.java counter.java
-Client.class: Client.java counter.java
-
-%.class:
+%.class: %.java
 	javac $(CLASSPATH) $<
 
-%.java: %.ice
+Counter: counter.ice
 	slice2java $<
 
 clean:
-	$(RM) *.class server.out *~
+	$(RM) *.class server.out proxy.out *~
 	$(RM) -r Counter db
 
 run-client: Client.class
-	java $(CLASSPATH) \
-	    Client "$(shell head -1 proxy.out)"
+	grep -v "^--" server.out > proxy.out
+	java $(LIBRARYPATH) $(CLASSPATH) \
+	    Client "$$(head -1 proxy.out)"
 
 run-server: Server.class db
-	java $(CLASSPATH) \
-	    Server --Ice.Config=hello.cfg | tee proxy.out
+	java $(LIBRARYPATH) $(CLASSPATH) \
+	    Server --Ice.Config=server.cfg | tee server.out
 
 db:
 	mkdir $@

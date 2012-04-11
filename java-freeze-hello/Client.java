@@ -8,7 +8,6 @@ public class Client extends Ice.Application {
 
     public static void main (String[] args) {
 	Client app = new Client();
-	app.main("Client", args);
-	System.exit(0);
+	System.exit(app.main("Client", args));
     }
 }

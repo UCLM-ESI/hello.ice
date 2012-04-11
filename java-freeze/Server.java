@@ -17,19 +17,27 @@ public class Server extends Ice.Application {
 		new CounterInitializer(), null, true);
 
 	for (int i=0; i<5; ++i) {
-            Ice.Identity identity = Ice.Util.stringToIdentity("counter" + i);
+	    String identity_str = "counter" + i;
+            Ice.Identity identity = Ice.Util.stringToIdentity(identity_str);
+	    ObjectPrx proxy;
+
             if (!evictor.hasObject(identity)) {
-                ObjectPrx proxy = evictor.add(new CounterI(), identity);
-                System.out.println(communicator().proxyToString(proxy));
+		System.out.println("-- Creating object " + identity_str);
+		proxy = evictor.add(new CounterI(), identity);
 	    }
+	    else {
+		proxy = adapter.createProxy(identity);
+	    }
+
+	    System.out.println(communicator().proxyToString(proxy));
 	}
 
 	adapter.addServantLocator(evictor, "");
 	adapter.activate();
 
-	System.out.println("Ready");
+	System.out.println("-- Ready");
 	communicator().waitForShutdown();
-	System.out.println("Done");
+	System.out.println("-- Done");
 	return 0;
     }
 
