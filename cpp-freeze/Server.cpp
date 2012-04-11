@@ -22,7 +22,6 @@ public:
     status++;
     cout << current.id.name << " value set to " << status << endl;
   }
-
 };
 
 typedef IceUtil::Handle<CounterI> CounterIPtr;
