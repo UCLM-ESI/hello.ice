@@ -9,6 +9,10 @@ all: UCLM Client.class Server.class
 UCLM: Hello.ice
 	slice2java $<
 
+clean:
+	$(RM) *.class server.out *~
+	$(RM) -r UCLM db
+
 
 run-server: Server.class db
 	java $(LIBRARYPATH) $(CLASSPATH) \
@@ -20,8 +24,3 @@ run-client: Client.class
 
 db:
 	mkdir db
-
-
-clean:
-	$(RM) *.class server.out *~
-	$(RM) -r UCLM db
