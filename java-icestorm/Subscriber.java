@@ -39,8 +39,7 @@ public class Subscriber extends Application {
         }
 
         try {
-            topic.subscribeAndGetPublisher(new HashMap<String,String>(),
-					   subscriber);
+            topic.subscribeAndGetPublisher(null, subscriber);
         } catch(AlreadySubscribed e) {
             e.printStackTrace();
             return 1;
