@@ -8,27 +8,13 @@ public class Server extends Ice.Application {
             new CounterFactory(),
 	    Counter.RWPersistent.ice_staticId());
 
-	ObjectAdapter adapter =
-	    communicator().createObjectAdapter("HelloAdapter");
-
-        Freeze.Evictor evictor =
-	    Freeze.Util.createBackgroundSaveEvictor(
-                adapter, "db", "hello",
-		new CounterInitializer(), null, true);
+	adapter = communicator().createObjectAdapter("HelloAdapter");
+        evictor = Freeze.Util.createBackgroundSaveEvictor(
+            adapter, "db", "hello",
+	    new CounterInitializer(), null, true);
 
 	for (int i=0; i<5; ++i) {
-	    String identity_str = "counter" + i;
-            Ice.Identity identity = Ice.Util.stringToIdentity(identity_str);
-	    ObjectPrx proxy;
-
-            if (!evictor.hasObject(identity)) {
-		System.out.println("-- Creating object " + identity_str);
-		proxy = evictor.add(new CounterI(), identity);
-	    }
-	    else {
-		proxy = adapter.createProxy(identity);
-	    }
-
+	    ObjectPrx proxy = create_or_get_counter("counter" + i);
 	    System.out.println(communicator().proxyToString(proxy));
 	}
 
@@ -41,8 +27,21 @@ public class Server extends Ice.Application {
 	return 0;
     }
 
+    ObjectPrx create_or_get_counter(String identity_str) {
+	Identity identity = Ice.Util.stringToIdentity(identity_str);
+
+	if (evictor.hasObject(identity))
+	    return adapter.createProxy(identity);
+
+	System.out.println("-- Creating object " + identity_str);
+	return evictor.add(new CounterI(), identity);
+    }
+
     public static void main (String[] args) {
 	Server app = new Server();
 	System.exit(app.main("Server", args));
     }
+
+    private ObjectAdapter adapter;
+    private Freeze.Evictor evictor;
 }
