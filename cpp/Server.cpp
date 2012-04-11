@@ -6,12 +6,12 @@ using namespace Ice;
 
 class Server: public Application {
   int run(int argc, char* argv[]) {
-	Example::HelloPtr servant = new Example::HelloI();
+    Example::HelloPtr servant = new Example::HelloI();
 
-    ObjectAdapterPtr adapter = \
-        communicator()->createObjectAdapter("HelloAdapter");
-	ObjectPrx proxy = adapter->add(
-        servant, communicator()->stringToIdentity("hello1"));
+    ObjectAdapterPtr adapter = 
+         communicator()->createObjectAdapter("HelloAdapter");
+    ObjectPrx proxy = adapter->add(
+	 servant, communicator()->stringToIdentity("hello1"));
 
     cout << communicator()->proxyToString(proxy) << endl;
 
