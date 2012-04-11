@@ -3,8 +3,8 @@ public final class MathI extends Example._MathDisp {
         _workQueue = workQueue;
     }
 
-    public void
-    factorial_async(Example.AMD_Math_factorial cb, int value, Ice.Current current) {
+    public void factorial_async(Example.AMD_Math_factorial cb,
+				int value, Ice.Current current) {
 	_workQueue.add(cb, value);
     }
 
