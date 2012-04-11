@@ -1,4 +1,3 @@
-
 public class Server extends Ice.Application {
     public int run (String[] args) {
 	shutdownOnInterrupt();
