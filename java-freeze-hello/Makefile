@@ -1,4 +1,3 @@
-
 CLASSPATH=-classpath .:/usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:/usr/share/java/libdb4.7-java.jar
 
 all: Client.class Server.class
