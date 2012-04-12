@@ -3,7 +3,7 @@ public class Client_end extends Ice.Application {
 	Ice.ObjectPrx proxy = communicator().stringToProxy(args[0]);
 	Example.MathPrx math = Example.MathPrxHelper.checkedCast(proxy);
 
-	long value = Integer.parseInt(args[1]);
+	int value = Integer.parseInt(args[1]);
 	Ice.AsyncResult async_result = math.begin_factorial(value);
 	System.out.println("this was an async call");
 
