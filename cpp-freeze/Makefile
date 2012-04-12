@@ -9,10 +9,10 @@ all: Server Client
 
 Server: LDLIBS+=-lFreeze
 Server: Server.o $(SLICE).o
-Server.o: Server.cc $(SLICE).h
+Server.o: Server.cpp $(SLICE).h
 
 Client: Client.o $(SLICE).o
-Client.o: Client.cc $(SLICE).h
+Client.o: Client.cpp $(SLICE).h
 
 %.h %.cpp: %.ice
 	slice2cpp $<
