@@ -1,6 +1,6 @@
 # -*- coding:utf-8; tab-width:4; mode:python -*-
 
-TestBG('./Server.py --Ice.Config=./hello.cfg',
+TestBG('./Server.py --Ice.Config=$testdir/hello.cfg',
        cwd = '$testdir',
        stdout = '$testdir/server.proxy')
 

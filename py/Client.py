@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys, Ice
-Ice.loadSlice('../Hello.ice')
-import UCLM
+Ice.loadSlice('Hello.ice')
+import Example
 
 
 class client (Ice.Application):
@@ -11,7 +11,7 @@ class client (Ice.Application):
     def run(self, argv):
         base = self.communicator().stringToProxy(argv[1])
 
-        prx = UCLM.HelloPrx.checkedCast(base)
+        prx = Example.HelloPrx.checkedCast(base)
 
         if not prx:
             raise RuntimeError("Invalid proxy")

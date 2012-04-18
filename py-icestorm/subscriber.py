@@ -2,11 +2,11 @@
 
 import sys, random
 import Ice, IceStorm
-Ice.loadSlice('../Hello.ice')
-import UCLM
+Ice.loadSlice('Hello.ice')
+import Example
 
 
-class HelloI(UCLM.Hello):
+class HelloI(Example.Hello):
     def puts(self, s, current=None):
         print "Event received:", s
 
