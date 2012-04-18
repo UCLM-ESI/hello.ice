@@ -1,6 +1,6 @@
 # -*- coding:utf-8; tab-width:4; mode:python -*-
 
-java = 'java -classpath $testdir:/usr/share/java/Ice.jar'
+java = 'java -classpath .:/usr/share/java/Ice.jar'
 
 def client_test(client):
     return Test(
@@ -12,9 +12,9 @@ def client_test(client):
 
 
 TestBG(
-    '%s Server --Ice.Config=./hello.cfg' % java,
+    '%s Server --Ice.Config=hello.cfg' % java,
     cwd = '$testdir',
     stdout = '$testdir/server.proxy')
 
-client_test('./Client_end')
-client_test('./Client_callback')
+client_test('Client_end')
+client_test('Client_callback')
