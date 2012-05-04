@@ -16,7 +16,7 @@ stop: icestorm.config
 	killall icebox
 
 run-publisher:  icestorm.config
-	./publisher.py --Ice.Config=icestorm.config
+	./publisher.py --Ice.Config=publisher.cfg
 
 run-subscriber: icestorm.config
 	./subscriber.py --Ice.Config=icestorm.config
