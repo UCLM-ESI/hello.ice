@@ -1,7 +1,9 @@
 #!/usr/bin/python -u
 # -*- coding: utf-8 -*-
 
-import sys, Ice
+import sys
+
+import Ice
 Ice.loadSlice('Hello.ice')
 import Example
 
@@ -9,6 +11,7 @@ import Example
 class HelloI(Example.Hello):
     def puts(self, s, current=None):
         print s
+        sys.stdout.flush()
 
 
 class Server(Ice.Application):

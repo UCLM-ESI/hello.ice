@@ -1,12 +1,13 @@
 #!/usr/bin/python -u
 # -*- coding: utf-8 -*-
 
-import sys, Ice
-import time
+import sys
 from threading import Thread
 from Queue import Queue
-Ice.loadSlice('../factorial-amd.ice')
-import UCLM
+
+import Ice
+Ice.loadSlice('factorial.ice')
+import Example
 
 
 def factorial(n):
@@ -43,7 +44,7 @@ class Job(object):
         self.cb.ice_response(str(factorial(self.value)))
 
 
-class MathI(UCLM.Math):
+class MathI(Example.Math):
     def __init__(self, queue):
         self.queue = queue
 
@@ -58,7 +59,7 @@ class Server(Ice.Application):
 
         ic = self.communicator()
 
-        oa = ic.createObjectAdapter("OA")
+        oa = ic.createObjectAdapter("HelloAdapter")
         print oa.add(MathI(queue), ic.stringToIdentity("hello1"))
         oa.activate()
 

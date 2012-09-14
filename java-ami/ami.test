@@ -1,20 +1,26 @@
 # -*- coding:utf-8; tab-width:4; mode:python -*-
 
+import signal
+
 java = 'java -classpath .:/usr/share/java/Ice.jar'
 
-def client_test(client):
+def client_test(client, serverout):
     return Test(
-        '%s %s "$(head -1 server.proxy)" 4' % (java, client),
+        '%s %s "$(head -1 %s)" 4' % (java, client, serverout),
         shell = True,
         cwd = '$testdir',
-        pre = Poll(FileContains('hello1', '$testdir/server.proxy')),
+        pre = Poll(FileContains('hello1', serverout)),
         post = StdOutContains('24'))
 
 
-TestBG(
+server = TestBG(
     '%s Server --Ice.Config=hello.cfg' % java,
     cwd = '$testdir',
-    stdout = '$testdir/server.proxy')
+    expected=130,
+    signal=signal.SIGINT,
+    save_stdout=True)
 
-client_test('Client_end')
-client_test('Client_callback')
+client_test('Client_end', server.stdout)
+client_test('Client_callback', server.stdout)
+
+TaskTerminator(server, delay=1)

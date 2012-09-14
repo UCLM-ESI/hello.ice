@@ -4,9 +4,9 @@
 def create_server(name, post):
     return TestBG(
         pre      = DebPkgInstalled('libdb-java'),
-        cmd      = '%s Server --Ice.Config=$testdir/config' % java_cmd,
+        cmd      = '%s Server --Ice.Config=$testdir/server.cfg' % java_cmd,
         stdout   = name + '.out',
-        save_stdout=True,
+        save_stdout = True,
         signal   = 2,
         expected = 130,
         post     = post)
@@ -18,7 +18,7 @@ def create_client(server_out):
 
 
 classpath = str.join(':', [
-        '$testdir',
+        '$fulltestdir',
         '/usr/share/java/Ice.jar',
         '/usr/share/java/Freeze.jar',
         '/usr/share/java/db.jar'])

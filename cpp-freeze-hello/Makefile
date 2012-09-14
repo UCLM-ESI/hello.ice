@@ -1,4 +1,5 @@
-CC=g++
+include ../vars.mk
+
 CXXFLAGS=-I. -I$(ICE_HOME)/include
 LDFLAGS=-L$(ICE_HOME)/lib
 LDLIBS=-lIce -lIceUtil -lstdc++ -lpthread -lrt
@@ -26,4 +27,5 @@ db:
 
 clean:
 	$(RM) *~ *.o Hello.h Hello.cpp Server Client
-	$(RM) db/* server.out
+	$(RM) server.out
+	$(RM) -r db

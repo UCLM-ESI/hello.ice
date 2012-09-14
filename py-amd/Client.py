@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 "usage: {} <server> <value>"
 
-import sys, Ice
-Ice.loadSlice('../factorial-amd.ice')
-import UCLM
+import sys
+
+import Ice
+Ice.loadSlice('factorial.ice')
+import Example
 
 
 class Client(Ice.Application):
@@ -12,7 +14,7 @@ class Client(Ice.Application):
     def run(self, argv):
         base = self.communicator().stringToProxy(argv[1])
 
-        prx = UCLM.MathPrx.checkedCast(base)
+        prx = Example.MathPrx.checkedCast(base)
 
         if not prx:
             raise RuntimeError("Invalid proxy")

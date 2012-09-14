@@ -1,0 +1,1 @@
+../cpp-amd/factorial.ice
