@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
 import sys, Ice, IceStorm
-Ice.loadSlice('Hello.ice')
+Ice.loadSlice('./Hello.ice')
 import Example
 
 
 class Publisher(Ice.Application):
     def get_topic_manager(self):
-        key = 'IceStormAdmin.TopicManager.Default'
+        key = 'IceStorm.TopicManager.Proxy'
         base = self.communicator().propertyToProxy(key)
         if base is None:
             print "property", key, "not set"
