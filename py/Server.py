@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-
 import Ice
 Ice.loadSlice('Hello.ice')
 import Example
@@ -16,16 +15,17 @@ class HelloI(Example.Hello):
 
 class Server(Ice.Application):
     def run(self, argv):
-        ic = self.communicator()
+        broker = self.communicator()
+        servant = HelloI()
 
-        oa = ic.createObjectAdapter("HelloAdapter")
-        base = oa.add(HelloI(), ic.stringToIdentity("hello1"))
-        oa.activate()
+        adapter = broker.createObjectAdapter("HelloAdapter")
+        base = adapter.add(servant, broker.stringToIdentity("hello1"))
 
         print base
 
+        adapter.activate()
         self.shutdownOnInterrupt()
-        ic.waitForShutdown()
+        broker.waitForShutdown()
 
         return 0
 
