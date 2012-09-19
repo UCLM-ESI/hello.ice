@@ -18,14 +18,14 @@ class HelloI : public Hello {
 class Subscriber : public Application {
   TopicManagerPrx get_topic_manager() {
     string key = "IceStorm.TopicManager.Proxy";
-    ObjectPrx base = communicator()->propertyToProxy(key);
-    if (!base) {
+    ObjectPrx proxy = communicator()->propertyToProxy(key);
+    if (!proxy) {
       cerr << "property " << key << " not set." << endl;
       return 0;
     }
 
     cout << "Using IceStorm in: '" << key << "' " << endl;
-    return TopicManagerPrx::checkedCast(base);
+    return TopicManagerPrx::checkedCast(proxy);
   }
 
 public:
