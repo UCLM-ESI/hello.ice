@@ -10,7 +10,6 @@ import Example
 class HelloI(Example.Hello):
     def puts(self, s, current=None):
         print s
-        sys.stdout.flush()
 
 
 class Server(Ice.Application):
