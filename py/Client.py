@@ -1,16 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, Ice
+import sys
+
+import Ice
 Ice.loadSlice('Hello.ice')
 import Example
 
 
 class client (Ice.Application):
-
     def run(self, argv):
         base = self.communicator().stringToProxy(argv[1])
-
         prx = Example.HelloPrx.checkedCast(base)
 
         if not prx:
