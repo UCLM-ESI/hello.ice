@@ -2,11 +2,11 @@
 
 java = 'java -jar'
 
-server = TestBG('%s jar/Server.jar --Ice.Config=hello.cfg' % java,
+server = TestBG('%s $testdir/jar/Server.jar --Ice.Config=$testdir/hello.cfg' % java,
                 save_stdout=True, signal=2, expected=130,
                 post = FileContains('Hello, World!'))
 
-client = Test('%s jar/Client.jar "$(head -1 %s)"' % (java, server.stdout),
+client = Test('%s $testdir/jar/Client.jar "$(head -1 %s)"' % (java, server.stdout),
               shell=True,
               pre = Poll(FileContains("hello1", server.stdout)))
 
