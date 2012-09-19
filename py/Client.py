@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-
 import Ice
 Ice.loadSlice('Hello.ice')
 import Example
@@ -10,13 +9,13 @@ import Example
 
 class client (Ice.Application):
     def run(self, argv):
-        base = self.communicator().stringToProxy(argv[1])
-        prx = Example.HelloPrx.checkedCast(base)
+        proxy = self.communicator().stringToProxy(argv[1])
+        hello = Example.HelloPrx.checkedCast(proxy)
 
-        if not prx:
+        if not hello:
             raise RuntimeError("Invalid proxy")
 
-        prx.puts("Hello World!")
+        hello.puts("Hello World!")
 
         return 0
 
