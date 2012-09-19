@@ -2,7 +2,7 @@
 
 java = 'java -classpath $testdir:/usr/share/java/Ice.jar'
 
-server = TestBG('%s Server --Ice.Config=hello.cfg' % java,
+server = TestBG('%s Server --Ice.Config=$testdir/hello.cfg' % java,
                 save_stdout=True, signal=2, expected=130,
                 post = FileContains('Hello, World!'))
 

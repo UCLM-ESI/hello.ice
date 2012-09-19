@@ -4,7 +4,7 @@ SUBDIRS = $(shell ls -d */)
 SUBDIRS = \
 	cpp   cpp-icestorm  cpp-ami  cpp-amd  cpp-freeze cpp-observer \
 	java java-icestorm java-ami java-amd java-freeze \
-	py    py-icestorm    py-ami   py-amd
+	py     py-icestorm   py-ami   py-amd
 
 all:     RULE = all
 install: RULE = install
