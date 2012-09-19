@@ -4,34 +4,43 @@ import signal
 
 Command('mkdir $testdir/db')
 
-icebox = TestBG('icebox --Ice.Config=./icebox.config',
-                cwd='$testdir',
-                pre = FileExists('/usr/bin/icebox'))
+icebox = TestBG(
+    pre = FileExists('/usr/bin/icebox'),
+    cmd='icebox --Ice.Config=./icebox.config',
+    cwd='$testdir')
 
-admin = Command('icestormadmin --Ice.Config=$testdir/icestorm.config -e "destroy HelloTopic"',
-             shell=True)
-admin.pre += FileExists('/usr/bin/icestormadmin')
-admin.pre += Poll(OpenPort(10000))
+Command(
+    pre=[FileExists('/usr/bin/icestormadmin'),
+         Poll(OpenPort(10000))],
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "destroy HelloTopic"',
+    cwd='$testdir', shell=True)
 
-admin = Test('icestormadmin --Ice.Config=$testdir/icestorm.config -e "create HelloTopic"',
-             shell=True)
-admin.pre += Poll(OpenPort(10000))
+Test(
+    pre=Poll(OpenPort(10000)),
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "create HelloTopic"',
+    cwd='$testdir', shell=True)
 
-s = Test('$testdir/subscriber --Ice.Config=$testdir/subscriber.config',
-         detach=True, signal=signal.SIGINT)
-s.pre += FileExists('$testdir/subscriber')
-s.post += FileContains('Waiting events...')
-s.post += FileContains('Event received: Hello World!', times=10)
+s = Test(
+    desc='subscriber',
+    pre=FileExists('$testdir/subscriber'),
+    cmd='./subscriber --Ice.Config=subscriber.config',
+    cwd='$testdir', detach=True, signal=signal.SIGINT,
+    post=[FileContains('Waiting events...'),
+          FileContains('Event received: Hello World!', times=10)])
 
-p = Test('$testdir/publisher --Ice.Config=$testdir/publisher.config')
-p.pre += FileExists('$testdir/publisher')
-p.pre += Poll(TaskRunning(s))
-p.post += FileContains("publishing 10 'Hello World' events")
+Test(
+    desc='publisher',
+    pre=[FileExists('$testdir/publisher'),
+         Poll(TaskRunning(s))],
+    cmd='./publisher --Ice.Config=publisher.config',
+    cwd='$testdir',
+    post=FileContains("publishing 10 'Hello World' events"))
 
 TaskTerminator(s)
 
-admin = Test('icestormadmin --Ice.Config=$testdir/icestorm.config -e "destroy HelloTopic"',
-             shell=True)
-admin.pre += Poll(OpenPort(10000))
+Test(
+    pre=Poll(OpenPort(10000)),
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "destroy HelloTopic"',
+    cwd='$testdir', shell=True)
 
 TaskTerminator(icebox)
