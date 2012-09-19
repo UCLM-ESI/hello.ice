@@ -1,4 +1,5 @@
-CC=g++
+include ../vars.mk
+
 CXXFLAGS = -I.
 LDLIBS = -lIce -lIceUtil -lIceStorm
 

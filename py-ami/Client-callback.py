@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import sys
+
 import Ice
 Ice.loadSlice('./factorial.ice')
-import UCLM
+import Example
 
 
 def factorialCB(value):
@@ -18,7 +19,7 @@ def failureCB(ex):
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        math = UCLM.MathPrx.checkedCast(proxy)
+        math = Example.MathPrx.checkedCast(proxy)
 
         if not math:
             raise RuntimeError("Invalid proxy")

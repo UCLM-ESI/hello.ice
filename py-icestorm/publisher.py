@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
 import sys, Ice, IceStorm
-Ice.loadSlice('../Hello.ice')
-import UCLM
+Ice.loadSlice('./Hello.ice')
+import Example
 
 
 class Publisher(Ice.Application):
     def get_topic_manager(self):
-        key = 'IceStormAdmin.TopicManager.Default'
+        key = 'IceStorm.TopicManager.Proxy'
         base = self.communicator().propertyToProxy(key)
         if base is None:
             print "property", key, "not set"
@@ -33,7 +33,7 @@ class Publisher(Ice.Application):
         # Get publisher and call remote object method
         base = topic.getPublisher()
 
-        prx = UCLM.HelloPrx.uncheckedCast(base)
+        prx = Example.HelloPrx.uncheckedCast(base)
 
         print "publishing 10 'Hello World' events"
         for i in range(10):
