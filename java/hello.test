@@ -2,12 +2,15 @@
 
 java = 'java -classpath $testdir:/usr/share/java/Ice.jar'
 
-server = TestBG('%s Server --Ice.Config=$testdir/hello.cfg' % java,
-                save_stdout=True, signal=2, expected=130,
-                post = FileContains('Hello, World!'))
+server = TestBG(desc='Server',
+    cmd = '%s Server --Ice.Config=$testdir/Server.config' % java,
+    save_stdout=True, signal=2, expected=130,
+    post = FileContains('Hello, World!'))
 
-client = Test('%s Client "$(head -1 %s)"' % (java, server.stdout),
-              shell=True,
-              pre = Poll(FileContains("hello1", server.stdout)))
+client = Test(desc='Client',
+    pre = Poll(FileContains("hello1", server.stdout)),
+    cmd = '%s Client "$(head -1 %s)"' % (java, server.stdout),
+    shell = True)
+
 
 TaskTerminator(server, delay=1)

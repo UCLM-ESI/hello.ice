@@ -1,6 +1,6 @@
 # -*- mode:python; coding:utf-8 -*-
 
-server = TestBG('./Server.py --Ice.Config=hello.cfg',
+server = TestBG('./Server.py --Ice.Config=Server.config',
                 cwd='$testdir',
                 signal=2, save_stdout=True,
                 post = StdOutContains('Hello World!'))
