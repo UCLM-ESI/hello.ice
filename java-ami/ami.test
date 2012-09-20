@@ -14,7 +14,7 @@ def client_test(client, serverout):
 
 
 server = TestBG(
-    '%s Server --Ice.Config=hello.cfg' % java,
+    '%s Server --Ice.Config=Server.config' % java,
     cwd = '$testdir',
     expected=130,
     signal=signal.SIGINT,

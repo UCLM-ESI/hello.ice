@@ -1,13 +1,15 @@
 # -*- mode:python; coding:utf-8 -*-
 
-server = TestBG('./Server --Ice.Config=hello.cfg',
-                cwd='$testdir',
-                signal=2, save_stdout=True,
-                post = StdOutContains('Hello, World!'))
+server = TestBG(
+    cmd = './Server --Ice.Config=Server.config',
+    cwd = '$testdir',
+    signal=2, save_stdout=True,
+    post = StdOutContains('Hello, World!'))
 
-client = Test('./Client "$(head -1 %s)"' % server.stdout,
-              cwd='$testdir',
-              shell=True,
-              pre = Poll(TaskRunning(server)))
+client = Test(
+    cmd = './Client "$(head -1 %s)"' % server.stdout,
+    cwd = '$testdir',
+    shell=True,
+    pre = Poll(TaskRunning(server)))
 
 TaskTerminator(server, delay=1)
