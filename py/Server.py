@@ -18,9 +18,9 @@ class Server(Ice.Application):
         servant = HelloI()
 
         adapter = broker.createObjectAdapter("HelloAdapter")
-        base = adapter.add(servant, broker.stringToIdentity("hello1"))
+        proxy = adapter.add(servant, broker.stringToIdentity("hello1"))
 
-        print base
+        print proxy
 
         adapter.activate()
         self.shutdownOnInterrupt()
@@ -29,4 +29,5 @@ class Server(Ice.Application):
         return 0
 
 
-sys.exit(Server().main(sys.argv))
+server = Server()
+sys.exit(server.main(sys.argv))
