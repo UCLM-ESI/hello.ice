@@ -5,7 +5,7 @@ all: Example Subscriber.class Publisher.class
 %.class: %.java
 	javac $(CLASSPATH) $<
 
-Example: Hello.ice
+Example: Printer.ice
 	slice2java $<
 
 clean:
@@ -23,8 +23,8 @@ start: /usr/bin/icebox /usr/bin/icestormadmin
 	@if ! [ -d db ]; then mkdir db; fi
 	icebox --Ice.Config=icebox.config &
 	sleep 3
-	icestormadmin --Ice.Config=icestorm.config -e "create HelloTopic"
+	icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"
 
 stop:
-	icestormadmin --Ice.Config=icestorm.config -e "destroy HelloTopic"
+	icestormadmin --Ice.Config=icestorm.config -e "destroy PrinterTopic"
 	killall icebox

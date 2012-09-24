@@ -54,7 +54,7 @@ public:
     communicator()->addObjectFactory(new CounterFactory(),
 				     Counter::RWPersistent::ice_staticId());
 
-    _adapter = communicator()->createObjectAdapter("HelloAdapter");
+    _adapter = communicator()->createObjectAdapter("PrinterAdapter");
     _evictor = Freeze::createBackgroundSaveEvictor(_adapter, "db", "counters",
 						  new CounterInitializer());
 

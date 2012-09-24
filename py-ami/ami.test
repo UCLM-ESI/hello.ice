@@ -7,7 +7,7 @@ TestBG('./Server.py --Ice.Config=Server.config',
 Test('./Client-end.py "$(head -1 server.proxy)" 4',
      shell = True,
      cwd = '$testdir',
-     pre = Poll(FileContains('hello1', '$testdir/server.proxy')),
+     pre = Poll(FileContains('printer1', '$testdir/server.proxy')),
      post = StdOutContains('24'))
 
 Test('./Client-callback.py "$(head -1 server.proxy)" 4',

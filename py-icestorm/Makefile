@@ -9,10 +9,10 @@ start:  icebox.config icestorm.config
 	@if ! [ -d db ]; then mkdir db; fi
 	icebox --Ice.Config=icebox.config &
 	sleep 3
-	icestormadmin --Ice.Config=icestorm.config -e "create HelloTopic"
+	icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"
 
 stop: icestorm.config
-	icestormadmin --Ice.Config=icestorm.config -e "destroy HelloTopic"
+	icestormadmin --Ice.Config=icestorm.config -e "destroy PrinterTopic"
 	killall icebox
 
 run-publisher:  icestorm.config

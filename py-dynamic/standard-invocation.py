@@ -22,7 +22,7 @@ class StandardInvocation(Ice.Application):
 
     def create_proxy(self):
         self.prx = self.ic.stringToProxy(self.args[1])
-        self.prx = Example.HelloPrx.uncheckedCast(self.prx)
+        self.prx = Example.PrinterPrx.uncheckedCast(self.prx)
 
     def say_things(self):
         retval = self.prx.say(self.args[2])
@@ -34,4 +34,3 @@ class StandardInvocation(Ice.Application):
 
 
 StandardInvocation().main(sys.argv)
-

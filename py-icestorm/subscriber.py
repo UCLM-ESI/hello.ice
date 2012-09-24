@@ -2,12 +2,12 @@
 
 import sys
 import Ice, IceStorm
-Ice.loadSlice('Hello.ice')
+Ice.loadSlice('Printer.ice')
 import Example
 
 
-class HelloI(Example.Hello):
-    def puts(self, s, current=None):
+class PrinterI(Example.Printer):
+    def write(self, s, current=None):
         print "Event received:", s
 
 
@@ -29,13 +29,13 @@ class Subscriber(Ice.Application):
             return 2
 
         ic = self.communicator()
-        adapter = ic.createObjectAdapter("HelloAdapter")
-        servant = HelloI()
+        adapter = ic.createObjectAdapter("PrinterAdapter")
+        servant = PrinterI()
 
         proxy = adapter.addWithUUID(servant)
 
         try:
-            topic = topic_mgr.retrieve("HelloTopic")
+            topic = topic_mgr.retrieve("PrinterTopic")
             qos = {}
             topic.subscribe(qos, proxy)
 

@@ -2,12 +2,12 @@ import Ice.*;
 
 public class Server extends Ice.Application {
     public int run(String[] args) {
-	Ice.Object servant = new HelloI();
+	Ice.Object servant = new PrinterI();
 
 	ObjectAdapter adapter =
-	    communicator().createObjectAdapter("HelloAdapter");
-	ObjectPrx proxy = 
-	    adapter.add(servant, Util.stringToIdentity("hello1"));
+	    communicator().createObjectAdapter("PrinterAdapter");
+	ObjectPrx proxy =
+	    adapter.add(servant, Util.stringToIdentity("printer1"));
 
 	System.out.println(communicator().proxyToString(proxy));
 

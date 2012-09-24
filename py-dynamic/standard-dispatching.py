@@ -8,7 +8,7 @@ Ice.loadSlice("example.ice")
 import Example
 
 
-class HelloI(Example.Hello):
+class PrinterI(Example.Printer):
 
     def say(self, message, current=None):
         print "say:", message
@@ -30,7 +30,7 @@ class StandardDispatching(Ice.Application):
         self.oa.activate()
 
     def append_servant(self):
-        srv = HelloI()
+        srv = PrinterI()
         oid = self.ic.stringToIdentity("StandardDispatching")
         prx = self.oa.add(srv, oid)
 
@@ -42,4 +42,3 @@ class StandardDispatching(Ice.Application):
 
 
 StandardDispatching().main(sys.argv)
-

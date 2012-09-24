@@ -24,8 +24,8 @@ class Server(Ice.Application):
     def run(self, argv):
         ic = self.communicator()
 
-        adapter = ic.createObjectAdapter("HelloAdapter")
-        base = adapter.add(MathI(), ic.stringToIdentity("hello1"))
+        adapter = ic.createObjectAdapter("PrinterAdapter")
+        base = adapter.add(MathI(), ic.stringToIdentity("printer1"))
 
         print base
 

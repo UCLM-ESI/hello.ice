@@ -1,7 +1,7 @@
 #include <Ice/Application.h>
 #include <IceStorm/IceStorm.h>
 #include <IceUtil/UUID.h>
-#include "Hello.h"
+#include "Printer.h"
 
 using namespace std;
 using namespace Ice;
@@ -9,8 +9,8 @@ using namespace IceStorm;
 using namespace Example;
 
 
-class HelloI : public Hello {
-  void puts(const string& s, const Current& current) {
+class PrinterI : public Printer {
+  void write(const string& s, const Current& current) {
     cout << "Event received: " << s << endl;
   }
 };
@@ -36,12 +36,12 @@ public:
       return EXIT_FAILURE;
     }
 
-    ObjectPtr servant = new HelloI;
+    ObjectPtr servant = new PrinterI;
     ObjectAdapterPtr adapter = \
-      communicator()->createObjectAdapter("HelloAdapter");
+      communicator()->createObjectAdapter("PrinterAdapter");
     ObjectPrx subscriber = adapter->addWithUUID(servant);
 
-    string topic_name = "HelloTopic";
+    string topic_name = "PrinterTopic";
     TopicPrx topic;
     try {
       topic = topic_mgr->retrieve(topic_name);

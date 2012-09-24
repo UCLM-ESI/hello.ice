@@ -8,7 +8,7 @@ server = TestBG('./Server.py --Ice.Config=Server.config',
 client = Test('./Client.py "$(head -1 %s)"' % server.stdout,
               cwd='$testdir',
               shell=True,
-              pre = [Poll(FileContains("hello1", server.stdout)),
+              pre = [Poll(FileContains("printer1", server.stdout)),
                      Poll(TaskRunning(server))])
 
 TaskTerminator(server, delay=1)

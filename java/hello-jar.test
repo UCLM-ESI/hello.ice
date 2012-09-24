@@ -8,6 +8,6 @@ java = 'java -jar'
 #
 # client = Test('%s jar/Client.jar "$(head -1 %s)"' % (java, server.stdout),
 #               shell=True,
-#               pre = Poll(FileContains("hello1", server.stdout)))
+#               pre = Poll(FileContains("printer1", server.stdout)))
 #
 # askTerminator(server, delay=1)

@@ -1,6 +1,6 @@
 #include <Ice/Application.h>
 #include <IceStorm/IceStorm.h>
-#include "Hello.h"
+#include "Printer.h"
 
 using namespace std;
 using namespace Ice;
@@ -30,21 +30,21 @@ public:
 
     TopicPrx topic;
     try {
-      topic = topic_mgr->retrieve("HelloTopic");
+      topic = topic_mgr->retrieve("PrinterTopic");
     } catch (const NoSuchTopic& e) {
       cerr << appName()
 	   << ": no sucho topic found, creating" << endl;
-      topic = topic_mgr->create("HelloTopic");
+      topic = topic_mgr->create("PrinterTopic");
     }
 
     assert(topic);
 
     ObjectPrx publisher = topic->getPublisher();
-    HelloPrx hello = HelloPrx::uncheckedCast(publisher);
+    PrinterPrx printer = PrinterPrx::uncheckedCast(publisher);
 
     cout << "publishing 10 'Hello World' events" << endl;
     for(int i = 0; i < 10; ++i)
-      hello->puts("Hello World!");
+      printer->write("Hello World!");
 
     return EXIT_SUCCESS;
   }

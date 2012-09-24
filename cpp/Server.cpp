@@ -1,17 +1,17 @@
 #include <Ice/Ice.h>
-#include "HelloI.h"
+#include "PrinterI.h"
 
 using namespace std;
 using namespace Ice;
 
 class Server: public Application {
   int run(int argc, char* argv[]) {
-    Example::HelloPtr servant = new Example::HelloI();
+    Example::PrinterPtr servant = new Example::PrinterI();
 
-    ObjectAdapterPtr adapter = 
-         communicator()->createObjectAdapter("HelloAdapter");
+    ObjectAdapterPtr adapter =
+         communicator()->createObjectAdapter("PrinterAdapter");
     ObjectPrx proxy = adapter->add(
-	 servant, communicator()->stringToIdentity("hello1"));
+	 servant, communicator()->stringToIdentity("printer1"));
 
     cout << communicator()->proxyToString(proxy) << endl;
 

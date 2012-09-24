@@ -15,9 +15,9 @@ public class Server extends Ice.Application {
 	MathI servant = new MathI(_workQueue);
 
 	ObjectAdapter adapter =
-	    communicator().createObjectAdapter("HelloAdapter");
+	    communicator().createObjectAdapter("PrinterAdapter");
 	ObjectPrx prx = adapter.add(
-	    servant, Util.stringToIdentity("hello1"));
+	    servant, Util.stringToIdentity("printer1"));
 
 	System.out.println(communicator().proxyToString(prx));
 

@@ -8,10 +8,9 @@ USO
    $ icebox --Ice.Config=icebox.config
 
    // En otro terminal.
-   // Creamos el topic HelloWorld y ejecutamos el Subscriber.
-   $ icestormadmin --Ice.Config=icestorm.config -e "create HelloTopic"
+   // Creamos el topic PrinterTopic y ejecutamos el Subscriber.
+   $ icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"
    $ ./subscriber
 
    // En un terminal diferente ejecutamos el publisher
    $ ./publisher
-

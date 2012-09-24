@@ -59,8 +59,8 @@ class Server(Ice.Application):
 
         ic = self.communicator()
 
-        oa = ic.createObjectAdapter("HelloAdapter")
-        print oa.add(MathI(queue), ic.stringToIdentity("hello1"))
+        oa = ic.createObjectAdapter("PrinterAdapter")
+        print oa.add(MathI(queue), ic.stringToIdentity("printer1"))
         oa.activate()
 
         worker.start()

@@ -9,7 +9,7 @@ def client_test(client, serverout):
         '%s %s "$(head -1 %s)" 4' % (java, client, serverout),
         shell = True,
         cwd = '$testdir',
-        pre = Poll(FileContains('hello1', serverout)),
+        pre = Poll(FileContains('printer1', serverout)),
         post = StdOutContains('24'))
 
 
