@@ -5,7 +5,7 @@ all: Example Server.class Client.class
 %.class: %.java
 	javac $(CLASSPATH) $<
 
-Example: Hello.ice
+Example: Printer.ice
 	slice2java $<
 
 clean:

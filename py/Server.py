@@ -3,22 +3,22 @@
 
 import sys
 import Ice
-Ice.loadSlice('Hello.ice')
+Ice.loadSlice('Printer.ice')
 import Example
 
 
-class HelloI(Example.Hello):
-    def puts(self, s, current=None):
+class PrinterI(Example.Printer):
+    def write(self, s, current=None):
         print s
 
 
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
-        servant = HelloI()
+        servant = PrinterI()
 
-        adapter = broker.createObjectAdapter("HelloAdapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("hello1"))
+        adapter = broker.createObjectAdapter("PrinterAdapter")
+        proxy = adapter.add(servant, broker.stringToIdentity("printer1"))
 
         print proxy
 

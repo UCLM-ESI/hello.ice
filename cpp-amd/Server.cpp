@@ -17,9 +17,9 @@ public:
     Example::MathPtr servant = new Example::MathI(_workQueue);
 
     ObjectAdapterPtr adapter = \
-      communicator()->createObjectAdapter("HelloAdapter");
+      communicator()->createObjectAdapter("PrinterAdapter");
     ObjectPrx proxy = adapter->add(
-      servant, communicator()->stringToIdentity("hello1"));
+      servant, communicator()->stringToIdentity("printer1"));
 
     cout << communicator()->proxyToString(proxy) << endl;
 

@@ -1,5 +1,5 @@
 #include <Ice/Ice.h>
-#include "Hello.h"
+#include "Printer.h"
 
 using namespace Ice;
 using namespace Example;
@@ -7,9 +7,9 @@ using namespace Example;
 class Client: public Ice::Application {
   int run(int argc, char* argv[]) {
     ObjectPrx proxy = communicator()->stringToProxy(argv[1]);
-    HelloPrx hello = HelloPrx::checkedCast(proxy);
+    PrinterPrx printer = PrinterPrx::checkedCast(proxy);
 
-    hello->puts("Hello, World!");
+    printer->write("Hello, World!");
 
     return 0;
   }

@@ -2,7 +2,7 @@
 
 import sys
 import Ice, IceStorm
-Ice.loadSlice('./Hello.ice')
+Ice.loadSlice('./Printer.ice')
 import Example
 
 
@@ -25,19 +25,19 @@ class Publisher(Ice.Application):
 
         # Get topic
         try:
-            topic = topic_mgr.retrieve("HelloTopic")
+            topic = topic_mgr.retrieve("PrinterTopic")
         except IceStorm.NoSuchTopic:
             print "no such topic found, created"
-            topic = topic_mgr.create("HelloTopic")
+            topic = topic_mgr.create("PrinterTopic")
 
         # Get publisher and call remote object method
         proxy = topic.getPublisher()
 
-        prx = Example.HelloPrx.uncheckedCast(proxy)
+        prx = Example.PrinterPrx.uncheckedCast(proxy)
 
         print "publishing 10 'Hello World' events"
         for i in range(10):
-            prx.puts("Hello World!")
+            prx.write("Hello World!")
 
         return 0
 

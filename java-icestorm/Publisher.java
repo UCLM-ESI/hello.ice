@@ -14,7 +14,7 @@ public class Publisher extends Application
             return 1;
         }
 
-        String topicName = "HelloTopic";
+        String topicName = "PrinterTopic";
         TopicPrx topic;
         try {
             topic = manager.retrieve(topicName);
@@ -28,11 +28,11 @@ public class Publisher extends Application
         }
 
         ObjectPrx publisher = topic.getPublisher();
-	HelloPrx hello = HelloPrxHelper.uncheckedCast(publisher);
+	PrinterPrx printer = PrinterPrxHelper.uncheckedCast(publisher);
 
         System.out.println("publishing 10 'Hello World' events");
 	for(int i=0; i < 10; i++)
-	    hello.puts("Hello World!");
+	    printer.write("Hello World!");
 
         return 0;
     }

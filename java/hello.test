@@ -8,7 +8,7 @@ server = TestBG(desc='Server',
     post = FileContains('Hello, World!'))
 
 client = Test(desc='Client',
-    pre = Poll(FileContains("hello1", server.stdout)),
+    pre = Poll(FileContains("printer1", server.stdout)),
     cmd = '%s Client "$(head -1 %s)"' % (java, server.stdout),
     shell = True)
 

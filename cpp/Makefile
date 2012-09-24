@@ -3,7 +3,7 @@ include ../vars.mk
 CXXFLAGS=-I.
 LDLIBS=-lIce -lIceUtil
 
-APP=Hello
+APP=Printer
 STUBS=$(addprefix $(APP), .h .cpp)
 
 all: Server Client

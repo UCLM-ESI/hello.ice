@@ -4,8 +4,8 @@ import IceStorm.*;
 import Example.*;
 
 public class Subscriber extends Application {
-    public class HelloI extends _HelloDisp {
-        public void puts(String message, Ice.Current current) {
+    public class PrinterI extends _PrinterDisp {
+        public void write(String message, Ice.Current current) {
             System.out.println(message);
         }
     }
@@ -20,12 +20,12 @@ public class Subscriber extends Application {
             return 1;
         }
 
-	HelloI servant = new HelloI();
+	PrinterI servant = new PrinterI();
         ObjectAdapter adapter =
-	    communicator().createObjectAdapter("HelloAdapter");
+	    communicator().createObjectAdapter("PrinterAdapter");
         ObjectPrx subscriber = adapter.addWithUUID(servant);
 
-        String topic_name = "HelloTopic";
+        String topic_name = "PrinterTopic";
         TopicPrx topic;
         try {
             topic = manager.retrieve(topic_name);

@@ -9,9 +9,9 @@ class Server: public Ice::Application {
 	Example::MathPtr servant = new Example::MathI();
 
     ObjectAdapterPtr adapter = \
-	  communicator()->createObjectAdapter("HelloAdapter");
+	  communicator()->createObjectAdapter("PrinterAdapter");
     ObjectPrx prx = adapter->add(
-      servant, communicator()->stringToIdentity("hello1"));
+      servant, communicator()->stringToIdentity("printer1"));
 
     cout << communicator()->proxyToString(prx) << endl;
 

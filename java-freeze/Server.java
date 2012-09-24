@@ -8,7 +8,7 @@ public class Server extends Ice.Application {
             new CounterFactory(),
 	    Counter.RWPersistent.ice_staticId());
 
-	adapter = communicator().createObjectAdapter("HelloAdapter");
+	adapter = communicator().createObjectAdapter("PrinterAdapter");
         evictor = Freeze.Util.createBackgroundSaveEvictor(
             adapter, "db", "counters",
 	    new CounterInitializer(), null, true);

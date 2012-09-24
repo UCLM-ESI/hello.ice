@@ -5,7 +5,7 @@ def client_test(client):
         '%s "$(head -1 server.proxy)" 4' % client,
         shell = True,
         cwd = '$testdir',
-        pre = Poll(FileContains('hello1', '$testdir/server.proxy')),
+        pre = Poll(FileContains('printer1', '$testdir/server.proxy')),
         post = StdOutContains('24'))
 
 

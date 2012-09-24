@@ -3,19 +3,19 @@
 
 import sys
 import Ice
-Ice.loadSlice('Hello.ice')
+Ice.loadSlice('Printer.ice')
 import Example
 
 
 class client (Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        hello = Example.HelloPrx.checkedCast(proxy)
+        printer = Example.PrinterPrx.checkedCast(proxy)
 
-        if not hello:
+        if not printer:
             raise RuntimeError("Invalid proxy")
 
-        hello.puts("Hello World!")
+        printer.write("Hello World!")
 
         return 0
 
