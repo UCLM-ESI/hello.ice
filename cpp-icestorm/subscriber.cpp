@@ -50,7 +50,6 @@ public:
     }
 
     topic->subscribeAndGetPublisher(QoS(), subscriber);
-
     cout << "Waiting events... " << subscriber << endl;
 
     adapter->activate();

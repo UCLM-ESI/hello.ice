@@ -19,7 +19,7 @@ class Subscriber(Ice.Application):
             print "property", key, "not set"
             return None
 
-        print("Using IceStorm in: '%s'" % proxy)
+        print("Using IceStorm in: '%s'" % key)
         return IceStorm.TopicManagerPrx.checkedCast(proxy)
 
     def run(self, argv):
@@ -29,27 +29,25 @@ class Subscriber(Ice.Application):
             return 2
 
         ic = self.communicator()
-        adapter = ic.createObjectAdapter("PrinterAdapter")
         servant = PrinterI()
+        adapter = ic.createObjectAdapter("PrinterAdapter")
+        subscriber = adapter.addWithUUID(servant)
 
-        proxy = adapter.addWithUUID(servant)
-
+        topic_name = "PrinterTopic"
+        qos = {}
         try:
-            topic = topic_mgr.retrieve("PrinterTopic")
-            qos = {}
-            topic.subscribe(qos, proxy)
-
+            topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
-            print "no such topic found"
-            return 3
+            topic = topic_mgr.create(topic_name)
 
-        print 'Waiting events...', proxy
+        topic.subscribe(qos, subscriber)
+        print 'Waiting events...', subscriber
 
         adapter.activate()
         self.shutdownOnInterrupt()
         ic.waitForShutdown()
 
-        topic.unsubscribe(proxy)
+        topic.unsubscribe(subscriber)
 
         return 0
 
