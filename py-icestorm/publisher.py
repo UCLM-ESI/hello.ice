@@ -14,7 +14,7 @@ class Publisher(Ice.Application):
             print "property", key, "not set"
             return None
 
-        print("Using IceStorm in: '%s'" % proxy)
+        print("Using IceStorm in: '%s'" % key)
         return IceStorm.TopicManagerPrx.checkedCast(proxy)
 
     def run(self, argv):
@@ -23,21 +23,19 @@ class Publisher(Ice.Application):
             print ': invalid proxy'
             return 2
 
-        # Get topic
+        topic_name = "PrinterTopic"
         try:
-            topic = topic_mgr.retrieve("PrinterTopic")
+            topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
-            print "no such topic found, created"
-            topic = topic_mgr.create("PrinterTopic")
+            print "no such topic found, creating"
+            topic = topic_mgr.create(topic_name)
 
-        # Get publisher and call remote object method
-        proxy = topic.getPublisher()
-
-        prx = Example.PrinterPrx.uncheckedCast(proxy)
+        publisher = topic.getPublisher()
+        printer = Example.PrinterPrx.uncheckedCast(publisher)
 
         print "publishing 10 'Hello World' events"
         for i in range(10):
-            prx.write("Hello World!")
+            printer.write("Hello World!")
 
         return 0
 

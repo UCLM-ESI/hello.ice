@@ -28,13 +28,14 @@ public:
       return EXIT_FAILURE;
     }
 
+    string topic_name = "PrinterTopic";
     TopicPrx topic;
     try {
-      topic = topic_mgr->retrieve("PrinterTopic");
+      topic = topic_mgr->retrieve(topic_name);
     } catch (const NoSuchTopic& e) {
       cerr << appName()
 	   << ": no sucho topic found, creating" << endl;
-      topic = topic_mgr->create("PrinterTopic");
+      topic = topic_mgr->create(topic_name);
     }
 
     assert(topic);
