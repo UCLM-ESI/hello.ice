@@ -1,0 +1,21 @@
+# -*- coding:utf-8; tab-width:4; mode:python -*-
+
+import signal
+
+java = 'java -classpath .:/usr/share/java/Ice.jar'
+
+server = TestBG(
+    cmd = '%s Server --Ice.Config=Server.config' % java,
+    cwd = '$testdir',
+    expected=130,
+    signal=signal.SIGINT,
+    save_stdout=True)
+
+Test(
+    pre = Poll(FileContains('printer1', server.stdout)),
+    cmd = '%s Client "$(head -1 %s)" 4' % (java, server.stdout),
+    cwd = '$testdir',
+    shell = True,
+    post = StdOutContains('24'))
+
+TaskTerminator(server, delay=1)
