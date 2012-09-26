@@ -1,0 +1,16 @@
+# -*- mode:python; coding:utf-8 -*-
+
+server = TestBG(
+    cmd = 'mono --runtime=v4.0 Server.exe --Ice.Config=Server.config',
+    cwd = '$testdir',
+    signal=2, save_stdout=True,
+    post = StdOutContains('Hello, World!'))
+
+client = Test(
+    pre = [Poll(TaskRunning(server)),
+           Poll(FileContains('printer1', server.stdout))],
+    cmd = 'mono --runtime=v4.0 Client.exe "$(head -1 %s)"' % server.stdout,
+    cwd = '$testdir',
+    shell=True)
+
+TaskTerminator(server, delay=1)
