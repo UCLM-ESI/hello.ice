@@ -20,6 +20,8 @@ clean:
 	$(RM) Server Client $(STUBS) *.o *~
 	$(RM) *.bz2 IcePatch2.sum
 
+calc:
+	icepatch2calc .
 
 run-server: Server
 	./Server --Ice.Config=Server.config | tee proxy.out
