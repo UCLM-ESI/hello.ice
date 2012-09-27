@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- This file was written by IceGrid Admin -->
 <icegrid>
-   <application name="HelloApp">
+   <application name="PrinterApp">
       <distrib icepatch="${application}.IcePatch2/server"/>
       <service-template id="IceStorm">
          <parameter name="instance-name" default="${application}.IceStorm"/>
@@ -92,18 +92,25 @@
          </icebox>
       </server-template>
       <node name="ClientNode">
-         <server-instance template="IcePatch2" directory="/tmp/hello"/>
-         <server id="HelloClient" activation="manual" exe="./Client" pwd="${application.distrib}">
-            <option>hello1</option>
+         <server-instance template="IcePatch2" directory="/tmp/printer"/>
+         <server id="PrinterClient" activation="manual" exe="java" pwd="${application.distrib}">
+            <option>-classpath</option>
+            <option>/usr/share/java/Ice.jar:.</option>
+            <option>Client</option>
+            <option>printer1</option>
          </server>
       </node>
       <node name="ServerNode">
-         <server id="HelloServer" activation="manual" exe="./Server" pwd="${application.distrib}">
+         <server id="PrinterServer" activation="manual" exe="java" pwd="${application.distrib}">
+            <option>-classpath</option>
+            <option>/usr/share/java/Ice.jar:.</option>
+            <option>Server</option>
             <properties>
                <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
+               <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
             </properties>
-            <adapter name="HelloAdapter" endpoints="default" id="${server}.HelloAdapter">
-               <object identity="hello1"/>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
+               <object identity="printer1"/>
             </adapter>
          </server>
       </node>
