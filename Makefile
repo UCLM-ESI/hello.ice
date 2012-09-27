@@ -18,6 +18,9 @@ check: all
 
 clean:
 	$(RM) *~
+	find -name "*.bz2" | xargs --verbose rm -v
+	find -name "IcePatch2.sum" | xargs --verbose rm -v
+	find -name db | xargs --verbose rm -v -rf
 
 
 .PHONY: subdirs $(SUBDIRS)
