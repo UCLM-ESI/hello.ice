@@ -1,9 +1,6 @@
-Warning
--------
+Simple examples to show the features of the ZeroC Ice middleware.
 
-When the same example is provided in several languages, configuration and slice
-files are taken always from the C++ version by means of symbolic links.
-
+http://www.zeroc.com/
 
 .. Local Variables:
 ..  fill-column: 80
