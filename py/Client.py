@@ -13,9 +13,9 @@ class client (Ice.Application):
         printer = Example.PrinterPrx.checkedCast(proxy)
 
         if not printer:
-            raise RuntimeError("Invalid proxy")
+            raise RuntimeError('Invalid proxy')
 
-        printer.write("Hello World!")
+        printer.write('Hello World!')
 
         return 0
 

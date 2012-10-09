@@ -8,8 +8,8 @@ import Example
 
 
 class PrinterI(Example.Printer):
-    def write(self, s, current=None):
-        print s
+    def write(self, message, current=None):
+        print message
 
 
 class Server(Ice.Application):
