@@ -41,7 +41,7 @@ class Job(object):
         self.value = value
 
     def execute(self):
-        self.cb.ice_response(str(factorial(self.value)))
+        self.cb.ice_response(factorial(self.value))
 
 
 class MathI(Example.Math):
@@ -57,16 +57,16 @@ class Server(Ice.Application):
         queue = Queue()
         worker = Worker(queue)
 
-        ic = self.communicator()
+        broker = self.communicator()
 
-        oa = ic.createObjectAdapter("PrinterAdapter")
-        print oa.add(MathI(queue), ic.stringToIdentity("printer1"))
-        oa.activate()
+        adapter = broker.createObjectAdapter("MathAdapter")
+        print adapter.add(MathI(queue), broker.stringToIdentity("math1"))
+        adapter.activate()
 
         worker.start()
 
         self.shutdownOnInterrupt()
-        ic.waitForShutdown()
+        broker.waitForShutdown()
 
         queue.put(Worker.QUIT)
         queue.join()

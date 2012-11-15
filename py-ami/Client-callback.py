@@ -24,7 +24,7 @@ class Client(Ice.Application):
         if not math:
             raise RuntimeError("Invalid proxy")
 
-        math.begin_factorial(argv[2], factorialCB, failureCB)
+        math.begin_factorial(int(argv[2]), factorialCB, failureCB)
         print 'this was an async call'
 
         return 0

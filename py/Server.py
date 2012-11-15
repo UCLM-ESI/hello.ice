@@ -10,6 +10,7 @@ import Example
 class PrinterI(Example.Printer):
     def write(self, message, current=None):
         print message
+        sys.stdout.flush()
 
 
 class Server(Ice.Application):

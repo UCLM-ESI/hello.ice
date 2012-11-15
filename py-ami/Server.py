@@ -22,16 +22,16 @@ class MathI(Example.Math):
 
 class Server(Ice.Application):
     def run(self, argv):
-        ic = self.communicator()
+        broker = self.communicator()
 
-        adapter = ic.createObjectAdapter("PrinterAdapter")
-        base = adapter.add(MathI(), ic.stringToIdentity("printer1"))
+        adapter = broker.createObjectAdapter("MathAdapter")
+        math = adapter.add(MathI(), broker.stringToIdentity("math1"))
 
-        print base
+        print math
 
         adapter.activate()
         self.shutdownOnInterrupt()
-        ic.waitForShutdown()
+        broker.waitForShutdown()
 
         return 0
 

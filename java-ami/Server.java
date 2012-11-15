@@ -2,10 +2,10 @@ import Ice.*;
 
 public class Server extends Ice.Application {
     public int run(String[] args) {
-	ObjectAdapter adapter = communicator().createObjectAdapter("PrinterAdapter");
-	ObjectPrx prx = adapter.add(new MathI(), Util.stringToIdentity("printer1"));
+	ObjectAdapter adapter = communicator().createObjectAdapter("MathAdapter");
+	ObjectPrx math = adapter.add(new MathI(), Util.stringToIdentity("math1"));
 
-	System.out.println(communicator().proxyToString(prx));
+	System.out.println(communicator().proxyToString(math));
 
 	adapter.activate();
 	shutdownOnInterrupt();

@@ -12,7 +12,7 @@ server = TestBG(
     save_stdout=True)
 
 Test(
-    pre = Poll(FileContains('printer1', server.stdout)),
+    pre = Poll(FileContains('math1', server.stdout)),
     cmd = '%s Client "$(head -1 %s)" 4' % (java, server.stdout),
     cwd = '$testdir',
     shell = True,
