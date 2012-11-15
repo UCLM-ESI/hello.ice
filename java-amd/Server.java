@@ -15,11 +15,11 @@ public class Server extends Ice.Application {
 	MathI servant = new MathI(_workQueue);
 
 	ObjectAdapter adapter =
-	    communicator().createObjectAdapter("PrinterAdapter");
-	ObjectPrx prx = adapter.add(
-	    servant, Util.stringToIdentity("printer1"));
+	    communicator().createObjectAdapter("MathAdapter");
+	ObjectPrx math = adapter.add(
+	    servant, Util.stringToIdentity("math1"));
 
-	System.out.println(communicator().proxyToString(prx));
+	System.out.println(communicator().proxyToString(math));
 
 	_workQueue.start();
 	adapter.activate();

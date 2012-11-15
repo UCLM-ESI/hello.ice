@@ -13,13 +13,12 @@ class Client(Ice.Application):
 
     def run(self, argv):
         base = self.communicator().stringToProxy(argv[1])
+        math = Example.MathPrx.checkedCast(base)
 
-        prx = Example.MathPrx.checkedCast(base)
-
-        if not prx:
+        if not math:
             raise RuntimeError("Invalid proxy")
 
-        print prx.factorial(int(argv[2]))
+        print math.factorial(int(argv[2]))
 
         return 0
 

@@ -17,11 +17,11 @@ public:
     Example::MathPtr servant = new Example::MathI(_workQueue);
 
     ObjectAdapterPtr adapter = \
-      communicator()->createObjectAdapter("PrinterAdapter");
-    ObjectPrx proxy = adapter->add(
-      servant, communicator()->stringToIdentity("printer1"));
+      communicator()->createObjectAdapter("MathAdapter");
+    ObjectPrx math = adapter->add(
+      servant, communicator()->stringToIdentity("math1"));
 
-    cout << communicator()->proxyToString(proxy) << endl;
+    cout << communicator()->proxyToString(math) << endl;
 
     _workQueue->start();
     adapter->activate();
