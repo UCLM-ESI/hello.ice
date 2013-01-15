@@ -14,5 +14,5 @@ class Hello(TestCase):
         clientside = Task('client')
         clientside.wait_that(server, running())
         clientside.wait_that(server.stdout.content, contains_string('printer1'))
-        clientside.command('./Client.py "$(head -1 %s)"' % server.stdout.fpath,
+        clientside.command('./Client.py "$(head -1 %s)"' % server.stdout.path,
                            cwd='$testdir')
