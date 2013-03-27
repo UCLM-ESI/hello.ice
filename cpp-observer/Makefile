@@ -1,3 +1,4 @@
+CXX=g++-4.6
 LDLIBS=-lIce -lIceUtil -lFreeze -lIceStorm
 CXXFLAGS=-I.
 

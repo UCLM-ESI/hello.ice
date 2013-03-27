@@ -1,6 +1,6 @@
 
 CC=g++
-CXX=g++
+CXX=g++-4.6
 CXXFLAGS = -I.
 LDLIBS = -lIce -lIceUtil -lIceStorm
 
