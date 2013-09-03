@@ -1,7 +1,6 @@
 include ../vars.mk
 
 CXXFLAGS=-I.
-LDLIBS=-lIce -lIceUtil
 
 SLICE=factorial
 STUBS=$(addprefix $(SLICE), .h .cpp)
