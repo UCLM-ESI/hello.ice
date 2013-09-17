@@ -9,6 +9,8 @@ public class PrinterI: PrinterDisp_ {
 
 public class Server: Application {
   public override int run(string[] args) {
+    shutdownOnInterrupt();
+
     PrinterI servant = new PrinterI();
 
     ObjectAdapter adapter = communicator().createObjectAdapter("PrinterAdapter");
@@ -17,8 +19,10 @@ public class Server: Application {
     System.Console.WriteLine(communicator().proxyToString(proxy));
 
     adapter.activate();
-    shutdownOnInterrupt();
     communicator().waitForShutdown();
+
+    if (interrupted())
+      Console.Error.WriteLine(appName() + ": terminating");
 
     return 0;
   }
