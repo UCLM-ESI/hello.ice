@@ -5,7 +5,7 @@ Server.exe: Server.cs Printer.cs
 Client.exe: Client.cs Printer.cs
 
 %.exe: %.cs
-	mono-csc -out:$@ -pkg:Ice-3.4 $^
+	mono-csc -out:$@ -pkg:Ice-3.5 $^
 
 %.cs: %.ice
 	slice2cs $<
