@@ -2,8 +2,8 @@ Simple examples to show the features of the ZeroC Ice middleware.
 
 http://www.zeroc.com/
 
-Dependencies
-------------
+Dependencies (just for testing)
+-------------------------------
 
 (from "deb http://babel.esi.uclm.es/arco sid")
 
