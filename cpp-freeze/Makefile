@@ -2,7 +2,7 @@ include ../vars.mk
 
 CXXFLAGS=-I. -I$(ICE_HOME)/include
 LDFLAGS=-L$(ICE_HOME)/lib
-LDLIBS=-lIce -lIceUtil -lstdc++ -lpthread -lrt
+LDLIBS += -lrt
 
 SLICE=counter
 

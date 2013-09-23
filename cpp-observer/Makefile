@@ -1,6 +1,6 @@
 include ../vars.mk
 
-LDLIBS=-lIce -lIceUtil -lFreeze -lIceStorm
+LDLIBS += -lFreeze -lIceStorm
 CXXFLAGS=-I.
 
 SLICES=$(wildcard *.ice)
