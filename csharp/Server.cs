@@ -22,7 +22,7 @@ public class Server: Application {
     communicator().waitForShutdown();
 
     if (interrupted())
-      Console.Error.WriteLine(appName() + ": terminating");
+        System.Console.Error.WriteLine(appName() + ": terminating");
 
     return 0;
   }
