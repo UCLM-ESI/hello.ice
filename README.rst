@@ -2,12 +2,10 @@ Simple examples to show the features of the ZeroC Ice middleware.
 
 http://www.zeroc.com/
 
-To download this repository:
+To download this repository::
 
-{{{
-$ sudo apt-get install mercurial
-$ hg clone https://bitbucket.org/arco_group/ice-hello
-}}}
+  $ sudo apt-get install mercurial
+  $ hg clone https://bitbucket.org/arco_group/ice-hello
 
 
 Dependencies (just for tesing)
