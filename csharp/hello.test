@@ -1,6 +1,6 @@
 # -*- mode:python; coding:utf-8 -*-
 
-server = TestBG(
+server = CommandBG(
     cmd = 'mono --runtime=v4.0 Server.exe --Ice.Config=Server.config',
     cwd = '$testdir',
     signal=2, save_stdout=True,
