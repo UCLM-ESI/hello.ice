@@ -1,0 +1,10 @@
+Ejemplo de "hello" usando la clase Ice.Application
+
+Ejemplo:
+------
+   1) $ make
+
+   2) python server.py &
+         Hello -t:tcp -h 161.67.27.240 -p 9999
+
+   3) python client.py "Hello -t:tcp -h 161.67.27.240 -p 9999"
