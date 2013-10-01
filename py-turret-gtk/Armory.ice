@@ -5,5 +5,6 @@ module Armory {
     void left();
     void right();
     void stop();
+    void fire();
   };
 };
