@@ -13,7 +13,7 @@ To update (when you have have already download it)::
 
 
 Dependencies (just for testing)
-------------------------------
+-------------------------------
 
 (from "deb http://babel.esi.uclm.es/arco sid")
 
