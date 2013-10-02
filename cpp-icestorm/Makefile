@@ -1,7 +1,7 @@
 include ../vars.mk
 
 CXXFLAGS = -I.
-LDLIBS += -lIceStorm
+LDLIBS = -lIce -lIceUtil -lIceStorm
 
 APP=Printer
 STUBS=$(addprefix $(APP), .h .cpp)

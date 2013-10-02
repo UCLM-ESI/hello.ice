@@ -9,7 +9,7 @@ import Example
 
 class PrinterI(Example.Printer):
     def write(self, message, current=None):
-        print(message)
+        print message
         sys.stdout.flush()
 
 
@@ -21,7 +21,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("PrinterAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("printer1"))
 
-        print(proxy)
+        print proxy
 
         adapter.activate()
         self.shutdownOnInterrupt()

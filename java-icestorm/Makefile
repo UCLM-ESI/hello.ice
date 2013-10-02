@@ -1,4 +1,4 @@
-CLASSPATH=-classpath /usr/share/java/Ice.jar:/usr/share/java/IceStorm.jar:.
+CLASSPATH=-classpath /usr/share/java/Ice.jar:.
 
 all: Example Subscriber.class Publisher.class
 
