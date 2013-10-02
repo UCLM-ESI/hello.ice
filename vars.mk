@@ -1,3 +1,2 @@
-CC=g++-4.7
-CXX=g++-4.7
-LDLIBS=-lIce -lIceUtil -lpthread
+CC=g++-4.6
+CXX=g++-4.6

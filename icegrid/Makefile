@@ -7,9 +7,7 @@ start: /tmp/db/registry /tmp/db/node1 /tmp/db/node2
 	icegrid-gui --Ice.Config=locator.cfg
 
 stop:
-	for node in ClientNode ServerNode; do \
-	    icegridadmin --Ice.Config=node2.cfg -u user -p pass -e "node shutdown $$node"; \
-	done
+	killall icegridnode || true
 
 /tmp/db/%:
 	mkdir -p $@
