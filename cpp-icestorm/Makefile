@@ -1,4 +1,4 @@
-include ../vars.mk
+include ../common.mk
 
 CXXFLAGS = -I.
 LDLIBS += -lIceStorm

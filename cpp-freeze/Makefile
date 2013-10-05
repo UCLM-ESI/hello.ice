@@ -1,4 +1,4 @@
-include ../vars.mk
+include ../common.mk
 
 CXXFLAGS=-I. -I$(ICE_HOME)/include
 LDFLAGS=-L$(ICE_HOME)/lib
