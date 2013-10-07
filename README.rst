@@ -4,12 +4,12 @@ http://www.zeroc.com/
 
 To download this repository::
 
-  $ sudo apt-get install mercurial
-  $ hg clone https://bitbucket.org/arco_group/ice-hello
+  ~$ sudo apt-get install mercurial
+  ~$ hg clone https://bitbucket.org/arco_group/ice-hello
 
 To update (when you have have already download it)::
 
-  $ hg pull -u
+  ~/ice-hello$ hg pull -u
 
 
 Dependencies (just for testing)
