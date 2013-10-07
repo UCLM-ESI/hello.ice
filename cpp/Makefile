@@ -15,9 +15,17 @@ Server.cpp Client.cpp: $(STUBS)
 %.cpp %.h: %.ice
 	slice2cpp $<
 
+dist:
+	mkdir dist
+
+gen-dist: all dist
+	cp Client Server dist/
+	icepatch2calc dist/
+
 clean:
 	$(RM) Server Client $(STUBS) *.o *~
 	$(RM) *.bz2 IcePatch2.sum
+	$(RM) -r dist
 
 calc:
 	icepatch2calc .
