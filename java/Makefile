@@ -8,9 +8,17 @@ all: Example Server.class Client.class
 Example: Printer.ice
 	slice2java $<
 
+dist:
+	mkdir dist
+
+gen-dist: all dist
+	cp -r *.class Example dist/
+	icepatch2calc dist/
+
 clean:
 	$(RM) *.class proxy.out *~
 	$(RM) -r Example
+	$(RM) -r dist
 
 run-server: Server.class
 	java $(CLASSPATH) \
