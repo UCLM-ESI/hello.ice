@@ -1,4 +1,7 @@
-include ../common.mk
+#!/usr/bin/make -f
+# -*- mode:makefile -*-
+
+include ../cpp-common.mk
 
 CXXFLAGS=-I.
 

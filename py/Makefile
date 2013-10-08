@@ -1,5 +1,14 @@
+#!/usr/bin/make -f
+# -*- mode:makefile -*-
 
 all:
+
+dist:
+	mkdir dist
+
+gen-dist: dist
+	cp Client.py Server.py dist/
+	icepatch2calc dist/
 
 clean:
 	$(RM) *~ proxy.out
