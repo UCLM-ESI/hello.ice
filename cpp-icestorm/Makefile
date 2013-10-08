@@ -1,6 +1,8 @@
-include ../common.mk
+#!/usr/bin/make -f
+# -*- mode:makefile -*-
 
-CXXFLAGS = -I.
+include ../cpp-common.mk
+
 LDLIBS += -lIceStorm
 
 APP=Printer

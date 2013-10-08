@@ -1,6 +1,9 @@
-include ../common.mk
+#!/usr/bin/make -f
+# -*- mode:makefile -*-
 
-CXXFLAGS=-I. -I$(ICE_HOME)/include
+include ../cpp-common.mk
+
+CXXFLAGS += -I$(ICE_HOME)/include
 LDFLAGS=-L$(ICE_HOME)/lib
 LDLIBS += -lrt
 

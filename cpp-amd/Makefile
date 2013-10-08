@@ -1,6 +1,7 @@
-include ../common.mk
+#!/usr/bin/make -f
+# -*- mode:makefile -*-
 
-CXXFLAGS=-I.
+include ../cpp-common.mk
 
 SLICE=factorial
 STUBS=$(addprefix $(SLICE), .h .cpp)
