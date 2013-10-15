@@ -3,8 +3,6 @@
 
 include ../cpp-common.mk
 
-CXXFLAGS=-I.
-
 APP=Printer
 STUBS=$(addprefix $(APP), .h .cpp)
 
