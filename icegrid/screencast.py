@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- mode:python; coding:utf-8; tab-width:4 -*-
 
-import os
-import signal
 from time import sleep
 
 from gext import XApp, command, Recorder
@@ -12,12 +10,11 @@ from gext.mouse import Mouse
 from gext.keyboard import Keyboard
 
 Keyboard.default_mode = Keyboard.MODE_NATURAL
-Keyboard.default_wait = 1.5
+Keyboard.default_wait = 1
 Mouse.default_wait = 1
 
 
 def click():
-    k.keys('<Control_L>')
     m.click()
 
 
