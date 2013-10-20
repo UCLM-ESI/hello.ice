@@ -92,7 +92,11 @@
          </icebox>
       </server-template>
       <node name="ClientNode">
-         <server-instance template="IcePatch2" directory="/tmp/printer"/>
+         <server-instance template="IcePatch2" directory="/tmp/ice-hello/py/dist">
+            <properties>
+               <property name="Ice.ServerIdleTime" value="5"/>
+            </properties>
+         </server-instance>
          <server id="PrinterClient" activation="manual" exe="java" pwd="${application.distrib}">
             <option>-classpath</option>
             <option>/usr/share/java/Ice.jar:.</option>

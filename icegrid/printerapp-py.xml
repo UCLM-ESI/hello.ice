@@ -92,9 +92,13 @@
          </icebox>
       </server-template>
       <node name="ClientNode">
-         <server-instance template="IcePatch2" directory="/home/david/repos/ice-hello/py"/>
+         <server-instance template="IcePatch2" directory="/tmp/ice-hello/py/dist">
+            <properties>
+               <property name="Ice.ServerIdleTime" value="5"/>
+            </properties>
+         </server-instance>
          <server id="PrinterClient" activation="manual" exe="./Client.py" pwd="${application.distrib}">
-            <option>printer1 -t @ PrinterServer.PrinterAdapter</option>
+            <option>printer1</option>
          </server>
       </node>
       <node name="ServerNode">
@@ -103,7 +107,7 @@
                <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
             </properties>
             <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
-               <object identity="printer1"/>
+               <object identity="printer1" type="::Example::Printer"/>
             </adapter>
          </server>
       </node>
