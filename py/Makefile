@@ -12,6 +12,7 @@ gen-dist: dist
 
 clean:
 	$(RM) *~ proxy.out
+	$(RM) -rf dist
 
 run-server:
 	./Server.py --Ice.Config=Server.config | tee proxy.out
