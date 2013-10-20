@@ -9,7 +9,7 @@ import Example
 
 class Client(Ice.Application):
     def run(self, argv):
-        proxy = self.communicator().stringToProxy(argv[1])
+        proxy = self.communicator().stringToProxy('printer1')
         printer = Example.PrinterPrx.checkedCast(proxy)
 
         if not printer:
