@@ -10,7 +10,7 @@ class Client: public Ice::Application {
     Example::MathPrx math = Example::MathPrx::checkedCast(proxy);
 
     Ice::AsyncResultPtr async_result = math->begin_factorial(atoi(argv[2]));
-    cout << "this was an async call" << endl;
+    cout << "that was an async call" << endl;
 
     cout << math->end_factorial(async_result) << endl;
     return 0;
