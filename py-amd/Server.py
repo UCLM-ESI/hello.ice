@@ -2,28 +2,26 @@
 # -*- mode:python; coding:utf-8; tab-width:4 -*-
 
 import sys
-from Queue import Queue
 
 import Ice
 Ice.loadSlice('factorial.ice')
 import Example
 
-from work_queue import Worker, Job
+from work_queue import WorkQueue
 
 
 class MathI(Example.Math):
-    def __init__(self, queue):
-        self.queue = queue
+    def __init__(self, work_queue):
+        self.work_queue = work_queue
 
     def factorial_async(self, cb, value, current=None):
-        self.queue.put(Job(cb, value))
+        self.work_queue.add(cb, value)
 
 
 class Server(Ice.Application):
     def run(self, argv):
-        queue = Queue()
-        worker = Worker(queue)
-        servant = MathI(queue)
+        work_queue = WorkQueue()
+        servant = MathI(work_queue)
 
         broker = self.communicator()
 
@@ -31,14 +29,12 @@ class Server(Ice.Application):
         print adapter.add(servant, broker.stringToIdentity("math1"))
         adapter.activate()
 
-        worker.start()
+        work_queue.start()
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
 
-        queue.put(Worker.QUIT)
-        queue.join()
+        work_queue.destroy()
         return 0
-
 
 sys.exit(Server().main(sys.argv))
