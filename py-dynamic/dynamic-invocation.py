@@ -8,9 +8,10 @@ from util import InputStream, OutputStream
 
 
 class DynamicInvocation(Ice.Application):
+
     def run(self, args):
         self.args = args
-        self.broker = self.communicator()
+        self.ic = self.communicator()
 
         if len(args) != 3:
             return self.usage()
@@ -19,7 +20,7 @@ class DynamicInvocation(Ice.Application):
         self.say_things()
 
     def create_proxy(self):
-        self.prx = self.broker.stringToProxy(self.args[1])
+        self.prx = self.ic.stringToProxy(self.args[1])
 
     def say_things(self):
         operation = "say"
@@ -42,3 +43,4 @@ class DynamicInvocation(Ice.Application):
 
 
 DynamicInvocation().main(sys.argv)
+

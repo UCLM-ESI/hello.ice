@@ -8,6 +8,7 @@ from util import InputStream, OutputStream
 
 
 class BlobjectI(Ice.Blobject):
+
     def ice_invoke(self, bytes, current):
         inParams = InputStream(bytes)
         message = inParams.readString()
@@ -22,29 +23,30 @@ class BlobjectI(Ice.Blobject):
 
 
 class DynamicDispatching(Ice.Application):
+
     def run(self, args):
-        self.broker = self.communicator()
+        self.ic = self.communicator()
 
         self.create_adapter()
-        self.add_servant()
+        self.append_servant()
         self.wait_events()
 
     def create_adapter(self):
-        self.adapter = self.broker.createObjectAdapterWithEndpoints(
+        self.oa = self.ic.createObjectAdapterWithEndpoints(
             "Adapter", "tcp -h 127.0.0.1 -p 1234")
-        self.adapter.activate()
+        self.oa.activate()
 
-    def add_servant(self):
-        servant = BlobjectI()
-        oid = self.broker.stringToIdentity("DynamicDispatching")
-        proxy = self.adapter.add(servant, oid)
-        proxy = proxy.ice_encodingVersion(Ice.Encoding_1_0)
+    def append_servant(self):
+        srv = BlobjectI()
+        oid = self.ic.stringToIdentity("DynamicDispatching")
+        prx = self.oa.add(srv, oid)
 
-        print "Use proxy: '{0}'".format(proxy)
+        print "Use proxy: '{0}'".format(prx)
 
     def wait_events(self):
         self.shutdownOnInterrupt()
-        self.broker.waitForShutdown()
+        self.ic.waitForShutdown()
 
 
 DynamicDispatching().main(sys.argv)
+
