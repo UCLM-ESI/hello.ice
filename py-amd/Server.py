@@ -1,76 +1,40 @@
 #!/usr/bin/python -u
-# -*- coding: utf-8 -*-
+# -*- mode:python; coding:utf-8; tab-width:4 -*-
 
 import sys
-from threading import Thread
-from Queue import Queue
 
 import Ice
 Ice.loadSlice('factorial.ice')
 import Example
 
-
-def factorial(n):
-    if n == 0:
-        return 1
-
-    return n * factorial(n - 1)
-
-
-class Worker(Thread):
-    QUIT = 'QUIT'
-
-    def __init__(self, queue):
-        super(Worker, self).__init__()
-        self.queue = queue
-
-    def run(self):
-        while True:
-            job = self.queue.get()
-            if job == Worker.QUIT:
-                self.queue.task_done()
-                break
-
-            job.execute()
-            self.queue.task_done()
-
-
-class Job(object):
-    def __init__(self, cb, value):
-        self.cb = cb
-        self.value = value
-
-    def execute(self):
-        self.cb.ice_response(factorial(self.value))
+from work_queue import WorkQueue
 
 
 class MathI(Example.Math):
-    def __init__(self, queue):
-        self.queue = queue
+    def __init__(self, work_queue):
+        self.work_queue = work_queue
 
     def factorial_async(self, cb, value, current=None):
-        self.queue.put(Job(cb, value))
+        self.work_queue.add(cb, value)
 
 
 class Server(Ice.Application):
     def run(self, argv):
-        queue = Queue()
-        worker = Worker(queue)
+        work_queue = WorkQueue()
+        servant = MathI(work_queue)
 
         broker = self.communicator()
 
         adapter = broker.createObjectAdapter("MathAdapter")
-        print adapter.add(MathI(queue), broker.stringToIdentity("math1"))
+        print adapter.add(servant, broker.stringToIdentity("math1"))
         adapter.activate()
 
-        worker.start()
+        work_queue.start()
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
 
-        queue.put(Worker.QUIT)
-        queue.join()
+        work_queue.destroy()
         return 0
-
 
 sys.exit(Server().main(sys.argv))
