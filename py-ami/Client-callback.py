@@ -8,12 +8,12 @@ Ice.loadSlice('./factorial.ice')
 import Example
 
 
-def factorialCB(value):
-    print "Value is: %s" % value
+class FactorialCB(object):
+    def response(self, retval):
+        print("Callback: Value is {}".format(retval))
 
-
-def failureCB(ex):
-    print "Exception is: " + str(ex)
+    def failure(self, ex):
+        print("Exception is: {}".format(ex))
 
 
 class Client(Ice.Application):
@@ -24,8 +24,11 @@ class Client(Ice.Application):
         if not math:
             raise RuntimeError("Invalid proxy")
 
-        math.begin_factorial(int(argv[2]), factorialCB, failureCB)
-        print 'this was an async call'
+        factorial_cb = FactorialCB()
+
+        math.begin_factorial(int(argv[2]),
+                             factorial_cb.response, factorial_cb.failure)
+        print 'that was an async call'
 
         return 0
 
