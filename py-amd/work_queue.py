@@ -2,6 +2,7 @@
 
 from threading import Thread
 from Queue import Queue
+import Example
 
 
 def factorial(n):
@@ -13,33 +14,31 @@ def factorial(n):
 
 class WorkQueue(Thread):
     QUIT = 'QUIT'
-    SKIP = 'SKIP'
+    CANCEL = 'CANCEL'
 
     def __init__(self):
         super(WorkQueue, self).__init__()
         self.queue = Queue()
 
     def run(self):
-        while True:
-            job = self.queue.get()
-            if job == self.QUIT:
-                self.queue.task_done()
-                break
-
-            if job == self.SKIP:
-                self.queue.put(self.QUIT)
-                Job.execute = Job.cancel
-                self.queue.task_done()
-                continue
-
+        for job in iter(self.queue.get, self.QUIT):
             job.execute()
             self.queue.task_done()
+
+        self.queue.task_done()
+        self.queue.put(self.CANCEL)
+
+        for job in iter(self.queue.get, self.CANCEL):
+            job.cancel()
+            self.queue.task_done()
+
+        self.queue.task_done()
 
     def add(self, cb, value):
         self.queue.put(Job(cb, value))
 
     def destroy(self):
-        self.queue.put(self.SKIP)
+        self.queue.put(self.QUIT)
         self.queue.join()
 
 
