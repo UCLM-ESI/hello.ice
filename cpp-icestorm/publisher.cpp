@@ -44,8 +44,8 @@ public:
     PrinterPrx printer = PrinterPrx::uncheckedCast(publisher);
 
     cout << "publishing 10 'Hello World' events" << endl;
-    for(int i = 0; i < 10; ++i)
-      printer->write("Hello World!");
+    for(char i='0'; i <= '9'; ++i)
+      printer->write(string("Hello World ") + i + "!");
 
     return EXIT_SUCCESS;
   }

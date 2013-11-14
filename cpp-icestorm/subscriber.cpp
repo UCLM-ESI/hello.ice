@@ -10,10 +10,12 @@ using namespace Example;
 
 
 class PrinterI : public Printer {
-  void write(const string& s, const Current& current) {
-    cout << "Event received: " << s << endl;
+public:
+  void write(const string& message, const Current& current) {
+    cout << "Event received: " << message << endl;
   }
 };
+
 
 class Subscriber : public Application {
   TopicManagerPrx get_topic_manager() {

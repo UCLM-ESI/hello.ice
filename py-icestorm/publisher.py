@@ -35,7 +35,7 @@ class Publisher(Ice.Application):
 
         print "publishing 10 'Hello World' events"
         for i in range(10):
-            printer.write("Hello World!")
+            printer.write("Hello World %s!" % i)
 
         return 0
 
