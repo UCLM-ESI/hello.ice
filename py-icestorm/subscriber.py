@@ -42,7 +42,7 @@ class Subscriber(Ice.Application):
             topic = topic_mgr.create(topic_name)
 
         topic.subscribe(qos, subscriber)
-        print 'Waiting events...', subscriber
+        print 'Waiting events...'
 
         adapter.activate()
         self.shutdownOnInterrupt()
