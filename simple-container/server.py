@@ -35,7 +35,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("ContainerAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("container1"))
 
-        print proxy
+        print('container ready: "{}"'.format(proxy))
 
         adapter.activate()
         self.shutdownOnInterrupt()
