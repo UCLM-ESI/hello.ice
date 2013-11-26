@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -u
 # -*- coding:utf-8; tab-width:4; mode:python -*-
 
 import sys
@@ -17,7 +17,7 @@ class ContainerI(Services.Container):
 
         self.proxies[key] = proxy
 
-    def unlink(self, key):
+    def unlink(self, key, current=None):
         if not key in self.proxies:
             raise Services.NoSuchKey(key)
 
@@ -35,7 +35,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("ContainerAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("container1"))
 
-        print('container ready: "{}"'.format(proxy))
+        print(proxy)
 
         adapter.activate()
         self.shutdownOnInterrupt()
