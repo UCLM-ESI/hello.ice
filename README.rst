@@ -21,6 +21,8 @@ Dependencies (just for testing)
 - python-prego
 
 
+[trying sync with github]
+
 .. Local Variables:
 ..  coding: utf-8
 ..  fill-column: 80
