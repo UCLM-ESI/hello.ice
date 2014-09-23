@@ -24,7 +24,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("PrinterAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("printer1"))
 
-        print("'{0}'".format(proxy))
+        print("{0}".format(proxy))
         sys.stdout.flush()
 
         adapter.activate()
