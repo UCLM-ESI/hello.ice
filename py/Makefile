@@ -7,7 +7,7 @@ dist:
 	mkdir dist
 
 gen-dist: dist
-	cp Client.py Server.py Printer.ice dist/
+	cp Client.py Server.py Server-UUID.py Printer.ice dist/
 	icepatch2calc dist/
 
 clean:
