@@ -22,7 +22,7 @@ class Server(Ice.Application):
         servant = PrinterI()
 
         adapter = broker.createObjectAdapter("PrinterAdapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("printer1"))
+        proxy = adapter.addWithUUID(servant)
 
         print(proxy)
         sys.stdout.flush()
