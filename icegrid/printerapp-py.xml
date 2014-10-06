@@ -91,24 +91,27 @@
             <service-instance template="IceStorm-HA" instance-name="${instance-name}" node-id="${node-id}" topic-manager-endpoints="${topic-manager-endpoints}" publish-endpoints="${publish-endpoints}" node-endpoints="${node-endpoints}" flush-timeout="${flush-timeout}" publish-replica-group="${publish-replica-group}" topic-manager-replica-group="${topic-manager-replica-group}"/>
          </icebox>
       </server-template>
-      <node name="ClientNode">
+      <node name="node1">
          <server-instance template="IcePatch2" directory="/tmp/ice-hello/py/dist">
             <properties>
                <property name="Ice.ServerIdleTime" value="5"/>
             </properties>
          </server-instance>
-         <server id="PrinterClient" activation="manual" exe="./Client.py" pwd="${application.distrib}">
-            <option>printer1</option>
-         </server>
-      </node>
-      <node name="ServerNode">
-         <server id="PrinterServer" activation="manual" exe="./Server.py" pwd="${application.distrib}">
+         <server id="PrinterServer1" activation="manual" exe="./Server.py" pwd="${application.distrib}">
             <properties>
                <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
             </properties>
             <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
                <object identity="printer1" type="::Example::Printer"/>
             </adapter>
+         </server>
+      </node>
+      <node name="node2">
+         <server id="PrinterServer2" activation="manual" exe="./Server-UUID.py" pwd="${application.distrib}">
+            <properties>
+               <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
+            </properties>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
          </server>
       </node>
    </application>
