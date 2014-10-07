@@ -106,5 +106,12 @@
             </adapter>
          </server>
       </node>
+      <node name="node2">
+         <server id="PrinterServer2" activation="manual" exe="./Server-UUID" pwd="${application.distrib}">
+            <properties>
+               <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
+            </properties>
+         </server>
+      </node>
    </application>
 </icegrid>
