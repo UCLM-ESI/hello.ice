@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python -u
+# -*- coding: utf-8 -*-
 
 import sys
 import Ice, IceStorm
@@ -42,7 +43,7 @@ class Subscriber(Ice.Application):
             topic = topic_mgr.create(topic_name)
 
         topic.subscribe(qos, subscriber)
-        print 'Waiting events...'
+        print 'Waiting events...', subscriber
 
         adapter.activate()
         self.shutdownOnInterrupt()
