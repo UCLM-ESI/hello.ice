@@ -1,23 +1,18 @@
+Arranque del servicio IceStorm
+------------------------------
 
-- Se requiere Ice v3.0
+IceStorm es un servicio que se ejecuta mediante icebox (el serivdor de aplicaciones de
+Ice). Icebox se ejecuta con su propio fichero de configuración. La persistencia de canales
+de icebox requiere un directorio para la base de datos.
 
+$ mkdir db
+$ iceebox --Ice.Config=icebox.config &
 
-USO
----
-   // Preparamos el terreno para cargar el hello.ice
-   $ make
+Después ejecutamos al menos un subscriptor si queremos ver los eventos que llegan al
+canal:
 
-   $ mkdir db
+$ python subscriber.py --Ice.Config=subscriber.config
 
-   // Ejecutar en un terminal.	
-   $ icebox --Ice.Config=config_icebox
+Y por último un publicador:
 
-   // En otro terminal.	
-   // Creamos el topic HelloWorld y ejecutamos el Subscriber.
-   $ icestormadmin --Ice.Config=config -e "create HelloTopic"
-
-   $ python subscriber.py --Ice.Config=config
-
-   // En un terminal diferente ejecutamos el publisher
-   $ python publisher.py --Ice.Config=config
-
+$ python publisher.py --Ice.Config=publisher.config
