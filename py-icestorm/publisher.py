@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python -u
+# -*- coding: utf-8 -*-
 
 import sys
 import Ice, IceStorm
