@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import Ice, IceStorm
+import Ice
+import IceStorm
 Ice.loadSlice('./Printer.ice')
 import Example
 
