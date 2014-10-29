@@ -9,6 +9,7 @@ STUBS=$(addprefix $(APP), .h .cpp)
 all: Server Client
 
 Server: Server.o $(APP)I.o $(APP).o
+Server_UUID: Server-UUID.o $(APP)I.o $(APP).o
 Client: Client.o $(APP).o
 
 Server.cpp Client.cpp: $(STUBS)
