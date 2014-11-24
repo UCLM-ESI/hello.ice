@@ -1,0 +1,1 @@
+../cpp-factory/PrinterFactory.ice
