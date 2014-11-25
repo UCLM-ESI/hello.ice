@@ -19,8 +19,7 @@ class PrinterI(Example.Printer):
 class PrinterFactoryI(Example.PrinterFactory):
     def make(self, name, current=None):
         servant = PrinterI(name)
-        identity = current.adapter.getCommunicator().stringToIdentity(name)
-        proxy = current.adapter.add(servant, identity)
+        proxy = current.adapter.addWithUUID(servant)
         return Example.PrinterPrx.checkedCast(proxy)
 
 
@@ -30,7 +29,8 @@ class Server(Ice.Application):
         servant = PrinterFactoryI()
 
         adapter = broker.createObjectAdapter("PrinterFactoryAdapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("printerFactory1"))
+        proxy = adapter.add(servant,
+                            broker.stringToIdentity("printerFactory1"))
 
         print(proxy)
         sys.stdout.flush()
