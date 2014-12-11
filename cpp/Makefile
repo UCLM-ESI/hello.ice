@@ -5,8 +5,9 @@ include ../cpp-common.mk
 
 APP=Printer
 STUBS=$(addprefix $(APP), .h .cpp)
+TARGET=Server Server-UUID Client
 
-all: Server Server-UUID Client
+all: $(TARGET)
 
 Server: Server.o $(APP)I.o $(APP).o
 Server-UUID: Server-UUID.o $(APP)I.o $(APP).o
