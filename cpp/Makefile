@@ -25,7 +25,7 @@ gen-dist: all dist
 	icepatch2calc dist/
 
 clean:
-	$(RM) Server Client $(STUBS) *.o *~
+	$(RM) $(TARGET) $(STUBS) *.o *~
 	$(RM) *.bz2 IcePatch2.sum
 	$(RM) -r dist
 
