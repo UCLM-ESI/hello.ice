@@ -1,0 +1,14 @@
+This is an "bidir" JavaScript example. It is a trivial adaptation/simplification of
+[1] to our Printer interface.
+
+This example shows invocation from browser to standard Ice Server (C++, Python, ...)
+and viceversa.
+
+Procedure:
+
+- Install DEPENDS
+- Run a "bidir" server
+- Execute "make run-client"
+- Click "Start"
+
+[1] https://github.com/zeroc-ice/ice-demos/tree/master/js/Ice/bidir/browser
