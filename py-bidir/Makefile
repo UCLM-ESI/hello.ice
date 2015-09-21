@@ -15,4 +15,7 @@ clean:
 	$(RM) -rf dist
 
 run-server:
-	./Server.py --Ice.Config=Server.config
+	./Server.py --Ice.Config=Server.config | tee proxy.out
+
+run-client:
+	./Client.py "$(shell head -1 proxy.out)"
