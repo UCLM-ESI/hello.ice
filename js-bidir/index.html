@@ -17,25 +17,26 @@
         width: 100%;
         min-height: 100px;
       }
-      .btn {
-        margin: 10px;
-      }
       h2 {
         padding-bottom: 20px;
       }
-      #no-http-modal {
-        display: hidden;
+      .btn-group {
+        margin-bottom: 10px;
+      }
+      #no-https-modal {
+        display: none;
       }
     </style>
     <title>Bidir Demo | Ice for JavaScript</title>
   </head>
 
   <body>
+    <div class="container">
     <h2> Bidir Demo | Ice for JavaScript</h2>
 
-    <div class="container">
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-xs-10">
+
 	  <div id="no-https-modal" class="alert alert-warning" role="alert" style="margin-top: 20px">
 	    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -44,19 +45,16 @@
               not allow the client to make a non-secure connection from a page loaded via
               HTTPS. You can run the demo from an HTTP page by navigating
               to <a href=""></a>.
+	    </p>
 	  </div>
-        </div>
-      </div>
 
-      <div class="row">
-	<div class="col-sm-6">
-          <input class="btn btn-success" id="start" value="Start" />
-          <input class="btn btn-danger disabled" id="stop" value="Stop" />
-	</div>
-      </div>
-      <div class="row">
-	<div class="col-sm-6">
+	  <div class="btn-group" role="group">
+            <button class="btn btn-success" id="start">Start</button>
+            <button class="btn btn-danger disabled" id="stop">Stop</button>
+	  </div>
+
           <textarea id="output" style="width:100%" class="disabled" readonly></textarea>
+
 	</div>
       </div>
     </div>
@@ -76,21 +74,14 @@
         // Web browsers does not allow WS connections from
         // HTTPS pages.
         //
-        if(document.location.protocol === "https:")
+        if (document.location.protocol === "https:")
         {
-            var href = "http://" + document.location.hostname + ":8080" + document.location.pathname;
+            var href = "http://" + document.location.hostname + document.location.port + document.location.pathname;
             $("#no-https-modal a").attr("href", href);
             $("#no-https-modal a").text(href);
-            $("#no-https-modal").foundation({
-                reveal:
-                {
-                    close_on_background_click: false,
-                    close_on_esc: false
-                }
-            });
-            $("#no-https-modal").foundation("reveal", "open");
+	    $("#no-https-modal").show();
         }
-        else if(document.location.protocol === "http:")
+        else if (document.location.protocol === "http:")
         {
             checkGenerated(["Callback.js"]);
         }
