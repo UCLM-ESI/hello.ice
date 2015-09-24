@@ -32,10 +32,10 @@ class PrinterCallbackI(Example.Callback, threading.Thread):
 
         self.join()
 
-    def register(self, ident, current=None):
-        print("new printer '{}'".format(self._broker.identityToString(ident)))
+    def register(self, identity, current=None):
+        print("new printer '{}'".format(self._broker.identityToString(identity)))
         with self._cond:
-            client = Example.PrinterPrx.uncheckedCast(current.con.createProxy(ident))
+            client = Example.PrinterPrx.uncheckedCast(current.con.createProxy(identity))
             self._clients.append(client)
 
     def run(self):
