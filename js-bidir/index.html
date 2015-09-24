@@ -1,5 +1,5 @@
 <!&#100;doctype html>
-<html class="no-js" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
 
@@ -68,21 +68,16 @@
     <script type="text/javascript" src="Client.js"></script>
 
     <script type="text/javascript">
-        /* jshint browser:true, jquery:true */
-        /* global checkGenerated: false */
-        //
         // Web browsers does not allow WS connections from
         // HTTPS pages.
-        //
-        if (document.location.protocol === "https:")
-        {
+
+        if (document.location.protocol === "https:") {
             var href = "http://" + document.location.hostname + document.location.port + document.location.pathname;
             $("#no-https-modal a").attr("href", href);
             $("#no-https-modal a").text(href);
 	    $("#no-https-modal").show();
         }
-        else if (document.location.protocol === "http:")
-        {
+        else if (document.location.protocol === "http:") {
             checkGenerated(["Callback.js"]);
         }
     </script>
