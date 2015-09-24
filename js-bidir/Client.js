@@ -11,7 +11,7 @@ var PrinterPrx = Example.PrinterPrx;
 var PrinterI = Ice.Class(Example.Printer, {
     write: function(message, current) {
         writeLine("received callback: " + message);
-    }
+    },
 });
 
 var id = new Ice.InitializationData();
@@ -44,8 +44,7 @@ var start = function() {
             //
             // Set the connection adapter and remember the connection.
             //
-            connection = proxy.ice_getCachedConnection();
-            connection.setAdapter(adapter);
+            proxy.ice_getCachedConnection().setAdapter(adapter);
 
             //
             // Register the client with the bidir server.
