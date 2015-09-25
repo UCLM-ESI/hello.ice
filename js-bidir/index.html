@@ -1,73 +1,83 @@
-<!doctype html>
-<html class="no-js" lang="en">
+<!&#100;doctype html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bidir Demo | Ice for JavaScript</title>
-    <!-- Bundle with all the stylesheets used to build the user interface,
-         see assets/Makefile in your distribution for details -->
-    <link rel="stylesheet" type="text/css" href="assets/common.css" />
-  </head>
-  <body>
-    <!-- Main section that contains the user interface -->
-    <section role="main" id="body">
-        <div class="row">
-            <div class="large-12 medium-12 columns">
-                <form>
-                    <a href="#" class="button small" id="start">Start</a>
-                    <a href="#" class="button small disabled" id="stop">Stop</a>
-                    <textarea id="output" class="disabled" readonly></textarea>
-                    <div id="progress" class="row hide">
-                    <div class="small-12 columns left">
-                        <div class="inline left icon"></div>
-                        <div class="text"></div>
-                    </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
 
-    <div id="no-https-modal" class="reveal-modal" data-reveal>
-        <p>This client uses a non-secure WebSocket connection, but your browser does not allow
-            the client to make a non-secure connection from a page loaded via HTTPS. You can run the
-            demo from an HTTP page by navigating to <a href=""></a>.
-        </p>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      #output {
+        width: 100%;
+        min-height: 100px;
+      }
+      h2 {
+        padding-bottom: 20px;
+      }
+      .btn-group {
+        margin-bottom: 10px;
+      }
+      #no-https-modal {
+        display: none;
+      }
+    </style>
+    <title>Bidir Demo | Ice for JavaScript</title>
+  </head>
+
+  <body>
+    <div class="container">
+    <h2> Bidir Demo | Ice for JavaScript</h2>
+
+      <div class="row">
+        <div class="col-xs-10">
+
+	  <div id="no-https-modal" class="alert alert-warning" role="alert" style="margin-top: 20px">
+	    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+	    </button>
+	    <p>This client uses a non-secure WebSocket connection, but your browser does
+              not allow the client to make a non-secure connection from a page loaded via
+              HTTPS. You can run the demo from an HTTP page by navigating
+              to <a href=""></a>.
+	    </p>
+	  </div>
+
+	  <div class="btn-group" role="group">
+            <button class="btn btn-success" id="start">Start</button>
+            <button class="btn btn-danger disabled" id="stop">Stop</button>
+	  </div>
+
+          <textarea id="output" style="width:100%" class="disabled" readonly></textarea>
+
+	</div>
+      </div>
     </div>
 
-    <!-- Bundle with all the scripts used to build the user interface,
-         see assets/Makefile in your distribution for details -->
-    <script type="text/javascript" src="assets/common.min.js"></script>
-    <!-- Ice.js (Ice run-time library) -->
+
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ice/3.6.1/Ice.js"></script>
-    <!-- Callback.js (Demo generated code) -->
+
     <script type="text/javascript" src="Printer.js"></script>
     <script type="text/javascript" src="Callback.js"></script>
-    <!-- browser/Client.js (Bidir Demo Application) -->
+
     <script type="text/javascript" src="Client.js"></script>
+
     <script type="text/javascript">
-        /* jshint browser:true, jquery:true */
-        /* global checkGenerated: false */
-        //
         // Web browsers does not allow WS connections from
         // HTTPS pages.
-        //
-        if(document.location.protocol === "https:")
-        {
-            var href = "http://" + document.location.hostname + ":8080" + document.location.pathname;
+
+        if (document.location.protocol === "https:") {
+            var href = "http://" + document.location.hostname + document.location.port + document.location.pathname;
             $("#no-https-modal a").attr("href", href);
             $("#no-https-modal a").text(href);
-            $("#no-https-modal").foundation({
-                reveal:
-                {
-                    close_on_background_click: false,
-                    close_on_esc: false
-                }
-            });
-            $("#no-https-modal").foundation("reveal", "open");
+	    $("#no-https-modal").show();
         }
-        else if(document.location.protocol === "http:")
-        {
+        else if (document.location.protocol === "http:") {
             checkGenerated(["Callback.js"]);
         }
     </script>
