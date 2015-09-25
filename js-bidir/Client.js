@@ -1,9 +1,3 @@
-// **********************************************************************
-//
-// Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
-//
-// **********************************************************************
-
 (function() {
 
 var PrinterPrx = Example.PrinterPrx;
@@ -11,7 +5,7 @@ var PrinterPrx = Example.PrinterPrx;
 var PrinterI = Ice.Class(Example.Printer, {
     write: function(message, current) {
         writeLine("received callback: " + message);
-    }
+    },
 });
 
 var id = new Ice.InitializationData();
@@ -21,94 +15,75 @@ var communicator = Ice.initialize(id);
 var connection;
 
 var start = function() {
-    //
     // Create a proxy to the sender object.
-    //
     var hostname = document.location.hostname || "127.0.0.1";
     var proxy = communicator.stringToProxy("callback:ws -p 10002 -h " + hostname);
 
-    //
-    // Down-cast the proxy to the Demo.CallbackSender interface.
-    //
-    return Example.CallbackPrx.checkedCast(proxy).then(function(server) {
-        //
-        // Create the client object adapter.
-        //
-        return communicator.createObjectAdapter("").then( function(adapter) {
-            //
-            // Create a callback receiver servant and add it to
-            // the object adapter.
-            //
-            var printer = adapter.addWithUUID(new PrinterI());
+    return communicator.createObjectAdapter("").then(on_adapter_ready);
 
-            //
-            // Set the connection adapter and remember the connection.
-            //
-            connection = proxy.ice_getCachedConnection();
-            connection.setAdapter(adapter);
+    function on_adapter_ready(adapter) {
+	var printer = adapter.addWithUUID(new PrinterI());
+	return Example.CallbackPrx.checkedCast(proxy).then(on_server_ready);
 
-            //
-            // Register the client with the bidir server.
-            //
-            return server.register(printer.ice_getIdentity());
-        });
-    });
+	function on_server_ready(server) {
+	    connection = proxy.ice_getCachedConnection();
+	    connection.setAdapter(adapter);
+
+	    return server.register(printer.ice_getIdentity());
+	};
+    };
 };
 
-var stop = function()
-{
-    //
+var stop = function() {
     // Close the connection, the server will unregister the client
     // when it tries to invoke on the bi-dir proxy.
-    //
+    writeLine("browser object connection closed.");
     return connection.close(false);
 };
 
-//
-// Setup button click handlers
-//
+// button click handlers
 $("#start").click(function() {
-    if (isDisconnected()) {
-        setState(State.Connecting);
-        Ice.Promise.try(
-	    function() {
-		return start().then(function() {
-                    setState(State.Connected);
-		});
-            }
-	).exception(
-            function(ex) {
-                $("#output").val(ex.toString());
-                setState(State.Disconnected);
-            }
-        );
-    }
+    if (isConnected())
+	return false;
+
+    setState(State.Connecting);
+    Ice.Promise.try(
+	function() {
+	    return start().then(function() {
+                setState(State.Connected);
+	    });
+        }
+    ).exception(
+        function(ex) {
+            $("#output").val(ex.toString());
+            setState(State.Disconnected);
+        }
+    );
     return false;
 });
 
 $("#stop").click(function() {
-    if (isConnected()) {
-        setState(State.Disconnecting);
-        Ice.Promise.try(
-            function() {
-                return stop();
-            }
-        ).exception(
-	    function(ex) {
-                $("#output").val(ex.toString());
-            }
-        ).finally(
-            function() {
-                setState(State.Disconnected);
-            }
-        );
-    }
+    if (isDisconnected())
+	return false;
+
+    setState(State.Disconnecting);
+    Ice.Promise.try(
+        function() {
+            return stop();
+        }
+    ).exception(
+	function(ex) {
+            $("#output").val(ex.toString());
+        }
+    ).finally(
+        function() {
+            setState(State.Disconnected);
+        }
+    );
     return false;
 });
 
-//
 // Handle client state
-//
 var State = {
     Disconnected: 0,
     Connecting: 1,
