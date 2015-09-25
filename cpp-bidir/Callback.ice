@@ -4,6 +4,6 @@
 
 module Example {
   interface Callback {
-    void register(Ice::Identity ident);
+    void attach(Ice::Identity ident);
   };
 };
