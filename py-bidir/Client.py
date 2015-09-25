@@ -34,7 +34,7 @@ class Client(Ice.Application):
         proxy = broker.stringToProxy(argv[1])
         server = Example.CallbackPrx.checkedCast(proxy)
         server.ice_getConnection().setAdapter(adapter)
-        server.register(identity)
+        server.attach(identity)
 
         self.communicator().waitForShutdown()
         return 0

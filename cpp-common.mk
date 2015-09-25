@@ -1,4 +1,4 @@
-CC=g++
-CXX=g++
-CXXFLAGS=-I.
-LDLIBS=-lIce -lIceUtil -lpthread
+CC?=g++
+CXX?=g++
+CXXFLAGS?=-I.
+LDLIBS?=-lIce -lIceUtil -lpthread
