@@ -4,22 +4,24 @@ http://www.zeroc.com/
 
 To download this repository::
 
-  $ sudo apt-get install mercurial
-  $ hg clone https://bitbucket.org/arco_group/ice-hello
+  ~$ sudo apt-get install mercurial
+  ~$ hg clone https://bitbucket.org/arco_group/ice-hello
 
 To update (when you have have already download it)::
 
-  $ hg pull -u
+  ~/ice-hello$ hg pull -u
 
 
-Dependencies (just for tesing)
-------------------------------
+Dependencies (just for testing)
+-------------------------------
 
 (from "deb http://babel.esi.uclm.es/arco sid")
 
 - atheist >= 1.20130202
 - python-prego
 
+
+[trying sync with github]
 
 .. Local Variables:
 ..  coding: utf-8

@@ -3,6 +3,7 @@
 
 import sys
 import Ice
+import time
 
 Ice.loadSlice('Armory.ice')
 import Armory
@@ -30,6 +31,10 @@ class PanTiltI(Armory.PanTilt):
 
     def stop(self, current=None):
         self.driver.stop()
+
+    def fire(self, current=None):
+        self.driver.fire()
+        time.sleep(7)
 
 
 class Server(Ice.Application):

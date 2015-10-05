@@ -16,21 +16,37 @@ class GUI:
         self.build_gui()
 
     def build_gui(self):
-        hbox = gtk.HBox()
+        vbox = gtk.VBox()
         window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         window.resize(200, 100)
-        window.add(hbox)
+        window.add(vbox)
 
         buttons = {}
-        for name in ['down', 'up', 'left', 'right']:
+        for name in ['down', 'up', 'left', 'right', 'fire']:
             button = gtk.Button(name)
             buttons[name] = button
-            hbox.add(button)
+
+        hbox1 = gtk.HBox(); vbox.add(hbox1)
+        hbox2 = gtk.HBox(); vbox.add(hbox2)
+        hbox3 = gtk.HBox(); vbox.add(hbox3)
+
+        hbox1.add(gtk.Label())
+        hbox1.add(buttons['up'])
+        hbox1.add(gtk.Label())
+
+        hbox2.add(buttons['left'])
+        hbox2.add(buttons['fire'])
+        hbox2.add(buttons['right'])
+
+        hbox3.add(gtk.Label())
+        hbox3.add(buttons['down'])
+        hbox3.add(gtk.Label())
 
         buttons['down'].connect('pressed', lambda w: self.app.turret.down())
         buttons['up'].connect('pressed', lambda w: self.app.turret.up())
         buttons['left'].connect('pressed', lambda w: self.app.turret.left())
         buttons['right'].connect('pressed', lambda w: self.app.turret.right())
+        buttons['fire'].connect('pressed', lambda w: self.app.turret.fire())
 
         for button in buttons.values():
             button.connect('released', self.on_button_released)

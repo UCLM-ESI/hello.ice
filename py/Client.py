@@ -7,7 +7,7 @@ Ice.loadSlice('Printer.ice')
 import Example
 
 
-class client (Ice.Application):
+class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
         printer = Example.PrinterPrx.checkedCast(proxy)
@@ -20,4 +20,4 @@ class client (Ice.Application):
         return 0
 
 
-sys.exit(client().main(sys.argv))
+sys.exit(Client().main(sys.argv))

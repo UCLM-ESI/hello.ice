@@ -1,14 +1,17 @@
-#!/usr/bin/python
+#!/usr/bin/python -u
+# -*- coding: utf-8 -*-
 
 import sys
-import Ice, IceStorm
+import Ice
+import IceStorm
 Ice.loadSlice('Printer.ice')
 import Example
 
 
 class PrinterI(Example.Printer):
-    def write(self, s, current=None):
-        print "Event received:", s
+    def write(self, message, current=None):
+        print("Event received: {0}".format(message))
+        sys.stdout.flush()
 
 
 class Subscriber(Ice.Application):

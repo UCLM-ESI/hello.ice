@@ -1,0 +1,5 @@
+
+Ice.Plugin.IceWS = IceWS:createIceWS
+PrinterAdapter.Endpoints = ws -h 127.0.0.1 -p 9090
+
+

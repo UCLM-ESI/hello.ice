@@ -1,5 +1,4 @@
 CLASSPATH=-classpath /usr/share/java/Ice.jar:/usr/share/java/Freeze.jar:/usr/share/java/db.jar:.
-
 LIBRARYPATH=-Djava.library.path=/usr/lib/i386-linux-gnu
 
 all: Counter Client.class Server.class

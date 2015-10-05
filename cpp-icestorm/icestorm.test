@@ -2,7 +2,8 @@
 
 import signal
 
-Command('mkdir $testdir/db')
+Command('rm -rf $testdir/db')
+Test('mkdir $testdir/db')
 
 icebox = TestBG(
     pre = FileExists('/usr/bin/icebox'),
@@ -12,12 +13,12 @@ icebox = TestBG(
 Command(
     pre=[FileExists('/usr/bin/icestormadmin'),
          Poll(OpenPort(10000))],
-    cmd='icestormadmin --Ice.Config=icestorm.config -e "destroy HelloTopic"',
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "destroy PrinterTopic"',
     cwd='$testdir', shell=True)
 
 Test(
     pre=Poll(OpenPort(10000)),
-    cmd='icestormadmin --Ice.Config=icestorm.config -e "create HelloTopic"',
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"',
     cwd='$testdir', shell=True)
 
 s = Test(
@@ -26,7 +27,7 @@ s = Test(
     cmd='./subscriber --Ice.Config=subscriber.config',
     cwd='$testdir', detach=True, signal=signal.SIGINT,
     post=[FileContains('Waiting events...'),
-          FileContains('Event received: Hello World!', times=10)])
+          FileContains('Event received: Hello World', times=10)])
 
 Test(
     desc='publisher',
@@ -40,7 +41,7 @@ TaskTerminator(s)
 
 Test(
     pre=Poll(OpenPort(10000)),
-    cmd='icestormadmin --Ice.Config=icestorm.config -e "destroy HelloTopic"',
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "destroy PrinterTopic"',
     cwd='$testdir', shell=True)
 
 TaskTerminator(icebox)

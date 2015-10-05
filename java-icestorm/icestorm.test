@@ -1,0 +1,49 @@
+# -*- mode:python; coding:utf-8 -*-
+
+import signal
+
+java = 'java -classpath .:$testdir:/usr/share/java/Ice.jar:/usr/share/java/IceStorm.jar'
+
+Command('rm -rf $testdir/db')
+Test('mkdir $testdir/db')
+
+icebox = TestBG(
+    pre = FileExists('/usr/bin/icebox'),
+    cmd='icebox --Ice.Config=./icebox.config',
+    cwd='$testdir')
+
+Command(
+    pre=[FileExists('/usr/bin/icestormadmin'),
+         Poll(OpenPort(10000))],
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "destroy PrinterTopic"',
+    cwd='$testdir', shell=True)
+
+Test(
+    pre=Poll(OpenPort(10000)),
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"',
+    cwd='$testdir', shell=True)
+
+server = Test(
+    desc='subscriber',
+    pre=FileExists('$testdir/Subscriber.class'),
+    cmd='%s Subscriber --Ice.Config=subscriber.config' % java,
+    cwd='$testdir', detach=True, signal=signal.SIGINT, expected=130,
+    post=[FileContains('Waiting events...'),
+          FileContains('Event received: Hello World', times=10)])
+
+Test(
+    desc='publisher',
+    pre=[FileExists('$testdir/Publisher.class'),
+         Poll(TaskRunning(server))],
+    cmd='%s Publisher --Ice.Config=publisher.config' % java,
+    cwd='$testdir',
+    post=FileContains("publishing 10 'Hello World' events"))
+
+TaskTerminator(server)
+
+Test(
+    pre=Poll(OpenPort(10000)),
+    cmd='icestormadmin --Ice.Config=icestorm.config -e "destroy PrinterTopic"',
+    cwd='$testdir', shell=True)
+
+TaskTerminator(icebox)

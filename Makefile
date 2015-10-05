@@ -14,7 +14,7 @@ clean:   RULE = clean
 all clean install: subdirs
 
 check: all
-	atheist .
+	atheist -k .
 
 clean:
 	$(RM) *~

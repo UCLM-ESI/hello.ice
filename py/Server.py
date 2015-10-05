@@ -8,9 +8,12 @@ import Example
 
 
 class PrinterI(Example.Printer):
+    n = 0
+
     def write(self, message, current=None):
-        print(message)
+        print("{0}: {1}".format(self.n, message))
         sys.stdout.flush()
+        self.n += 1
 
 
 class Server(Ice.Application):
@@ -22,6 +25,7 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity("printer1"))
 
         print(proxy)
+        sys.stdout.flush()
 
         adapter.activate()
         self.shutdownOnInterrupt()

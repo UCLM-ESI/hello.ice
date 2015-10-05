@@ -1,7 +1,9 @@
-include ../vars.mk
+#!/usr/bin/make -f
+# -*- mode:makefile -*-
+
+include ../cpp-common.mk
 
 LDLIBS += -lFreeze -lIceStorm
-CXXFLAGS=-I.
 
 SLICES=$(wildcard *.ice)
 GENERATED=$(SLICES:.ice=.cpp) $(SLICES:.ice=.h)

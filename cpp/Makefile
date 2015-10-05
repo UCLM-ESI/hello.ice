@@ -1,13 +1,16 @@
-include ../vars.mk
+#!/usr/bin/make -f
+# -*- mode:makefile -*-
 
-CXXFLAGS=-I.
+include ../cpp-common.mk
 
 APP=Printer
 STUBS=$(addprefix $(APP), .h .cpp)
+TARGET=Server Server-UUID Client
 
-all: Server Client
+all: $(TARGET)
 
 Server: Server.o $(APP)I.o $(APP).o
+Server-UUID: Server-UUID.o $(APP)I.o $(APP).o
 Client: Client.o $(APP).o
 
 Server.cpp Client.cpp: $(STUBS)
@@ -15,9 +18,17 @@ Server.cpp Client.cpp: $(STUBS)
 %.cpp %.h: %.ice
 	slice2cpp $<
 
+dist:
+	mkdir dist
+
+gen-dist: all dist
+	cp Client Server dist/
+	icepatch2calc dist/
+
 clean:
-	$(RM) Server Client $(STUBS) *.o *~
+	$(RM) $(TARGET) $(STUBS) *.o *~
 	$(RM) *.bz2 IcePatch2.sum
+	$(RM) -r dist
 
 calc:
 	icepatch2calc .
