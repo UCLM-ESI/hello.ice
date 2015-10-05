@@ -40,6 +40,9 @@ public class Subscriber extends Application {
 
     try {
       topic.subscribeAndGetPublisher(null, subscriber);
+    } catch(InvalidSubscriber e) {
+      e.printStackTrace();
+      return 1;      
     } catch(AlreadySubscribed e) {
       e.printStackTrace();
       return 1;

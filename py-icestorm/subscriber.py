@@ -43,7 +43,7 @@ class Subscriber(Ice.Application):
         except IceStorm.NoSuchTopic:
             topic = topic_mgr.create(topic_name)
 
-        topic.subscribe(qos, subscriber)
+        topic.subscribeAndGetPublisher(qos, subscriber)
         print 'Waiting events...', subscriber
 
         adapter.activate()
