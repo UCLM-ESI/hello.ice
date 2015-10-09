@@ -18,8 +18,8 @@ run-server: Server.class
 
 run-client-end: Client_end.class
 	java $(CLASSPATH) \
-	    Client_end "$(shell head -1 proxy.out)" 6
+	    Client_end '$(shell head -1 proxy.out)' 6
 
 run-client-callback: Client_callback.class
 	java $(CLASSPATH) \
-	    Client_callback "$(shell head -1 proxy.out)" 6
+	    Client_callback '$(shell head -1 proxy.out)' 6
