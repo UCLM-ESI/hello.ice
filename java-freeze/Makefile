@@ -20,7 +20,7 @@ run-server: Server.class db
 run-client: Client.class
 	grep -v "^--" server.out > proxy.out
 	java $(LIBRARYPATH) $(CLASSPATH) \
-	    Client "$$(head -1 proxy.out)"
+	    Client '$$(head -1 proxy.out)'
 
 db:
 	mkdir $@
