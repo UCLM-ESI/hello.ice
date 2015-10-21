@@ -26,7 +26,7 @@ run-server: Server db
 
 run-client: Client
 	grep -v "^--" server.out > proxy.out
-	./Client "$$(head -1 proxy.out)"
+	./Client '$$(head -1 proxy.out)'
 
 db:
 	mkdir db

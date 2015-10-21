@@ -18,4 +18,4 @@ run-server:
 	./Server.py --Ice.Config=Server.config | tee proxy.out
 
 run-client:
-	./Client.py "$(shell head -1 proxy.out)"
+	./Client.py '$(shell head -1 proxy.out)'
