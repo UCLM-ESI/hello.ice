@@ -29,4 +29,4 @@ run-server: Server.class
 
 run-client: Client.class
 	java $(CLASSPATH) \
-	    Client "$(shell head -1 proxy.out)"
+	    Client '$(shell head -1 proxy.out)'

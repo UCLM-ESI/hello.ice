@@ -17,4 +17,4 @@ run-server: Server.exe
 	mono Server.exe --Ice.Config=Server.config | tee proxy.out
 
 run-client: Client.exe
-	mono Client.exe "$(shell head -1 proxy.out)"
+	mono Client.exe '$(shell head -1 proxy.out)'

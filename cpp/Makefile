@@ -37,4 +37,4 @@ run-server: Server
 	./Server --Ice.Config=Server.config | tee proxy.out
 
 run-client: Client
-	./Client "$(shell head -1 proxy.out)"
+	./Client '$(shell head -1 proxy.out)'
