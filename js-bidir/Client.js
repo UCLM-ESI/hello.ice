@@ -29,7 +29,7 @@ var start = function() {
 	    connection = proxy.ice_getCachedConnection();
 	    connection.setAdapter(adapter);
 
-	    return server.register(printer.ice_getIdentity());
+	    return server.attach(printer.ice_getIdentity());
 	};
     };
 };

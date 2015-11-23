@@ -39,7 +39,7 @@
 
     Slice.defineOperations(Example.Callback, Example.CallbackPrx,
     {
-        "register": [, , , , , , [[Ice.Identity]], , , , ]
+        "attach": [, , , , , , [[Ice.Identity]], , , , ]
     });
     exports.Example = Example;
 }
