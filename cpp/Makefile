@@ -3,6 +3,8 @@
 
 include ../cpp-common.mk
 
+CC=g++ -std=c++11
+
 APP=Printer
 STUBS=$(addprefix $(APP), .h .cpp)
 TARGET=Server Server-UUID Client
