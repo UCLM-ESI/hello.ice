@@ -1,0 +1,90 @@
+<!&#100;doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      #output {
+        width: 100%;
+        min-height: 100px;
+      }
+      h2 {
+        padding-bottom: 20px;
+      }
+      textarea {
+        width: 100%;
+      }
+      .btn-group {
+        margin-bottom: 10px;
+      }
+      #proxy {
+        height: 90px;
+        resize: none;
+      }
+      #no-https-modal {
+        display: none;
+      }
+    </style>
+    <title>Bidir Demo | Ice for JavaScript</title>
+  </head>
+
+  <body>
+    <div class="container">
+    <h2> Bidir Demo | Ice for JavaScript</h2>
+
+      <div class="row">
+        <div class="col-xs-10">
+
+	  <div id="no-https-modal" class="alert alert-warning" role="alert" style="margin-top: 20px">
+	    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+	    </button>
+	    <p>This client uses a non-secure WebSocket connection, but your browser does
+              not allow the client to make a non-secure connection from a page loaded via
+              HTTPS. You can run the demo from an HTTP page by navigating
+              to <a href=""></a>.
+	    </p>
+	  </div>
+
+	  <textarea id="proxy" class="disabled" readonly>Object proxy will apear here!</textarea>
+
+	  <div class="btn-group" role="group">
+            <button class="btn btn-success" id="start">Start</button>
+            <button class="btn btn-danger disabled" id="stop">Stop</button>
+	  </div>
+
+          <textarea id="output" class="disabled" readonly></textarea>
+
+
+	</div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ice/3.6.2/Ice.js"></script>
+    <script type="text/javascript" src="BidirAdapter.js"></script>
+    <script type="text/javascript" src="Printer.js"></script>
+
+    <script type="text/javascript" src="Client.js"></script>
+
+    <script type="text/javascript">
+        // Web browsers does not allow WS connections from
+        // HTTPS pages.
+
+        if (document.location.protocol === "https:") {
+            var href = "http://" + document.location.hostname + document.location.port + document.location.pathname;
+            $("#no-https-modal a").attr("href", href);
+            $("#no-https-modal a").text(href);
+	    $("#no-https-modal").show();
+        }
+    </script>
+  </body>
+</html>

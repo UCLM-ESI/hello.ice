@@ -1,0 +1,3 @@
+deb:npm
+deb:nodejs-legacy
+cmd:npm install slice2js --save-dev
