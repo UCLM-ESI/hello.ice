@@ -1,6 +1,8 @@
 This is an browser side Server JS example. It's a adaptation/simplification of [1] to our
-Printer interface using a generic BidirAdapter. The BidirAdapter allows to any Ice client
-to indirectly invoce objects living in the browser.
+Printer interface using a generic BidirAdapter (./bidir-adapter).
+
+The BidirAdapter allows to any Ice client to indirectly invoke objects living in the
+browser.
 
 This example shows invocation from browser to standard Ice Server (C++, Python, ...)
 and viceversa.
@@ -11,12 +13,12 @@ Procedure:
 - Run bidir-adapter:
   bidir-adapter$ ./Server.py --Ice.Config=Server-WS.config
 
-- Run a browser object:
+- Run the browser object:
   js$ make run-server
 
 - Click "Start" button in webpage and copy the object proxy.
 
-- Run a Printer client (any language) using the proxy:
+- Run a Printer client (any language) using the shown proxy:
   py$ ./Client.py "<proxy>"
 
 - Invocations are shown in webpage
