@@ -1,57 +1,5 @@
 (function() {
 
-RemoteAdapter = function(local_adapter, bidir_adapter) {
-    this.local_adapter = local_adapter;
-    this.bidir_adapter = bidir_adapter;
-
-    this.conn = bidir_adapter.ice_getCachedConnection();
-    this.conn.setAdapter(local_adapter);
-};
-
-RemoteAdapter.prototype.addWithUUID = function(servant) {
-    var prx = this.local_adapter.addWithUUID(servant);
-    return this.bidir_adapter.add(prx);
-};
-
-RemoteAdapter.prototype.add = function(servant, oid) {
-    var ic = this.local_adapter.getCommunicator();
-    var prx = this.local_adapter.add(servant, broker.stringToIdentity(oid));
-    return this.bidir_adapter.add(prx);
-};
-
-RemoteAdapter.prototype.getCommunicator = function() {
-    return this.local_adapter.getCommunicator();
-};
-
-RemoteAdapter.prototype.getConnection = function() {
-    return this.conn;
-};
-
-
-createRemoteAdapter = function(broker, strprx) {
-    var retval = new Ice.Promise();
-
-    broker.createObjectAdapter("")
-	.then(on_adapter_ready)
-	.exception(function(ex) { retval.fail(ex); });
-
-    var adapter;
-    function on_adapter_ready(adapter_) {
-	adapter = adapter_;
-
-	var bidir_adapter = broker.stringToProxy(strprx);
-	return Demo.BidirAdapterPrx.checkedCast(bidir_adapter)
-	    .then(on_bidir_adapter_prx_ready);
-    };
-
-    function on_bidir_adapter_prx_ready(bidir_adapter) {
-	var bidir_adapter = new RemoteAdapter(adapter, bidir_adapter);
-	return retval.succeed(bidir_adapter);
-    };
-
-    return retval;
-};
-
 var PrinterPrx = Example.PrinterPrx;
 
 var PrinterI = Ice.Class(Example.Printer, {
@@ -65,7 +13,7 @@ start = function() {
     broker = Ice.initialize(idata);
 
     var strprx = "bidir-adapter -t:ws -h " + location.hostname + " -p 9080";
-    return createRemoteAdapter(broker, strprx)
+    return createBidirAdapter(broker, strprx)
      	.then(on_adapter_ready);
 
     function on_adapter_ready(adapter_) {
