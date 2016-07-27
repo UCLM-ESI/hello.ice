@@ -5,7 +5,7 @@ import sys
 import Ice
 
 Ice.loadSlice('-I{} BidirAdapter.ice'.format(Ice.getSliceDir()))
-import Demo
+import Utils
 
 
 class MessageForwarder(Ice.Blobject):
@@ -35,7 +35,7 @@ class MessageForwarder(Ice.Blobject):
             pass
 
 
-class BidirAdapterI(Demo.BidirAdapter):
+class BidirAdapterI(Utils.BidirAdapter):
     def __init__(self, adapter):
         self.adapter = adapter
 
@@ -49,6 +49,9 @@ class BidirAdapterI(Demo.BidirAdapter):
         except Ice.AlreadyRegisteredException:
             self.adapter.remove(oid)
             return self.adapter.add(servant, oid)
+
+    def getproxy(self, identity):
+        return self.adapter.find(identity)
 
 
 class Server(Ice.Application):
