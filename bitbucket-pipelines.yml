@@ -4,6 +4,7 @@
 # You can specify a custom docker image from Dockerhub as your build environment
 # image: docker-image:tag
 
+image: python:3.5.1
 pipelines:
   default:
     - step:
