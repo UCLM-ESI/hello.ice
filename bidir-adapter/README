@@ -1,0 +1,2 @@
+The BidirAdapter provide Ice object registration for client using a bidir conecction.
+Try "./js" for a running example.

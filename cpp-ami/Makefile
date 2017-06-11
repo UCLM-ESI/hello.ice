@@ -26,7 +26,7 @@ run-server:
 	./Server --Ice.Config=./Server.config | tee server.proxy
 
 run-client-end:
-	./Client-end "$(shell head -1 server.proxy)" 4
+	./Client-end '$(shell head -1 server.proxy)' 4
 
 run-client-callback:
-	./Client-callback "$(shell head -1 server.proxy)" 4
+	./Client-callback '$(shell head -1 server.proxy)' 4

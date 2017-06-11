@@ -70,7 +70,7 @@ class Server(Ice.Application):
         broker = self.communicator()
         servant = PrinterCallbackI(broker)
 
-        adapter = broker.createObjectAdapter("Callback")
+        adapter = broker.createObjectAdapter("CallbackAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("callback"))
         print(proxy)
 

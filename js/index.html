@@ -1,4 +1,4 @@
-<!&#100;doctype html>
+<doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -20,8 +20,15 @@
       h2 {
         padding-bottom: 20px;
       }
+      textarea {
+        width: 100%;
+      }
       .btn-group {
         margin-bottom: 10px;
+      }
+      #proxy {
+        height: 90px;
+        resize: none;
       }
       #no-https-modal {
         display: none;
@@ -48,22 +55,23 @@
 	    </p>
 	  </div>
 
+	  <textarea id="proxy" class="disabled" readonly>Object proxy will apear here!</textarea>
+
 	  <div class="btn-group" role="group">
             <button class="btn btn-success" id="start">Start</button>
             <button class="btn btn-danger disabled" id="stop">Stop</button>
 	  </div>
 
-          <textarea id="output" style="width:100%" class="disabled" readonly></textarea>
+          <textarea id="output" class="disabled" readonly></textarea>
+
 
 	</div>
       </div>
     </div>
 
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ice/3.6.1/Ice.js"></script>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ice/3.6.2/Ice.js"></script>
+    <script type="text/javascript" src="BidirAdapter.js"></script>
     <script type="text/javascript" src="Printer.js"></script>
-    <script type="text/javascript" src="Callback.js"></script>
 
     <script type="text/javascript" src="Client.js"></script>
 

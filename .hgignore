@@ -3,3 +3,5 @@ syntax: glob
 js/IceJS
 *~
 *.o
+
+proxy.out
