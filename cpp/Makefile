@@ -3,6 +3,8 @@
 
 include ../cpp-common.mk
 
+CC=g++ -std=c++11
+
 APP=Printer
 STUBS=$(addprefix $(APP), .h .cpp)
 TARGET=Server Server-UUID Client
@@ -37,4 +39,4 @@ run-server: Server
 	./Server --Ice.Config=Server.config | tee proxy.out
 
 run-client: Client
-	./Client "$(shell head -1 proxy.out)"
+	./Client '$(shell head -1 proxy.out)'

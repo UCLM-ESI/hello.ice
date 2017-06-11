@@ -11,4 +11,4 @@ turret.py:
 	ln -s python-turret-host-controller/turret.py .
 
 run-client:
-	./Client.py "$(shell head -1 proxy.out)"
+	./Client.py '$(shell head -1 proxy.out)'

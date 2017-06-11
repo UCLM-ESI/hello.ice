@@ -4,33 +4,27 @@ var PrinterPrx = Example.PrinterPrx;
 
 var PrinterI = Ice.Class(Example.Printer, {
     write: function(message, current) {
-        writeLine("received callback: " + message);
+        writeLine("message received: " + message);
     },
 });
 
-var id = new Ice.InitializationData();
-id.properties = Ice.createProperties();
+start = function() {
+    var idata = new Ice.InitializationData();
+    broker = Ice.initialize(idata);
 
-var communicator = Ice.initialize(id);
-var connection;
+    var strprx = "bidir-adapter -t:ws -h " + location.hostname + " -p 9080";
+    return createBidirAdapter(broker, strprx)
+     	.then(on_adapter_ready);
 
-var start = function() {
-    // Create a proxy to the sender object.
-    var hostname = document.location.hostname || "127.0.0.1";
-    var proxy = communicator.stringToProxy("callback:ws -p 10002 -h " + hostname);
+    function on_adapter_ready(adapter_) {
+	adapter = adapter_;
+	var servant = new PrinterI();
+	return adapter.addWithUUID(servant)
+	    .then(on_printer_ready);
+    };
 
-    return communicator.createObjectAdapter("").then(on_adapter_ready);
-
-    function on_adapter_ready(adapter) {
-	var printer = adapter.addWithUUID(new PrinterI());
-	return Example.CallbackPrx.checkedCast(proxy).then(on_server_ready);
-
-	function on_server_ready(server) {
-	    connection = proxy.ice_getCachedConnection();
-	    connection.setAdapter(adapter);
-
-	    return server.attach(printer.ice_getIdentity());
-	};
+    function on_printer_ready(printer) {
+	writeProxy(printer);
     };
 };
 
@@ -38,7 +32,7 @@ var stop = function() {
     // Close the connection, the server will unregister the client
     // when it tries to invoke on the bi-dir proxy.
     writeLine("browser object connection closed.");
-    return connection.close(false);
+    return adapter.getConnection().close(false);
 };
 
 // button click handlers
@@ -83,6 +77,15 @@ $("#stop").click(function() {
     return false;
 });
 
+var writeProxy = function(proxy) {
+    $("#proxy").val(proxy);
+};
+
+var writeLine = function(msg) {
+    $("#output").val($("#output").val() + msg + "\n");
+    $("#output").scrollTop($("#output").get(0).scrollHeight);
+};
+
 // Handle client state
 var State = {
     Disconnected: 0,
@@ -97,11 +100,6 @@ var isConnected = function() {
 
 var isDisconnected = function() {
     return state == State.Disconnected;
-};
-
-var writeLine = function(msg) {
-    $("#output").val($("#output").val() + msg + "\n");
-    $("#output").scrollTop($("#output").get(0).scrollHeight);
 };
 
 var state;

@@ -7,8 +7,9 @@ and viceversa.
 Procedure:
 
 - Install DEPENDS
-- Run a "bidir" server
-- Execute "make run-client"
-- Click "Start"
+- Run a "bidir" server:
+  ice-hello/py-bidir$ ./Server.py --Ice.Config=Server-WS.config
+- Execute "make run-server"
+- Click "Start" button
 
 [1] https://github.com/zeroc-ice/ice-demos/tree/master/js/Ice/bidir/browser
