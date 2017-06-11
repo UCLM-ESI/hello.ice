@@ -2,7 +2,7 @@
 
 #include <Ice/Identity.ice>
 
-module Demo {
+module Utils {
 
     interface BidirAdapter {
 	Object* add(Object* proxy);

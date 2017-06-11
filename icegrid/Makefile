@@ -1,17 +1,35 @@
 #!/usr/bin/make -f
 # -*- mode:makefile -*-
 
-start-grid: /tmp/db/registry /tmp/db/node1 /tmp/db/node2
+NODES=$(basename $(shell ls node*.config | sort -r))
+NODE_DIRS=$(addprefix /tmp/db/, $(NODES))
+IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
+
+start-grid: /tmp/db/registry $(NODE_DIRS)
 	icegridnode --Ice.Config=node1.config &
-	while ! netstat -lptn 2> /dev/null | grep ":4061"; do sleep 1; done
-	icegridnode --Ice.Config=node2.config &
-	icegridadmin --Ice.Config=locator.config -uuser -ppass -e "node list"
+
+	@echo -- waiting registry to start...
+	@while ! netstat -lptn 2> /dev/null | grep ":4061" > /dev/null; do \
+	    sleep 1; \
+	done
+
+	@for node in $(filter-out node1, $(NODES)); do \
+	    icegridnode --Ice.Config=$$node.config & \
+	    echo -- $$node started; \
+	done
+
+	@echo -- ok
 
 stop-grid:
-	for node in node2 node1; do \
-	    icegridadmin --Ice.Config=locator.config -u user -p pass -e "node shutdown $$node"; \
+	@for node in $(NODES); do \
+	    $(IG_ADMIN) -e "node shutdown $$node"; \
 	done
-	killall icegridnode
+
+	@killall icegridnode
+	@echo -- ok
+
+show-nodes:
+	$(IG_ADMIN) -e "node list"
 
 /tmp/db/%:
 	mkdir -p $@
