@@ -3,6 +3,7 @@
 
 import sys
 import Ice
+import Glacier2
 import IceStorm
 
 Ice.loadSlice('Printer.ice')
@@ -15,8 +16,8 @@ class PrinterI(Example.Printer):
         sys.stdout.flush()
 
 
-class Subscriber(Ice.Application):
-    def run(self, args):
+class Subscriber(Glacier2.Application):
+    def runWithSession(self, args):
         servant_prx = self.register_servant()
         print("Subscribed proxy: '{}'".format(servant_prx))
         self.subscribe_to_topic(servant_prx, topic="PrinterTopic")
@@ -25,11 +26,22 @@ class Subscriber(Ice.Application):
         self.shutdownOnInterrupt()
         self.communicator().waitForShutdown()
 
+    def createSession(self):
+        return self.router().createSession("user", "passwd")
+
     def register_servant(self):
         ic = self.communicator()
-        adapter = ic.createObjectAdapter("PrinterAdapter")
+        # adapter = ic.createObjectAdapter("PrinterAdapter")
+        # adapter.activate()
+        # return adapter.addWithUUID(PrinterI())
+
+        # adapter = self.objectAdapter()
+
+        adapter = ic.createObjectAdapterWithRouter("Adapter", self.router())
         adapter.activate()
-        return adapter.addWithUUID(PrinterI())
+
+        oid = self.createCallbackIdentity("PrinterReceiver")
+        return adapter.add(PrinterI(), oid)
 
     def subscribe_to_topic(self, proxy, topic):
         topic = self.get_topic(topic)
