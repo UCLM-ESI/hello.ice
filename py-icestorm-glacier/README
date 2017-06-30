@@ -1,0 +1,2 @@
+public: IceStorm and Glacier2 are in a public network
+private: IceStorm subscribers are in a private network, use Vagrant here to simulate it.
