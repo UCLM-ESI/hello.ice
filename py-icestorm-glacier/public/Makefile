@@ -15,6 +15,6 @@ run-publisher:
 
 # this ip will be the 'public' ip for private machine
 save-ip-address:
-	 ip a | 'grep' " inet " | 'grep' -v "127.0.0" | \
+	 @ip a | 'grep' " inet " | 'grep' -v "127.0.0" | \
 	    sed 's/^ *//' | cut -d" " -f 2 | cut -d"/" -f 1 \
 	    > ../private/host.ip
