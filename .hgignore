@@ -5,3 +5,5 @@ js/IceJS
 *.o
 
 proxy.out
+.vagrant/
+host.ip
