@@ -23,14 +23,15 @@ Server.cpp Client.cpp: $(STUBS)
 dist:
 	mkdir dist
 
-gen-dist: all dist
+gen-dist: clean all dist
 	cp Client Server dist/
 	icepatch2calc dist/
+	ln -sf $(PWD)/dist /tmp/printer-server-cpp
 
 clean:
 	$(RM) $(TARGET) $(STUBS) *.o *~
 	$(RM) *.bz2 IcePatch2.sum
-	$(RM) -r dist
+	$(RM) -r dist /tmp/printer-server-cpp
 
 calc:
 	icepatch2calc .

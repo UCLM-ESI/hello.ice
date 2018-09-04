@@ -1,3 +1,4 @@
+#!/usr/bin/nosetests
 # -*- mode:python; coding:utf-8 -*-
 
 from hamcrest import contains_string

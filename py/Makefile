@@ -6,13 +6,14 @@ all:
 dist:
 	mkdir dist
 
-gen-dist: dist
+gen-dist: clean dist
 	cp Client.py Server.py Server-UUID.py Printer.ice dist/
 	icepatch2calc dist/
+	ln -sf $(PWD)/dist /tmp/printer-server-py
 
 clean:
 	$(RM) *~ proxy.out
-	$(RM) -rf dist
+	$(RM) -rf dist /tmp/printer-server-py
 
 run-server:
 	./Server.py --Ice.Config=Server.config | tee proxy.out
