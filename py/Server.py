@@ -1,4 +1,4 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 
 import sys
@@ -24,8 +24,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("PrinterAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("printer1"))
 
-        print(proxy)
-        sys.stdout.flush()
+        print(proxy, flush=True)
 
         adapter.activate()
         self.shutdownOnInterrupt()

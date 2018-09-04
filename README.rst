@@ -12,16 +12,19 @@ To update (when you have have already download it)::
   ~/hello.ice$ hg pull -u
 
 
-Dependencies (just for testing)
--------------------------------
+Running dependencies
+--------------------
 
-(from "deb http://babel.esi.uclm.es/arco sid")
+- python3.5
 
-- atheist >= 1.20130202
+
+Testing dependencies
+--------------------
+
+(from "deb http://pike.esi.uclm.es/arco sid")
+
 - python-prego
 
-
-[trying sync with github]
 
 .. Local Variables:
 ..  coding: utf-8

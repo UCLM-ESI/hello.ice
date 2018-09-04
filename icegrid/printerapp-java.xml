@@ -104,7 +104,7 @@
                <object identity="printer1"/>
             </adapter>
          </server>
-         <server-instance template="IcePatch2" directory="/tmp/ice-hello/java/dist">
+         <server-instance template="IcePatch2" directory="/tmp/printer-server-java">
             <properties>
                <property name="Ice.ServerIdleTime" value="5"/>
             </properties>
