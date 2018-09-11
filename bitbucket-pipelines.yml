@@ -10,4 +10,4 @@ pipelines:
     - step:
         script:
           - pip install prego
-          - prego py/test.py
+          - prego -p py/test.py
