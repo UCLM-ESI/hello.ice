@@ -5,7 +5,6 @@ SUBDIRS = \
 	cpp   cpp-icestorm  cpp-ami  cpp-amd  cpp-freeze cpp-observer \
 	java  java-icestorm java-ami java-amd java-freeze \
 	py    py-icestorm   py-ami   py-amd
-#       csharp
 
 all:     RULE = all
 install: RULE = install
@@ -14,7 +13,10 @@ clean:   RULE = clean
 all clean install: subdirs
 
 check: all
-	atheist -k .
+	@for f in $(shell find -name "test.py"); do \
+	    echo "prego $$f"; \
+	    prego -veo $$f; \
+	done
 
 clean:
 	$(RM) *~

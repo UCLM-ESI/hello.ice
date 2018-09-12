@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- mode: python; coding: utf-8 -*-
 
 import sys
@@ -49,4 +49,3 @@ class DynamicDispatching(Ice.Application):
 
 
 DynamicDispatching().main(sys.argv)
-
