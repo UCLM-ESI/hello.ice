@@ -9,4 +9,4 @@ pipelines:
   default:
     - step:
         script:
-          - prego -p py/test.py
+          - prego -p -veo py/test.py
