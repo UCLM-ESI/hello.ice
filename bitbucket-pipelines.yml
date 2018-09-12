@@ -4,7 +4,7 @@
 # You can specify a custom docker image from Dockerhub as your build environment
 # image: docker-image:tag
 
-image: arco/ice-tests
+image: arco/ice36-prego
 pipelines:
   default:
     - step:
