@@ -4,10 +4,10 @@
 # You can specify a custom docker image from Dockerhub as your build environment
 # image: docker-image:tag
 
-image: python:2.7.12
+image: arco/ice36-prego
 pipelines:
   default:
     - step:
         script:
-          - pip install prego
-          - prego -p py/test.py
+          - make
+          - prego -p -veo py/test.py
