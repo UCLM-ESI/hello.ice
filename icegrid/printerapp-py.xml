@@ -100,6 +100,7 @@
          <server id="PrinterServer1" activation="manual" exe="./Server.py" pwd="${application.distrib}">
             <properties>
                <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
+               <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
             </properties>
             <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
                <object identity="printer1" type="::Example::Printer"/>
@@ -110,6 +111,7 @@
          <server id="PrinterServer2" activation="manual" exe="./Server-UUID.py" pwd="${application.distrib}">
             <properties>
                <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
+               <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
             </properties>
             <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
          </server>
