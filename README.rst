@@ -25,6 +25,7 @@ Testing dependencies
 
 - python-prego
 
+.
 
 .. Local Variables:
 ..  coding: utf-8

@@ -9,7 +9,7 @@ class Client: public Ice::Application {
     ObjectPrx proxy = communicator()->stringToProxy(argv[1]);
     PrinterPrx printer = PrinterPrx::checkedCast(proxy);
 
-    printer->write("Hello, World!");
+    printer->write("Hello World!");
 
     return 0;
   }
