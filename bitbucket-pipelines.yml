@@ -8,6 +8,11 @@ image: arco/ice36-prego
 pipelines:
   default:
     - step:
+        name: build
         script:
           - make
-          - prego -p -veo py/test.py
+    - step:
+        name: test
+        script:
+          - export PYTHONPATH=$(pwd)
+	  - make check
