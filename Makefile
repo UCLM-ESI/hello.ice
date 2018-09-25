@@ -13,6 +13,7 @@ clean:   RULE = clean
 all clean install: subdirs
 
 check: all
+	PYTHONPATH=$(shell pwd)
 	@for f in $(shell find -name "test.py"); do \
 	    echo "prego $$f"; \
 	    prego -veo $$f; \
