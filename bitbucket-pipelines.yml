@@ -15,4 +15,4 @@ pipelines:
         name: test
         script:
           - export PYTHONPATH=$(pwd)
-	  - make check
+          - make check
