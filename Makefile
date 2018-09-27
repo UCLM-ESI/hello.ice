@@ -12,12 +12,9 @@ clean:   RULE = clean
 
 all clean install: subdirs
 
+check: export PYTHONPATH = $(shell pwd)
 check: all
-	PYTHONPATH=$(shell pwd)
-	@for f in $(shell find -name "test.py"); do \
-	    echo "prego $$f"; \
-	    prego -veo $$f; \
-	done
+	find -name "test.py" | xargs prego
 
 clean:
 	$(RM) *~
