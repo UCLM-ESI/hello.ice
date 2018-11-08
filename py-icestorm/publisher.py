@@ -29,7 +29,7 @@ class Publisher(Ice.Application):
         try:
             topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
-            print "no such topic found, creating"
+            print("Topic {} not found, creating...".format(topic_name))
             topic = topic_mgr.create(topic_name)
 
         publisher = topic.getPublisher()
