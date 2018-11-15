@@ -4,6 +4,7 @@
 import sys
 import Ice
 import IceStorm
+import time
 Ice.loadSlice('./Printer.ice')
 import Example
 
@@ -22,7 +23,7 @@ class Publisher(Ice.Application):
     def run(self, argv):
         topic_mgr = self.get_topic_manager()
         if not topic_mgr:
-            print ': invalid proxy'
+            print(': invalid proxy')
             return 2
 
         topic_name = "PrinterTopic"
@@ -36,8 +37,9 @@ class Publisher(Ice.Application):
         printer = Example.PrinterPrx.uncheckedCast(publisher)
 
         print "publishing 10 'Hello World' events"
-        for i in range(10):
+        for i in range(100):
             printer.write("Hello World %s!" % i)
+            time.sleep(1)
 
         return 0
 
