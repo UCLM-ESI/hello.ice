@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: add pike apt key
+      apt_key:
+        url: http://pike.esi.uclm.es/arco/key.asc
+        state: present
+    - name: add pike repo
+      apt_repository: repo='deb http://pike.esi.uclm.es/arco sid main' state=present
+
+    - name: update apt
+      apt: update_cache=yes
+
+    - name: install depends
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - zeroc-ice36
+        - python3-nose
+        - python3-doublex
+        - python3-prego
