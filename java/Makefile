@@ -14,14 +14,15 @@ Example: Printer.ice
 dist:
 	mkdir dist
 
-gen-dist: all dist
+gen-dist: clean all dist
 	cp -r *.class Example dist/
 	icepatch2calc dist/
+	ln -sf $(PWD)/dist /tmp/printer-server-java
 
 clean:
 	$(RM) *.class proxy.out *~
 	$(RM) -r Example
-	$(RM) -r dist
+	$(RM) -r dist /tmp/printer-server-java
 
 run-server: Server.class
 	java $(CLASSPATH) \

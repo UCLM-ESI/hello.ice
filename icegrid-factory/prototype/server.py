@@ -4,7 +4,7 @@
 import sys
 import Ice
 Ice.loadSlice('Printer.ice')
-import Example
+import Example  # noqa
 
 
 class PrinterI(Example.Printer):
@@ -24,7 +24,8 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("PrinterAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("printer1"))
 
-        print(proxy, flush=True)
+        print(proxy)
+        sys.stdout.flush()
 
         adapter.activate()
         self.shutdownOnInterrupt()

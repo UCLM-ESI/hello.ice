@@ -24,8 +24,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("PrinterAdapter")
         proxy = adapter.addWithUUID(servant)
 
-        print(proxy)
-        sys.stdout.flush()
+        print(proxy, flush=True)
 
         adapter.activate()
         self.shutdownOnInterrupt()

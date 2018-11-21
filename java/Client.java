@@ -3,7 +3,7 @@ public class Client extends Ice.Application {
     Ice.ObjectPrx obj = communicator().stringToProxy(args[0]);
     Example.PrinterPrx printer = Example.PrinterPrxHelper.checkedCast(obj);
 
-    printer.write("Hello, World!");
+    printer.write("Hello World!");
 
     return 0;
   }

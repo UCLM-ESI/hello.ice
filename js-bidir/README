@@ -1,6 +1,8 @@
 This is an "bidir" JavaScript example. It is a trivial adaptation/simplification of
 [1] to our Printer interface.
 
+This example require a "biddir server", not to be confused with the "BidirAdapter".
+
 This example shows invocation from browser to standard Ice Server (C++, Python, ...)
 and viceversa.
 

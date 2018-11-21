@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- This file was written by IceGrid Admin -->
 <icegrid>
-   <application name="PrinterApp">
-      <distrib icepatch="${application}.IcePatch2/server"/>
+   <application name="App">
       <service-template id="IceStorm">
          <parameter name="instance-name" default="${application}.IceStorm"/>
          <parameter name="topic-manager-endpoints" default="default"/>
          <parameter name="publish-endpoints" default="default"/>
          <parameter name="flush-timeout" default="1000"/>
-         <service name="${instance-name}" entry="IceStormService,34:createIceStorm">
+         <service name="${instance-name}" entry="IceStormService,36:createIceStorm">
             <properties>
                <property name="${service}.InstanceName" value="${instance-name}"/>
                <property name="${service}.Flush.Timeout" value="${flush-timeout}"/>
@@ -29,7 +28,7 @@
          <parameter name="flush-timeout" default="1000"/>
          <parameter name="publish-replica-group"/>
          <parameter name="topic-manager-replica-group"/>
-         <service name="${instance-name}${node-id}" entry="IceStormService,34:createIceStorm">
+         <service name="${instance-name}${node-id}" entry="IceStormService,36:createIceStorm">
             <properties>
                <property name="${service}.InstanceName" value="${instance-name}"/>
                <property name="${service}.NodeId" value="${node-id}"/>
@@ -46,7 +45,7 @@
          <parameter name="client-endpoints"/>
          <parameter name="server-endpoints" default=""/>
          <parameter name="session-timeout" default="0"/>
-         <server id="${instance-name}" activation="manual" exe="glacier2router">
+         <server id="${instance-name}" activation="always" exe="glacier2router">
             <properties>
                <property name="Glacier2.Client.Endpoints" value="${client-endpoints}"/>
                <property name="Glacier2.Server.Endpoints" value="${server-endpoints}"/>
@@ -91,29 +90,28 @@
             <service-instance template="IceStorm-HA" instance-name="${instance-name}" node-id="${node-id}" topic-manager-endpoints="${topic-manager-endpoints}" publish-endpoints="${publish-endpoints}" node-endpoints="${node-endpoints}" flush-timeout="${flush-timeout}" publish-replica-group="${publish-replica-group}" topic-manager-replica-group="${topic-manager-replica-group}"/>
          </icebox>
       </server-template>
-      <node name="node1">
-         <server-instance template="IcePatch2" directory="/tmp/printer-server-py">
+      <server-template id="PrinterServer">
+         <parameter name="name"/>
+         <server id="${name}" activation="on-demand" exe="./server.py" pwd="./prototype">
             <properties>
-               <property name="Ice.ServerIdleTime" value="5"/>
-            </properties>
-         </server-instance>
-         <server id="PrinterServer1" activation="manual" exe="./Server.py" pwd="${application.distrib}">
-            <properties>
-               <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
-               <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
-            </properties>
-            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
-               <object identity="printer1" type="::Example::Printer"/>
-            </adapter>
-         </server>
-      </node>
-      <node name="node2">
-         <server id="PrinterServer2" activation="manual" exe="./Server-UUID.py" pwd="${application.distrib}">
-            <properties>
-               <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
-               <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
+               <property name="Ice.StdOut" value="/tmp/printer.out"/>
+               <property name="Ice.StdErr" value="/tmp/printer.err"/>
             </properties>
             <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
+         </server>
+      </server-template>
+      <node name="node1">
+         <server id="factory" activation="manual" exe="./factory.py" pwd=".">
+            <properties>
+               <property name="Ice.StdErr" value="./tmp/factory.err"/>
+               <property name="Ice.StdOut" value="./tmp/factory.out"/>
+               <property name="user" value="user"/>
+               <property name="pwd" value="pwd"/>
+               <property name="Ice.ServerIdleTime" value="5"/>
+            </properties>
+            <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
+               <object identity="factory"/>
+            </adapter>
          </server>
       </node>
    </application>

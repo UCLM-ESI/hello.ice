@@ -4,7 +4,6 @@
 import sys
 import Ice
 import IceStorm
-import time
 Ice.loadSlice('./Printer.ice')
 import Example
 
@@ -14,7 +13,7 @@ class Publisher(Ice.Application):
         key = 'IceStorm.TopicManager.Proxy'
         proxy = self.communicator().propertyToProxy(key)
         if proxy is None:
-            print "property", key, "not set"
+            print("property {} not set".format(key))
             return None
 
         print("Using IceStorm in: '%s'" % key)
@@ -23,23 +22,22 @@ class Publisher(Ice.Application):
     def run(self, argv):
         topic_mgr = self.get_topic_manager()
         if not topic_mgr:
-            print(': invalid proxy')
+            print('Invalid proxy')
             return 2
 
         topic_name = "PrinterTopic"
         try:
             topic = topic_mgr.retrieve(topic_name)
         except IceStorm.NoSuchTopic:
-            print("Topic {} not found, creating...".format(topic_name))
+            print("no such topic found, creating")
             topic = topic_mgr.create(topic_name)
 
         publisher = topic.getPublisher()
         printer = Example.PrinterPrx.uncheckedCast(publisher)
 
-        print "publishing 10 'Hello World' events"
-        for i in range(100):
+        print("publishing 10 'Hello World' events")
+        for i in range(10):
             printer.write("Hello World %s!" % i)
-            time.sleep(1)
 
         return 0
 

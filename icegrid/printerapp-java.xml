@@ -92,7 +92,12 @@
          </icebox>
       </server-template>
       <node name="node1">
-         <server id="PrinterServer" activation="manual" exe="java" pwd="${application.distrib}">
+         <server-instance template="IcePatch2" directory="/tmp/printer-server-java">
+            <properties>
+               <property name="Ice.ServerIdleTime" value="5"/>
+            </properties>
+         </server-instance>
+         <server id="PrinterServer1" activation="manual" exe="java" pwd="${application.distrib}">
             <option>-classpath</option>
             <option>/usr/share/java/Ice.jar:.</option>
             <option>Server</option>
@@ -104,11 +109,18 @@
                <object identity="printer1"/>
             </adapter>
          </server>
-         <server-instance template="IcePatch2" directory="/tmp/ice-hello/java/dist">
+      </node>
+      <node name="node2">
+         <server id="PrinterServer2" activation="manual" exe="java" pwd="${application.distrib}">
+            <option>-classpath</option>
+            <option>/usr/share/java/Ice.jar:.</option>
+            <option>Server</option>
             <properties>
-               <property name="Ice.ServerIdleTime" value="5"/>
+               <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
+               <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
             </properties>
-         </server-instance>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
+         </server>
       </node>
    </application>
 </icegrid>
