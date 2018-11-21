@@ -22,7 +22,9 @@ clean:
 	find -name "IcePatch2.sum" | xargs --verbose rm -fv
 	find -name db | xargs --verbose rm -vrf
 	find -name *.orig | xargs --verbose rm -vrf
+	find -name "*.pyc" | xargs --verbose rm -vrf
 	find -name "*_flymake.py" | xargs --verbose rm -vrf
+	find -name "__pycache__" | xargs --verbose rm -vrf
 
 
 .PHONY: subdirs $(SUBDIRS)
