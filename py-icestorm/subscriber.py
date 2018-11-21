@@ -28,7 +28,7 @@ class Subscriber(Ice.Application):
     def run(self, argv):
         topic_mgr = self.get_topic_manager()
         if not topic_mgr:
-            print(': invalid proxy')
+            print("Invalid proxy")
             return 2
 
         ic = self.communicator()
@@ -44,7 +44,7 @@ class Subscriber(Ice.Application):
             topic = topic_mgr.create(topic_name)
 
         topic.subscribeAndGetPublisher(qos, subscriber)
-        print('Waiting events...', subscriber)
+        print("Waiting events... '{}'".format(subscriber))
 
         adapter.activate()
         self.shutdownOnInterrupt()
