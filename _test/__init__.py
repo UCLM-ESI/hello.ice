@@ -11,9 +11,9 @@ class ClientServerMixin(TestCase):
         servertask = Task('server', detach=True)
         server = servertask.command('{} --Ice.Config=Server.config'.format(server),
                                     signal=2)
-        servertask.assert_that(server.stdout.content, contains_string('Hello World!'))
+        servertask.wait_that(server.stdout.content, contains_string('Hello World!'))
 
         clientside = Task('client')
         clientside.wait_that(server, running())
         clientside.wait_that(server.stdout.content, contains_string('printer1'))
-        clientside.command('{} "$(head -1 %s)"'.format(client, server.stdout.path))
+        clientside.command('{} "$(head -1 {})"'.format(client, server.stdout.path))
