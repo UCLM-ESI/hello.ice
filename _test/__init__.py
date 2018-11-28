@@ -6,10 +6,10 @@ from prego import TestCase, Task, running, context
 
 
 class ClientServerMixin(TestCase):
-    def make_client_server(self, client, server):
+    def make_client_server(self, client, server, server_config='Server.config'):
         context.cwd = '$testdir'
         servertask = Task('server', detach=True)
-        server = servertask.command('{} --Ice.Config=Server.config'.format(server),
+        server = servertask.command('{} --Ice.Config={}'.format(server, server_config),
                                     signal=2)
         servertask.wait_that(server.stdout.content, contains_string('Hello World!'))
 
