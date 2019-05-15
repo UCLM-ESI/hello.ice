@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- This file was written by IceGrid Admin -->
+<!-- This file was written by IceGrid GUI -->
 <icegrid>
    <application name="App">
       <service-template id="IceStorm">
@@ -101,13 +101,12 @@
          </server>
       </server-template>
       <node name="node1">
-         <server id="factory" activation="manual" exe="./factory.py" pwd=".">
+         <server id="factory" activation="on-demand" exe="./factory.py" pwd=".">
             <properties>
                <property name="Ice.StdErr" value="./tmp/factory.err"/>
                <property name="Ice.StdOut" value="./tmp/factory.out"/>
                <property name="user" value="user"/>
                <property name="pwd" value="pwd"/>
-               <property name="Ice.ServerIdleTime" value="5"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="factory"/>
