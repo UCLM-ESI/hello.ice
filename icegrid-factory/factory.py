@@ -29,6 +29,12 @@ class NodeObserverI(NodeObserver):
         print("Node {} down".format(node_name))
         sys.stdout.flush()
 
+    def nodeInit(self, node,  current):
+        print("nodeInit called", node)
+
+    def updateAdapter(self, node, adapter, current):
+        print("updateAdapter called", node, adapter)
+
 
 class KeepAliveThread(threading.Thread):
     def __init__(self, admin_session):
@@ -42,7 +48,7 @@ class KeepAliveThread(threading.Thread):
             time.sleep(5)
 
 
-class FactoryI(Example.Factory):
+class FactoryI(Example.PrinterFactory):
     def __init__(self, admin_session):
         self.admin_session = admin_session
         self._admin = None
@@ -62,7 +68,8 @@ class FactoryI(Example.Factory):
         except IceGrid.ServerNotExistException:
             self.create_server(server_name)
 
-        return self.get_direct_proxy(server_name, broker = current.adapter.getCommunicator())
+        retval = self.get_direct_proxy(server_name, broker=current.adapter.getCommunicator())
+        return Example.PrinterPrx.checkedCast(retval)
 
     def admin(self):
         if self._admin is not None:
@@ -119,7 +126,7 @@ class FactoryServer(Ice.Application):
         print(proxy)
 
         self.set_node_observer()
-        self.keep_sesion()
+        self.keep_session()
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()

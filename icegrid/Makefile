@@ -6,7 +6,7 @@ NODE_DIRS=$(addprefix /tmp/db/, $(NODES))
 IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
 
 start-grid: /tmp/db/registry $(NODE_DIRS)
-	icegridregistry --Ice.Config=node1.config &
+	icegridnode --Ice.Config=node1.config &
 
 	@echo -- waiting registry to start...
 	@while ! netstat -lptn 2> /dev/null | grep ":4061" > /dev/null; do \

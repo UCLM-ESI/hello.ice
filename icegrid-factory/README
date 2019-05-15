@@ -1,1 +1,13 @@
 A server that create objects spawing IceGrid servers.
+
+steps
+-----
+
+- Start an IceGrid Registry and Node (called "node1")
+  $ make start
+
+- Add icegrid application "app.xml"
+  $ make add-app
+
+- Run client:
+  $ ./client.py --Ice.Config=locator.config factory

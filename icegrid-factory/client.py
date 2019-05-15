@@ -13,7 +13,7 @@ import Example  # noqa
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        factory = Example.FactoryPrx.checkedCast(proxy)
+        factory = Example.PrinterFactoryPrx.checkedCast(proxy)
 
         if not factory:
             raise RuntimeError('Invalid proxy')
