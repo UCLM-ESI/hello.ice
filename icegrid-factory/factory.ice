@@ -1,1 +1,6 @@
-../py-factory/PrinterFactory.ice
+
+module Generic {
+  interface Factory {
+    Object* make(string name);
+  };
+};

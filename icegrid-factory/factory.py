@@ -12,7 +12,7 @@ from IceGrid import (LocatorPrx, ServerInstanceDescriptor,
 import IceGrid
 
 Ice.loadSlice('-I. --all factory.ice')
-import Example  # noqa
+import Generic  # noqa
 
 
 class NodeObserverI(NodeObserver):
@@ -48,7 +48,7 @@ class KeepAliveThread(threading.Thread):
             time.sleep(5)
 
 
-class FactoryI(Example.PrinterFactory):
+class FactoryI(Generic.Factory):
     def __init__(self, admin_session):
         self.admin_session = admin_session
         self._admin = None
@@ -66,10 +66,9 @@ class FactoryI(Example.PrinterFactory):
                 self.admin().startServer(server_name)
 
         except IceGrid.ServerNotExistException:
-            self.create_server(server_name)
+            self.create_server(self.deploy_node, self.template, server_name)
 
-        retval = self.get_direct_proxy(server_name, broker=current.adapter.getCommunicator())
-        return Example.PrinterPrx.checkedCast(retval)
+        return self.get_direct_proxy(server_name, broker=current.adapter.getCommunicator())
 
     def admin(self):
         if self._admin is not None:
@@ -86,14 +85,14 @@ class FactoryI(Example.PrinterFactory):
         dummy_prx = adapters[0].proxy
         return dummy_prx.ice_identity(broker.stringToIdentity(server_name))
 
-    def create_server(self, server_name):
+    def create_server(self, node, template, server_name):
         server_instance_desc = ServerInstanceDescriptor()
-        server_instance_desc.template = self.template
+        server_instance_desc.template = template
         server_instance_desc.parameterValues = {
             'name': server_name,
         }
 
-        self.admin().instantiateServer(self.app, self.deploy_node, server_instance_desc)
+        self.admin().instantiateServer(self.app, node, server_instance_desc)
         self.admin().startServer(server_name)
 
     def remove_server(self, server_name):

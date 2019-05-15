@@ -7,13 +7,14 @@ import Ice
 Ice.loadSlice('-I. --all factory.ice')
 Ice.loadSlice('-I. --all printer.ice')
 
-import Example  # noqa
+import Generic  # noqa
+import Example
 
 
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        factory = Example.PrinterFactoryPrx.checkedCast(proxy)
+        factory = Generic.FactoryPrx.checkedCast(proxy)
 
         if not factory:
             raise RuntimeError('Invalid proxy')
