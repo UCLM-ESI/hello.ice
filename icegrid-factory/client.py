@@ -19,7 +19,7 @@ class Client(Ice.Application):
         if not factory:
             raise RuntimeError('Invalid proxy')
 
-        proxy = factory.make("printer1")
+        proxy = factory.make('node1', 'PrinterTemplate', 'printer1')
         printer = Example.PrinterPrx.checkedCast(proxy)
 
         printer.write('Hello World!')

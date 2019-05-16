@@ -53,12 +53,9 @@ class FactoryI(Generic.Factory):
         self.admin_session = admin_session
         self._admin = None
 
-        self.app = 'App'
-        self.deploy_node = 'node1'
-        self.template = 'PrinterServer'
-        self.template_adapter = 'PrinterAdapter'
+        self.app = 'App'  # FIXME: set as property
 
-    def make(self, server_name, current):
+    def make(self, node, server_template, server_name, current):
         try:
             self.admin().getServerInfo(server_name)
             state = self.admin().getServerState(server_name)
@@ -66,9 +63,9 @@ class FactoryI(Generic.Factory):
                 self.admin().startServer(server_name)
 
         except IceGrid.ServerNotExistException:
-            self.create_server(self.deploy_node, self.template, server_name)
+            self.create_server(node, server_template, server_name)
 
-        return self.get_direct_proxy(server_name, broker=current.adapter.getCommunicator())
+        return self.get_direct_proxy(server_template, server_name, broker=current.adapter.getCommunicator())
 
     def admin(self):
         if self._admin is not None:
@@ -77,8 +74,14 @@ class FactoryI(Generic.Factory):
         self._admin = self.admin_session.getAdmin()
         return self._admin
 
-    def get_direct_proxy(self, server_name, broker):
-        adapters = self.admin().getAdapterInfo('{}.{}'.format(server_name, self.template_adapter))
+    def get_server_template_adapter_name(self, template):
+        template_descriptor = self.admin().getApplicationInfo(self.app).descriptor.serverTemplates[template]
+        adapter_name = template_descriptor.descriptor.adapters[0].name
+        return adapter_name
+
+    def get_direct_proxy(self, template, server_name, broker):
+        adapter_name = self.get_server_template_adapter_name(template)
+        adapters = self.admin().getAdapterInfo('{}.{}'.format(server_name, adapter_name))
         if not adapters:
             return None
 

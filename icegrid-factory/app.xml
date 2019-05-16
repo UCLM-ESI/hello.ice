@@ -90,7 +90,7 @@
             <service-instance template="IceStorm-HA" instance-name="${instance-name}" node-id="${node-id}" topic-manager-endpoints="${topic-manager-endpoints}" publish-endpoints="${publish-endpoints}" node-endpoints="${node-endpoints}" flush-timeout="${flush-timeout}" publish-replica-group="${publish-replica-group}" topic-manager-replica-group="${topic-manager-replica-group}"/>
          </icebox>
       </server-template>
-      <server-template id="PrinterServer">
+      <server-template id="PrinterTemplate">
          <parameter name="name"/>
          <server id="${name}" activation="on-demand" exe="./server.py" pwd="./prototype">
             <properties>
