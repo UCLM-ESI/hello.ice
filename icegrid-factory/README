@@ -3,11 +3,12 @@ A server that create objects spawing IceGrid servers.
 steps
 -----
 
-- Start an IceGrid Registry and Node (called "node1")
-  $ make start
-
-- Add icegrid application "app.xml"
-  $ make add-app
+- Start an IceGrid Registry and Node and add IceGrid application (app.xml)
+  $ make start add-app
 
 - Run client:
   $ ./client.py --Ice.Config=locator.config factory
+
+The factory will instantiate the 'PrinterTemplate' in 'node1' setting
+'printer1' as identity. Then it returns the object proxy, that client
+invokes.

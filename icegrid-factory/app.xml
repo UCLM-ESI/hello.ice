@@ -94,8 +94,9 @@
          <parameter name="name"/>
          <server id="${name}" activation="on-demand" exe="./server.py" pwd="./prototype">
             <properties>
-               <property name="Ice.StdOut" value="/tmp/printer.out"/>
-               <property name="Ice.StdErr" value="/tmp/printer.err"/>
+               <property name="Ice.StdOut" value="${server.distrib}/printer.out"/>
+               <property name="Ice.StdErr" value="${server.distrib}/printer.err"/>
+               <property name="Ice.ServerIdleTime" value="5"/>
             </properties>
             <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
          </server>
@@ -103,10 +104,11 @@
       <node name="node1">
          <server id="factory" activation="on-demand" exe="./factory.py" pwd=".">
             <properties>
-               <property name="Ice.StdErr" value="./tmp/factory.err"/>
-               <property name="Ice.StdOut" value="./tmp/factory.out"/>
+               <property name="Ice.StdErr" value="${server.distrib}/factory.err"/>
+               <property name="Ice.StdOut" value="${server.distrib}/factory.out"/>
                <property name="user" value="user"/>
                <property name="pwd" value="pwd"/>
+               <property name="app" value="App"/>
             </properties>
             <adapter name="Adapter" endpoints="default" id="${server}.Adapter">
                <object identity="factory"/>
