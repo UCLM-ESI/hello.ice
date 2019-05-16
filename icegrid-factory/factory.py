@@ -4,6 +4,7 @@
 import sys
 import threading
 import time
+from functools import lru_cache
 
 import Ice
 from IceGrid import (LocatorPrx, ServerInstanceDescriptor,
@@ -49,44 +50,40 @@ class KeepAliveThread(threading.Thread):
 
 
 class FactoryI(Generic.Factory):
-    def __init__(self, admin_session):
+    def __init__(self, admin_session, app):
         self.admin_session = admin_session
-        self._admin = None
-
-        self.app = 'App'  # FIXME: set as property
+        self.app = app
 
     def make(self, node, server_template, server_name, current):
         try:
-            self.admin().getServerInfo(server_name)
-            state = self.admin().getServerState(server_name)
+            self.admin.getServerInfo(server_name)
+            state = self.admin.getServerState(server_name)
             if state == IceGrid.ServerState.Inactive:
-                self.admin().startServer(server_name)
+                self.admin.startServer(server_name)
 
         except IceGrid.ServerNotExistException:
             self.create_server(node, server_template, server_name)
 
-        return self.get_direct_proxy(server_template, server_name, broker=current.adapter.getCommunicator())
+        return self.get_direct_proxy(server_template, server_name)
 
+    @property
+    @lru_cache(None)
     def admin(self):
-        if self._admin is not None:
-            return self._admin
-
-        self._admin = self.admin_session.getAdmin()
-        return self._admin
+        return self.admin_session.getAdmin()
 
     def get_server_template_adapter_name(self, template):
-        template_descriptor = self.admin().getApplicationInfo(self.app).descriptor.serverTemplates[template]
+        template_descriptor = self.admin.getApplicationInfo(self.app).descriptor.serverTemplates[template]
         adapter_name = template_descriptor.descriptor.adapters[0].name
         return adapter_name
 
-    def get_direct_proxy(self, template, server_name, broker):
+    def get_direct_proxy(self, template, server_name):
         adapter_name = self.get_server_template_adapter_name(template)
-        adapters = self.admin().getAdapterInfo('{}.{}'.format(server_name, adapter_name))
+        adapters = self.admin.getAdapterInfo('{}.{}'.format(server_name, adapter_name))
         if not adapters:
             return None
 
         dummy_prx = adapters[0].proxy
-        return dummy_prx.ice_identity(broker.stringToIdentity(server_name))
+        return dummy_prx.ice_identity(Ice.stringToIdentity(server_name))
 
     def create_server(self, node, template, server_name):
         server_instance_desc = ServerInstanceDescriptor()
@@ -95,8 +92,8 @@ class FactoryI(Generic.Factory):
             'name': server_name,
         }
 
-        self.admin().instantiateServer(self.app, node, server_instance_desc)
-        self.admin().startServer(server_name)
+        self.admin.instantiateServer(self.app, node, server_instance_desc)
+        self.admin.startServer(server_name)
 
     def remove_server(self, server_name):
         print('Trying to remove server {}'.format(server_name))
@@ -108,44 +105,56 @@ class FactoryI(Generic.Factory):
         app_update_desc.name = self.app
         app_update_desc.nodes = [node_update_desc]
 
-        self.admin().updateApplication(app_update_desc)
+        self.admin.updateApplication(app_update_desc)
 
 
 class FactoryServer(Ice.Application):
     def run(self, argv):
-        broker = self.communicator()
-        self.adapter = broker.createObjectAdapter('Adapter')
+        self.broker = self.communicator()
+        self.adapter = self.broker.createObjectAdapter('Adapter')
         self.adapter.activate()
 
-        self.properties = broker.getProperties()
-        self.admin_session = self.get_admin_session()
+        self.properties = self.broker.getProperties()
 
-        identity = broker.stringToIdentity(
-            self.properties.getPropertyWithDefault('Identity', 'factory'))
+        self.servant = FactoryI(
+            self.admin_session,
+            self.get_application())
 
-        self.servant = FactoryI(self.admin_session)
-        proxy = self. adapter.add(self.servant, identity)
-        print(proxy)
+        print(self. adapter.add(self.servant, self.get_factory_identity()))
 
         self.set_node_observer()
         self.keep_session()
 
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+        self.broker.waitForShutdown()
 
         return 0
 
-    def get_admin_session(self):
+    @property
+    @lru_cache(None)
+    def admin_session(self):
         user = self.properties.getProperty('user')
         pwd = self.properties.getProperty('pwd')
 
         registry = LocatorPrx.checkedCast(self.communicator().getDefaultLocator()).getLocalRegistry()
         return registry.createAdminSession(user, pwd)
 
+    def get_application(self):
+        application = self.properties.getProperty('app')
+        if not application:
+            sys.tracebacklimit = 0
+            raise ValueError(
+                "You must provide the 'app' configuration property.")#
+
+        return application
+
+    def get_factory_identity(self):
+        return self.broker.stringToIdentity(
+            self.properties.getPropertyWithDefault('Identity', 'factory'))
+
     def set_node_observer(self):
         observer = NodeObserverI(self.servant)
         observer = NodeObserverPrx.uncheckedCast(self.adapter.addWithUUID(observer))
-        print(observer)
         self.admin_session.setObservers(None, observer, None, None, None)
 
     def keep_session(self):
