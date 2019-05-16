@@ -7,19 +7,20 @@ import Ice
 Ice.loadSlice('-I. --all factory.ice')
 Ice.loadSlice('-I. --all printer.ice')
 
-import Generic  # noqa
+import IceCloud  # noqa
 import Example
 
 
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        factory = Generic.FactoryPrx.checkedCast(proxy)
+        factory = IceCloud.FactoryPrx.checkedCast(proxy)
 
         if not factory:
             raise RuntimeError('Invalid proxy')
 
-        proxy = factory.make('node1', 'PrinterTemplate', 'printer1')
+        proxy = factory.make('node1', 'PrinterTemplate',
+                             {'name': 'printer1'})
         printer = Example.PrinterPrx.checkedCast(proxy)
 
         printer.write('Hello World!')

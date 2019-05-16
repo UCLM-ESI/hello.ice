@@ -5,7 +5,7 @@ IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
 
 start: ./tmp/db/registry ./tmp/db/node1
 	icegridnode --Ice.Config=node1.config &
-	
+
 	@echo -- waiting registry to start...
 	@while ! netstat -lptn 2> /dev/null | grep ":4061" > /dev/null; do \
 	    sleep 1; \
@@ -15,11 +15,14 @@ start: ./tmp/db/registry ./tmp/db/node1
 stop:
 	$(IG_ADMIN) -e "node shutdown node1"
 
-./tmp/db/%:
-	mkdir -p $@
-
 add-app: app.xml
 	$(IG_ADMIN) -e "application add app.xml"
+
+run-client:
+	./client.py --Ice.Config=locator.config factory
+
+./tmp/db/%:
+	mkdir -p $@
 
 clean:
 	$(RM) *~

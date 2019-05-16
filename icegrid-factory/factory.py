@@ -13,7 +13,7 @@ from IceGrid import (LocatorPrx, ServerInstanceDescriptor,
 import IceGrid
 
 Ice.loadSlice('-I. --all factory.ice')
-import Generic  # noqa
+import IceCloud  # noqa
 
 
 class NodeObserverI(NodeObserver):
@@ -30,7 +30,7 @@ class NodeObserverI(NodeObserver):
         print("Node {} down".format(node_name))
         sys.stdout.flush()
 
-    def nodeInit(self, node,  current):
+    def nodeInit(self, node, current):
         print("nodeInit called", node)
 
     def updateAdapter(self, node, adapter, current):
@@ -49,22 +49,28 @@ class KeepAliveThread(threading.Thread):
             time.sleep(5)
 
 
-class FactoryI(Generic.Factory):
+class FactoryI(IceCloud.Factory):
     def __init__(self, admin_session, app):
         self.admin_session = admin_session
         self.app = app
 
-    def make(self, node, server_template, server_name, current):
+    def make(self, node, server_template, params, current):
+        if 'name' not in params:
+            raise IceCloud.CreationError("Parameter 'name' is mandatory")
+
         try:
+            server_name = params['name']
             self.admin.getServerInfo(server_name)
             state = self.admin.getServerState(server_name)
             if state == IceGrid.ServerState.Inactive:
                 self.admin.startServer(server_name)
 
         except IceGrid.ServerNotExistException:
-            self.create_server(node, server_template, server_name)
+            self.create_server(node, server_template, params)
 
-        return self.get_direct_proxy(server_template, server_name)
+        proxy = self.get_direct_proxy(server_template, server_name)
+        proxy.ice_ping()
+        return proxy
 
     @property
     @lru_cache(None)
@@ -85,15 +91,13 @@ class FactoryI(Generic.Factory):
         dummy_prx = adapters[0].proxy
         return dummy_prx.ice_identity(Ice.stringToIdentity(server_name))
 
-    def create_server(self, node, template, server_name):
+    def create_server(self, node, template, params):
         server_instance_desc = ServerInstanceDescriptor()
         server_instance_desc.template = template
-        server_instance_desc.parameterValues = {
-            'name': server_name,
-        }
+        server_instance_desc.parameterValues = params
 
         self.admin.instantiateServer(self.app, node, server_instance_desc)
-        self.admin.startServer(server_name)
+        self.admin.startServer(params['name'])
 
     def remove_server(self, server_name):
         print('Trying to remove server {}'.format(server_name))
