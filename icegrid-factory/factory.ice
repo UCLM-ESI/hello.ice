@@ -2,9 +2,9 @@
 module IceCloud {
 
   dictionary<string, string> Parameters;
-  exception CreationError{};
+  exception CreationError { string reason; };
 
-  interface Factory {
+  interface ServerFactory {
     Object* make(string node, string serverTemplate, Parameters params)
       throws CreationError;
   };

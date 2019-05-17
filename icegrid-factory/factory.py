@@ -27,7 +27,7 @@ class NodeObserverI(NodeObserver):
             self.factory.remove_server(updated_info.id)
 
     def nodeDown(self, node_name, current):
-        print("Node {} down".format(node_name))
+        print("node {} down".format(node_name))
         sys.stdout.flush()
 
     def nodeInit(self, node, current):
@@ -44,19 +44,25 @@ class KeepAliveThread(threading.Thread):
 
     def run(self):
         while True:
-            print('Keep alive')
+            print('keep alive')
             self.session.keepAlive()
             time.sleep(5)
 
 
-class FactoryI(IceCloud.Factory):
+class FactoryI(IceCloud.ServerFactory):
     def __init__(self, admin_session, app):
         self.admin_session = admin_session
         self.app = app
 
     def make(self, node, server_template, params, current):
+        if node not in self.admin.getAllNodeNames():
+            raise IceCloud.CreationError("Node '{}' is not defined in application '{}'.".format(node, self.app))
+
+        if server_template not in self.server_templates:
+            raise IceCloud.CreationError("Server template '{}' is not defined in application '{}'.".format(server_template, self.app))
+
         if 'name' not in params:
-            raise IceCloud.CreationError("Parameter 'name' is mandatory")
+            raise IceCloud.CreationError("Parameter 'name' is mandatory.")
 
         try:
             server_name = params['name']
@@ -77,8 +83,13 @@ class FactoryI(IceCloud.Factory):
     def admin(self):
         return self.admin_session.getAdmin()
 
+    @property
+    @lru_cache(None)
+    def server_templates(self):
+        return self.admin.getApplicationInfo(self.app).descriptor.serverTemplates
+
     def get_server_template_adapter_name(self, template):
-        template_descriptor = self.admin.getApplicationInfo(self.app).descriptor.serverTemplates[template]
+        template_descriptor = self.server_templates[template]
         adapter_name = template_descriptor.descriptor.adapters[0].name
         return adapter_name
 

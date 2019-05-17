@@ -14,13 +14,12 @@ import Example
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        factory = IceCloud.FactoryPrx.checkedCast(proxy)
+        factory = IceCloud.ServerFactoryPrx.checkedCast(proxy)
 
         if not factory:
             raise RuntimeError('Invalid proxy')
 
-        proxy = factory.make('node1', 'PrinterTemplate',
-                             {'name': 'printer1'})
+        proxy = factory.make('node1', 'PrinterTemplate', {'name': 'printer1'})
         printer = Example.PrinterPrx.checkedCast(proxy)
 
         printer.write('Hello World!')

@@ -18,6 +18,9 @@ stop:
 add-app: app.xml
 	$(IG_ADMIN) -e "application add app.xml"
 
+rm-app:
+	$(IG_ADMIN) -e "application remove App"
+
 run-client:
 	./client.py --Ice.Config=locator.config factory
 
