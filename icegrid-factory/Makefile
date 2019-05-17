@@ -11,7 +11,6 @@ start: ./tmp/db/registry ./tmp/db/node1
 	    sleep 1; \
 	done
 
-
 stop:
 	$(IG_ADMIN) -e "node shutdown node1"
 
