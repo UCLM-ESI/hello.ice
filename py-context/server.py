@@ -8,14 +8,9 @@ import Example
 
 
 class PrinterI(Example.Printer):
-    n = 0
-
     def write(self, message, current=None):
-        print("{0}: {1}".format(self.n, message))
+        print("msg: '{}', context: {}".format(message, current.ctx))
         sys.stdout.flush()
-        self.n += 1
-
-        print(current.ctx)
 
 
 class Server(Ice.Application):
