@@ -21,7 +21,7 @@ Running dependencies
 Testing dependencies
 --------------------
 
-(from "deb http://pike.esi.uclm.es/arco sid")
+(from "deb https://uclm-arco.github.io/debian/ sid main")
 
 - python-prego
 
