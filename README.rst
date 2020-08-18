@@ -4,12 +4,12 @@ http://www.zeroc.com/
 
 To download this repository::
 
-  ~$ sudo apt-get install mercurial
-  ~$ hg clone https://bitbucket.org/arco_group/hello.ice
+  ~$ sudo apt install git
+  ~$ https://github.com/UCLM-ESI/hello.ice.git
 
 To update (when you have have already download it)::
 
-  ~/hello.ice$ hg pull -u
+  ~/hello.ice$ git pull
 
 
 Running dependencies
@@ -21,7 +21,7 @@ Running dependencies
 Testing dependencies
 --------------------
 
-(from "deb http://pike.esi.uclm.es/arco sid")
+(from "deb https://uclm-arco.github.io/debian/ sid main")
 
 - python-prego
 
