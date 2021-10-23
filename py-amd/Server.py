@@ -1,9 +1,10 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env python3
 # -*- mode:python; coding:utf-8; tab-width:4 -*-
 
 import sys
 
 import Ice
+
 Ice.loadSlice('factorial.ice')
 import Example
 
@@ -26,8 +27,10 @@ class Server(Ice.Application):
         broker = self.communicator()
 
         adapter = broker.createObjectAdapter("MathAdapter")
-        print adapter.add(servant, broker.stringToIdentity("math1"))
+        math_prx = adapter.add(servant, broker.stringToIdentity("math1"))
         adapter.activate()
+
+        print(math_prx)
 
         work_queue.start()
 
@@ -37,4 +40,7 @@ class Server(Ice.Application):
         work_queue.destroy()
         return 0
 
-sys.exit(Server().main(sys.argv))
+
+if __name__ == "__main__":
+    app = Server()
+    sys.exit(app.main(sys.argv))

@@ -1,7 +1,8 @@
 # -*- mode:python; coding:utf-8; tab-width:4 -*-
 
 from threading import Thread
-from Queue import Queue
+from queue import Queue
+
 import Example
 
 
@@ -42,7 +43,7 @@ class WorkQueue(Thread):
         self.queue.join()
 
 
-class Job(object):
+class Job:
     def __init__(self, cb, value):
         self.cb = cb
         self.value = value
