@@ -1,7 +1,10 @@
-public final class PrinterI extends Example._PrinterDisp {
+import Example.*;
+
+public final class PrinterI implements Printer {
     public PrinterI() {}
 
-    public void write(String message, Ice.Current current) {
+    @Override
+    public void write(String message, com.zeroc.Ice.Current current) {
         System.out.println(message);
     }
 }

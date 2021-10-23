@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # -*- mode:makefile -*-
 
-CLASSPATH=-classpath .:/usr/share/java/Ice.jar
+CLASSPATH=-classpath .:/usr/share/java/ice-3.7.6.jar
 
 all: Example Server.class Client.class
 
