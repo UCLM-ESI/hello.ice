@@ -1,10 +1,10 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sys
 import Ice
 
-Ice.loadSlice('./factorial.ice')
+Ice.loadSlice('factorial.ice')
 import Example
 
 
@@ -27,7 +27,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("MathAdapter")
         math = adapter.add(MathI(), broker.stringToIdentity("math1"))
 
-        print math
+        print(math)
 
         adapter.activate()
         self.shutdownOnInterrupt()
