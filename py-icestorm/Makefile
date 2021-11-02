@@ -8,7 +8,9 @@ clean:
 start:  icebox.config icestorm.config
 	@if ! [ -d db ]; then mkdir db; fi
 	icebox --Ice.Config=icebox.config &
-	sleep 3
+	@while ! netstat -lptn 2> /dev/null | grep ":2000" > /dev/null; do \
+	    sleep 1; \
+	done
 	icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"
 
 stop: icestorm.config
