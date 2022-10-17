@@ -1,3 +1,4 @@
+#include <Ice/Ice.h>
 #include <Ice/Application.h>
 #include <IceStorm/IceStorm.h>
 #include <IceUtil/UUID.h>

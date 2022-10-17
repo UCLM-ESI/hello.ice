@@ -1,4 +1,5 @@
 #include <Ice/Identity.ice>
+
 module IBool {
     interface R {
         idempotent bool get();

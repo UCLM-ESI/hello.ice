@@ -19,7 +19,7 @@ public:
     ObjectAdapterPtr adapter = \
       communicator()->createObjectAdapter("MathAdapter");
     ObjectPrx math = adapter->add(
-      servant, communicator()->stringToIdentity("math1"));
+      servant, stringToIdentity("math1"));
 
     cout << communicator()->proxyToString(math) << endl;
 

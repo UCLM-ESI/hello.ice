@@ -11,7 +11,7 @@ class Server: public Application {
     ObjectAdapterPtr adapter =
          communicator()->createObjectAdapter("PrinterAdapter");
     ObjectPrx proxy = adapter->add(
-	 servant, communicator()->stringToIdentity("printer1"));
+	 servant, stringToIdentity("printer1"));
 
     cout << communicator()->proxyToString(proxy) << endl;
 

@@ -24,7 +24,7 @@ Monitor: Monitor.o Bool.o BoolPersistent.o
 Monitor.o: Monitor.cpp BoolPersistent.h Bool.h
 
 %.h %.cpp: %.ice
-	slice2cpp -I/usr/share/Ice/slice $<
+	slice2cpp -I/usr/share/ice/slice $<
 
 clean:
 	$(RM) $(TARGET)
