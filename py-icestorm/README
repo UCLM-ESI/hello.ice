@@ -11,8 +11,8 @@ $ iceebox --Ice.Config=icebox.config &
 Después ejecutamos al menos un subscriptor si queremos ver los eventos que llegan al
 canal:
 
-$ python subscriber.py --Ice.Config=subscriber.config
+$ python3 subscriber.py --Ice.Config=subscriber.config
 
 Y por último un publicador:
 
-$ python publisher.py --Ice.Config=publisher.config
+$ python3 publisher.py --Ice.Config=publisher.config

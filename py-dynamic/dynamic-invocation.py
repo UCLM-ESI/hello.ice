@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- mode: python; coding: utf-8 -*-
 
 import sys
@@ -43,4 +43,3 @@ class DynamicInvocation(Ice.Application):
 
 
 DynamicInvocation().main(sys.argv)
-

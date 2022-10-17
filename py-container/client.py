@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3 -u
 # -*- coding:utf-8; tab-width:4; mode:python -*-
 
 import sys
@@ -18,6 +18,7 @@ class Client(Ice.Application):
         print container.list()
 
         return 0
+
 
 if __name__ == '__main__':
     sys.exit(Client().main(sys.argv))

@@ -1,22 +1,22 @@
-#!/usr/bin/python3- u
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import sys
 import Ice
-Ice.loadSlice('-I. --all PrinterFactory.ice')
+Ice.loadSlice('printer.ice')
 import Example
 
 
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        factory = Example.PrinterFactoryPrx.checkedCast(proxy)
+        printer = Example.PrinterPrx.checkedCast(proxy)
 
-        if not factory:
+        if not printer:
             raise RuntimeError('Invalid proxy')
 
-        printer = factory.make("printer1")
-        printer.write('Hello World!')
+        context = {'logical-clock': '10'}
+        printer.write('Hello World!', context)
 
         return 0
 
