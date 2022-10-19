@@ -1,16 +1,24 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sys
-import Ice
 import time
 
-Ice.loadSlice('Armory.ice')
-import Armory
+import Ice
 
-sys.path.append('/home/david/repos/librocket')
+try:
+    import Armory
 
-import turret
+except ModuleNotFoundError:
+    Ice.loadSlice('Armory.ice')
+    import Armory
+
+try:
+    import turret
+
+except ModuleNotFoundError:
+    print("Error: cannot found 'turret' module")
+    sys.exit(1)
 
 
 class PanTiltI(Armory.PanTilt):
@@ -25,7 +33,7 @@ class PanTiltI(Armory.PanTilt):
 
     def left(self, current=None):
         self.driver.left()
-
+ 
     def right(self, current=None):
         self.driver.right()
 
@@ -40,12 +48,17 @@ class PanTiltI(Armory.PanTilt):
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
-        servant = PanTiltI()
+        try:
+            servant = PanTiltI()
+
+        except ValueError:
+            print("Error configuring servant (is the turret connected?)")
+            return 1
 
         adapter = broker.createObjectAdapter("TurretAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("turret1"))
 
-        print(proxy)
+        print(proxy, flush=True)
 
         adapter.activate()
         self.shutdownOnInterrupt()
