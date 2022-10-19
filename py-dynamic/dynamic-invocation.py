@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env -S python3
 # -*- mode: python; coding: utf-8 -*-
 
 import sys
@@ -35,11 +35,12 @@ class DynamicInvocation(Ice.Application):
             assert result
 
         else:
-            print "There were an error!"
+            print("There were an error!")
 
     def usage(self):
-        print "USAGE: {0} <proxy> <message>".format(sys.argv[0])
+        print("USAGE: {0} <proxy> <message>".format(sys.argv[0]))
         return -1
 
 
-DynamicInvocation().main(sys.argv)
+if __name__ == "__main__":
+    DynamicInvocation().main(sys.argv)
