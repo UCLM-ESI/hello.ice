@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env -S python3 -u
 # -*- mode:python; coding:utf-8; tab-width:4 -*-
 
 import sys
@@ -14,8 +14,10 @@ class MathI(Example.Math):
     def __init__(self, work_queue):
         self.work_queue = work_queue
 
-    def factorial_async(self, cb, value, current=None):
-        self.work_queue.add(cb, value)
+    def factorial(self, value, current=None):
+        future = Ice.Future()
+        self.work_queue.add(future, value)
+        return future
 
 
 class Server(Ice.Application):
@@ -26,7 +28,7 @@ class Server(Ice.Application):
         broker = self.communicator()
 
         adapter = broker.createObjectAdapter("MathAdapter")
-        print adapter.add(servant, broker.stringToIdentity("math1"))
+        print(adapter.add(servant, broker.stringToIdentity("math1")))
         adapter.activate()
 
         work_queue.start()

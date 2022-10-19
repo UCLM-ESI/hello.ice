@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env -S python3 -u
 # -*- mode: python; coding: utf-8 -*-
 
 import sys
@@ -13,7 +13,7 @@ class BlobjectI(Ice.Blobject):
         inParams = InputStream(bytes)
         message = inParams.readString()
 
-        print "{0}: {1}".format(current.operation, message)
+        print("{0}: {1}".format(current.operation, message))
 
         out = OutputStream()
         out.writeBool(True)
@@ -41,11 +41,12 @@ class DynamicDispatching(Ice.Application):
         oid = self.ic.stringToIdentity("DynamicDispatching")
         prx = self.oa.add(srv, oid)
 
-        print "Use proxy: '{0}'".format(prx)
+        print("Use proxy: '{0}'".format(prx))
 
     def wait_events(self):
         self.shutdownOnInterrupt()
         self.ic.waitForShutdown()
 
 
-DynamicDispatching().main(sys.argv)
+if __name__ == "__main__":
+    sys.exit(DynamicDispatching().main(sys.argv))

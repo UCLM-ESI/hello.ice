@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env -S python3 -u
 # -*- mode: python; coding: utf-8 -*-
 
 import sys
@@ -8,10 +8,10 @@ Ice.loadSlice("example.ice")
 import Example
 
 
-class PrinterI(Example.Printer):
+class PrinterI(Example.Hello):
 
     def say(self, message, current=None):
-        print "say:", message
+        print("say:", message)
         return True
 
 
@@ -34,11 +34,12 @@ class StandardDispatching(Ice.Application):
         oid = self.ic.stringToIdentity("StandardDispatching")
         prx = self.oa.add(srv, oid)
 
-        print "Use proxy: '{0}'".format(prx)
+        print("Use proxy: '{0}'".format(prx))
 
     def wait_events(self):
         self.shutdownOnInterrupt()
         self.ic.waitForShutdown()
 
 
-StandardDispatching().main(sys.argv)
+if __name__ == "__main__":
+    sys.exit(StandardDispatching().main(sys.argv))

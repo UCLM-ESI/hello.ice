@@ -34,6 +34,6 @@ class OutputStream:
         self.data += data
 
     def finished(self):
-        return buffer(self.data)
+        return bytes(self.data, "utf-8")
 
 

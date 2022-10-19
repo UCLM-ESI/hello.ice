@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env -S python3 -u
 # -*- mode: python; coding: utf-8 -*-
 
 import sys
@@ -22,15 +22,16 @@ class StandardInvocation(Ice.Application):
 
     def create_proxy(self):
         self.prx = self.ic.stringToProxy(self.args[1])
-        self.prx = Example.PrinterPrx.uncheckedCast(self.prx)
+        self.prx = Example.HelloPrx.uncheckedCast(self.prx)
 
     def say_things(self):
         retval = self.prx.say(self.args[2])
         assert retval
 
     def usage(self):
-        print "USAGE: {0} <proxy> <message>".format(sys.argv[0])
+        print("USAGE: {0} <proxy> <message>".format(sys.argv[0]))
         return -1
 
 
-StandardInvocation().main(sys.argv)
+if __name__ == "__main__":
+    sys.exit(StandardInvocation().main(sys.argv))

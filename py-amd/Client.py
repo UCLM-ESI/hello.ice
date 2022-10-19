@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env -S python3 -u
 # -*- coding: utf-8 -*-
 "usage: {} <server> <value>"
 
@@ -18,7 +18,7 @@ class Client(Ice.Application):
         if not math:
             raise RuntimeError("Invalid proxy")
 
-        print math.factorial(int(argv[2]))
+        print(math.factorial(int(argv[2])))
 
         return 0
 

@@ -1,7 +1,7 @@
 # -*- mode:python; coding:utf-8; tab-width:4 -*-
 
 from threading import Thread
-from Queue import Queue
+from queue import Queue
 import Example
 
 
@@ -43,12 +43,12 @@ class WorkQueue(Thread):
 
 
 class Job(object):
-    def __init__(self, cb, value):
-        self.cb = cb
+    def __init__(self, future, value):
+        self.future = future
         self.value = value
 
     def execute(self):
-        self.cb.ice_response(factorial(self.value))
+        self.future.set_result(factorial(self.value))
 
     def cancel(self):
-        self.cb.ice_exception(Example.RequestCancelException())
+        self.cb.set_exception(Example.RequestCancelException())
