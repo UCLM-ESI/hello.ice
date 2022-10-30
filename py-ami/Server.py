@@ -27,7 +27,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("MathAdapter")
         math = adapter.add(MathI(), broker.stringToIdentity("math1"))
 
-        print math
+        print(math)
 
         adapter.activate()
         self.shutdownOnInterrupt()

@@ -26,15 +26,18 @@ class Client(Ice.Application):
 
         factorial_cb = FactorialCB()
 
-        math.begin_factorial(int(argv[2]),
-                             factorial_cb.response, factorial_cb.failure)
-        print 'that was an async call'
+        math.begin_factorial(
+            int(argv[2]),
+            factorial_cb.response,
+            factorial_cb.failure
+        )
 
+        print('that was an async call')
         return 0
 
 
 if len(sys.argv) != 3:
-    print __doc__.format(__file__)
+    print(__doc__.format(__file__))
     sys.exit(1)
 
 app = Client()
