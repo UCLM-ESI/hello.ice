@@ -34,15 +34,15 @@ class WorkQueue(Thread):
 
         self.queue.task_done()
 
-    def add(self, cb, value):
-        self.queue.put(Job(cb, value))
+    def add(self, future, value):
+        self.queue.put(Job(future, value))
 
     def destroy(self):
         self.queue.put(self.QUIT)
         self.queue.join()
 
 
-class Job(object):
+class Job:
     def __init__(self, future, value):
         self.future = future
         self.value = value
@@ -51,4 +51,4 @@ class Job(object):
         self.future.set_result(factorial(self.value))
 
     def cancel(self):
-        self.cb.set_exception(Example.RequestCancelException())
+        self.future.set_exception(Example.RequestCancelException())
