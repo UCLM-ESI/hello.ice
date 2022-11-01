@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env -S python3 -u
 # -*- coding: utf-8 -*-
 
 import sys
@@ -8,7 +8,7 @@ Ice.loadSlice('./factorial.ice')
 import Example
 
 
-class FactorialCB(object):
+class FactorialCB:
     def response(self, retval):
         print("Callback: Value is {}".format(retval))
 
@@ -29,7 +29,7 @@ class Client(Ice.Application):
         math.begin_factorial(
             int(argv[2]),
             factorial_cb.response,
-            factorial_cb.failure
+            factorial_cb.failure,
         )
 
         print('that was an async call')
