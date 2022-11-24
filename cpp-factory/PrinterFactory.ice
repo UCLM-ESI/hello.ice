@@ -1,4 +1,4 @@
-#include <printer.ice>
+#include <Printer.ice>
 
 module Example {
   interface PrinterFactory {
