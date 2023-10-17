@@ -12,14 +12,15 @@ class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
         math = Example.MathPrx.checkedCast(proxy)
+        value = int(argv[2])
 
         if not math:
             raise RuntimeError("Invalid proxy")
 
-        async_result = math.begin_factorial(int(argv[2]))
-        print(f'that was an async call with {async_result}')
+        future = math.factorialAsync(value)
+        print("That was an async call")
 
-        print(math.end_factorial(async_result))
+        print(f"Async result is: {future.result()}")
 
         return 0
 
