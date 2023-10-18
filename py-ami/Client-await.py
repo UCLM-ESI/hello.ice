@@ -9,8 +9,12 @@ Ice.loadSlice('./factorial.ice')
 import Example
 
 
-async def main():
-    with Ice.initialize(sys.argv) as broker:
+class Server:
+    async def main(self):
+        with Ice.initialize(sys.argv) as broker:
+            return await self.run(broker)
+
+    async def run(self, broker):
         proxy = broker.stringToProxy(sys.argv[1])
         math = Example.MathPrx.checkedCast(proxy)
         value = int(sys.argv[2])
@@ -23,4 +27,5 @@ async def main():
 
         return 0
 
-sys.exit(asyncio.run(main()))
+
+sys.exit(asyncio.run(Server().main()))
