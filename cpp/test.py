@@ -1,5 +1,4 @@
 #!/usr/bin/prego
-# -*- mode:python; coding:utf-8 -*-
 
 from _test import ClientServerMixin
 

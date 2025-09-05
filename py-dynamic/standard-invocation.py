@@ -1,5 +1,4 @@
 #!/usr/bin/env -S python3 -u
-# -*- mode: python; coding: utf-8 -*-
 
 import sys
 import Ice
@@ -29,7 +28,7 @@ class StandardInvocation(Ice.Application):
         assert retval
 
     def usage(self):
-        print("USAGE: {0} <proxy> <message>".format(sys.argv[0]))
+        print(f"usage: {__file__} <proxy> <message>")
         return -1
 
 

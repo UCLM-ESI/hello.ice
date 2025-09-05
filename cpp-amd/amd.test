@@ -1,5 +1,3 @@
-# -*- coding:utf-8; tab-width:4; mode:python -*-
-
 TestBG(
     './Server --Ice.Config=Server.config',
     shell = True,

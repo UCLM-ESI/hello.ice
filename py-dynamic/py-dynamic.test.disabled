@@ -1,5 +1,3 @@
-# -*- mode: python; coding: utf-8 -*-
-
 text = "some text to say!"
 port = 1234
 proxy = "DynamicDispatching -t:tcp -h 127.0.0.1 -p {0}".format(port)

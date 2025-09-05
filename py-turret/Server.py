@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/usr/bin/env -S python3 -u
 
 import sys
 import time
@@ -33,7 +32,7 @@ class PanTiltI(Armory.PanTilt):
 
     def left(self, current=None):
         self.driver.left()
- 
+
     def right(self, current=None):
         self.driver.right()
 

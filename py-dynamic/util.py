@@ -1,6 +1,3 @@
-# -*- mode: python; coding: utf-8 -*-
-
-
 class InputStream:
 
     def __init__(self, data):
@@ -35,5 +32,3 @@ class OutputStream:
 
     def finished(self):
         return bytes(self.data, "utf-8")
-
-

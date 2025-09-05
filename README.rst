@@ -24,11 +24,3 @@ Testing dependencies
 (from "deb https://uclm-arco.github.io/debian/ sid main")
 
 - python-prego
-
-
-.. Local Variables:
-..  coding: utf-8
-..  fill-column: 80
-..  mode: flyspell
-..  ispell-local-dictionary: "american"
-.. End:

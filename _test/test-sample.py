@@ -1,5 +1,4 @@
 #!/usr/bin/prego
-# -*- coding:utf-8; tab-width:4; mode:python -*-
 
 import glob
 from hamcrest import is_not, contains_string

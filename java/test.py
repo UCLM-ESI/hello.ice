@@ -1,5 +1,4 @@
 #!/usr/bin/prego
-# -*- mode:python; coding:utf-8 -*-
 
 from hamcrest import contains_string
 from prego import TestCase, Task, running, context

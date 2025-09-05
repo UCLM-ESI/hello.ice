@@ -1,5 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
-
 import signal
 
 java = 'java -classpath .:$testdir:/usr/share/java/Ice.jar:/usr/share/java/IceStorm.jar'

@@ -1,5 +1,3 @@
-# -*- coding:utf-8; tab-width:4; mode:python -*-
-
 def client_test(client):
     return Test(
         '%s "$(head -1 server.proxy)" 4' % client,

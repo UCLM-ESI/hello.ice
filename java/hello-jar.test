@@ -1,5 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
-
 java = 'java -jar'
 
 # server = TestBG('%s jar/Server.jar --Ice.Config=hello.cfg' % java,

@@ -1,5 +1,4 @@
 #!/usr/bin/env -S python3 -u
-# -*- coding: utf-8; mode: python; -*-
 
 import sys
 import Ice

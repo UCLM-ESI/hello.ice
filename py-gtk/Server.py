@@ -1,6 +1,5 @@
-#!/usr/bin/python3 -u
-# -*- coding: utf-8 -*-
-"A ICE hello-world with GTK GUI"
+#!/usr/bin/env -S python3 -u
+"An Ice hello-world with GTK GUI"
 
 import sys
 

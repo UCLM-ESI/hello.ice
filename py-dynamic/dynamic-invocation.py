@@ -1,5 +1,4 @@
-#!/usr/bin/env -S python3
-# -*- mode: python; coding: utf-8 -*-
+#!/usr/bin/env -S python3 -u
 
 import sys
 import Ice
@@ -38,7 +37,7 @@ class DynamicInvocation(Ice.Application):
             print("There were an error!")
 
     def usage(self):
-        print("USAGE: {0} <proxy> <message>".format(sys.argv[0]))
+        print(f"usage: {__file__} <proxy> <message>")
         return -1
 
 

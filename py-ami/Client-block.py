@@ -1,6 +1,4 @@
 #!/usr/bin/env -S python3 -u
-# -*- coding: utf-8 -*-
-"usage: {} <server> <value>"
 
 import sys
 import Ice
@@ -26,7 +24,7 @@ class Client(Ice.Application):
 
 
 if len(sys.argv) != 3:
-    print(__doc__.format(__file__))
+    print(f"usage: {__file__} <server> <value>")
     sys.exit(1)
 
 app = Client()

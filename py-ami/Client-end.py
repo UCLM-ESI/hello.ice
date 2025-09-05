@@ -1,5 +1,4 @@
 #!/usr/bin/env -S python3 -u
-"usage: {} <server> <value>"
 
 import sys
 import Ice
@@ -16,15 +15,15 @@ class Client(Ice.Application):
             raise RuntimeError("Invalid proxy")
 
         async_result = math.begin_factorial(int(argv[2]))
-        print 'that was an async call'
+        print('that was an async call')
 
-        print math.end_factorial(async_result)
+        print(math.end_factorial(async_result))
 
         return 0
 
 
 if len(sys.argv) != 3:
-    print __doc__.format(__file__)
+    print(f"usage: {__file__} <server> <value>")
     sys.exit(1)
 
 app = Client()

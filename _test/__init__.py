@@ -1,5 +1,4 @@
-#!/usr/bin/python3
-# -*- coding:utf-8; mode:python -*-
+#!/usr/bin/env -S python3 -u
 
 from hamcrest import contains_string
 from prego import TestCase, Task, running, context

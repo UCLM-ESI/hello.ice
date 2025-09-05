@@ -1,5 +1,4 @@
-#!/usr/bin/env -S python3
-# -*- coding:utf-8; mode:python -*-
+#!/usr/bin/env -S python3 -u
 
 import sys
 import threading

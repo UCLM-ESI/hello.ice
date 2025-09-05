@@ -45,7 +45,7 @@ It tells you the proxy where is waiting events. As it is a standard example, I w
 
 <pre>
 $ ./standard-invocation.py
-USAGE: ./standard-invocation.py <proxy> <message>
+usage: ./standard-invocation.py <proxy> <message>
 $ ./standard-invocation.py 'StandardDispatching -t:tcp -h 192.168.1.130 -p 1234' 'Hello World!'
 </pre>
 
@@ -208,4 +208,3 @@ This documentation and full source code (located on @py-dynamic/@ folder) can be
 <pre>
 hg clone ssh://hg@bitbucket.org/arco_group/ice-hello
 </pre>
-
