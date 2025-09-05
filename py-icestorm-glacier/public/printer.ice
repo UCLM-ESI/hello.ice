@@ -1,1 +1,1 @@
-../private/Printer.ice
+../private/printer.ice
