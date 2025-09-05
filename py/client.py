@@ -1,27 +1,20 @@
 #!/usr/bin/env -S python3 -u
 
 import sys
-import time
-
 import Ice
-Ice.loadSlice('Printer.ice')
+Ice.loadSlice('printer.ice')
 import Example
 
 
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        proxy = proxy.ice_oneway()
-        printer = Example.PrinterPrx.uncheckedCast(proxy)
+        printer = Example.PrinterPrx.checkedCast(proxy)
 
         if not printer:
             raise RuntimeError('Invalid proxy')
 
-        handler = printer.begin_write('Hello World!')
-
-        # polling for sent
-        while not handler.isSent():
-            time.sleep(0.1)
+        printer.write('Hello World!')
 
         return 0
 

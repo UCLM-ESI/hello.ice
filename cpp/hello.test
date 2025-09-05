@@ -1,5 +1,5 @@
 server = TestBG(
-    cmd = './Server --Ice.Config=Server.config',
+    cmd = './Server --Ice.Config=server.config',
     cwd = '$testdir',
     signal=2, save_stdout=True,
     post = StdOutContains('Hello, World!'))

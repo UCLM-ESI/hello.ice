@@ -1,5 +1,5 @@
 TestBG(
-    './Server --Ice.Config=Server.config',
+    './Server --Ice.Config=server.config',
     shell = True,
     cwd = '$testdir',
     stdout = '$testdir/server.proxy')

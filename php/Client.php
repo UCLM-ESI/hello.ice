@@ -1,4 +1,4 @@
-#!/usr/bin/php5 -d ice.slice=Printer.ice
+#!/usr/bin/php5 -d ice.slice=printer.ice
 <?php
 require 'Ice.php';
 require 'Printer.php';

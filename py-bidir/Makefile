@@ -7,7 +7,7 @@ dist:
 	mkdir dist
 
 gen-dist: dist
-	cp Client.py Server.py Printer.ice Callback.ice dist/
+	cp client.py server.py printer.ice callback.ice dist/
 	icepatch2calc dist/
 
 clean:
@@ -15,7 +15,7 @@ clean:
 	$(RM) -rf dist
 
 run-server:
-	./Server.py --Ice.Config=Server.config | tee proxy.out
+	./server.py --Ice.Config=server.config | tee proxy.out
 
 run-client:
-	./Client.py '$(shell head -1 proxy.out)'
+	./client.py '$(shell head -1 proxy.out)'

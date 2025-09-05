@@ -3,7 +3,7 @@ import signal
 java = 'java -classpath .:/usr/share/java/Ice.jar'
 
 server = TestBG(
-    cmd = '%s Server --Ice.Config=Server.config' % java,
+    cmd = '%s Server --Ice.Config=server.config' % java,
     cwd = '$testdir',
     expected=130,
     signal=signal.SIGINT,

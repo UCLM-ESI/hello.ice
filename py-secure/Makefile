@@ -7,7 +7,7 @@ dist:
 	mkdir dist
 
 gen-dist: clean dist
-	cp Client.py Server.py Server-UUID.py Printer.ice dist/
+	cp client.py server.py server-uuid.py printer.ice dist/
 	icepatch2calc dist/
 	ln -sf $(PWD)/dist /tmp/printer-server-py
 
@@ -16,7 +16,7 @@ clean:
 	$(RM) -rf dist /tmp/printer-server-py
 
 run-server:
-	./Server.py --Ice.Config=Server.config | tee proxy.out
+	./server.py --Ice.Config=server.config | tee proxy.out
 
 run-client:
-	./Client.py --Ice.Config=Client.config '$(shell head -1 proxy.out)'
+	./client.py --Ice.Config=Client.config '$(shell head -1 proxy.out)'

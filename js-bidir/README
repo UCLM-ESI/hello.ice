@@ -10,7 +10,7 @@ Procedure:
 
 - Install DEPENDS
 - Run a "bidir" server:
-  ice-hello/py-bidir$ ./Server.py --Ice.Config=Server-WS.config
+  ice-hello/py-bidir$ ./server.py --Ice.Config=server-ws.config
 - Execute "make run-server"
 - Click "Start" button
 

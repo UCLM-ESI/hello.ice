@@ -10,7 +10,7 @@ class Hello(TestCase):
     def test_client_server(self):
         context.cwd = '$testdir'
         servertask = Task('server', detach=True)
-        server = servertask.command('%s Server --Ice.Config=Server.config' % java,
+        server = servertask.command('%s Server --Ice.Config=server.config' % java,
                                     signal=2, expected=130)
         servertask.assert_that(server.stdout.content, contains_string('Hello World!'))
 

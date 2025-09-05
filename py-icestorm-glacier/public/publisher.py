@@ -4,7 +4,7 @@ import sys
 import Ice
 import IceStorm
 
-Ice.loadSlice('Printer.ice')
+Ice.loadSlice('printer.ice')
 import Example  # noqa
 
 

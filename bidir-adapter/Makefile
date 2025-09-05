@@ -1,2 +1,2 @@
 start:
-	./Server.py --Ice.Config=Server-WS.config
+	./server.py --Ice.Config=server-ws.config

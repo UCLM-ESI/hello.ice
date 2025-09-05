@@ -1,5 +1,5 @@
 server = CommandBG(
-    cmd = 'mono --runtime=v4.0 Server.exe --Ice.Config=Server.config',
+    cmd = 'mono --runtime=v4.0 Server.exe --Ice.Config=server.config',
     cwd = '$testdir',
     signal=2, save_stdout=True,
     post = StdOutContains('Hello, World!'))

@@ -8,7 +8,7 @@ def client_test(client):
 
 
 TestBG(
-    './Server --Ice.Config=Server.config',
+    './Server --Ice.Config=server.config',
     cwd = '$testdir',
     stdout = '$testdir/server.proxy')
 

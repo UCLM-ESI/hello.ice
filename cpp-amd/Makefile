@@ -22,7 +22,7 @@ clean:
 	$(RM) *.bz2 IcePatch2.sum
 
 run-server: Server
-	./Server --Ice.Config=./Server.config | tee server.proxy
+	./Server --Ice.Config=./server.config | tee server.proxy
 
 run-client: Client
 	./Client '$(shell head -1 server.proxy)' 4

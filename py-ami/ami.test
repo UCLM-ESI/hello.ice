@@ -1,4 +1,4 @@
-TestBG('./Server.py --Ice.Config=Server.config',
+TestBG('./server.py --Ice.Config=server.config',
        cwd = '$testdir',
        stdout = '$testdir/server.proxy')
 

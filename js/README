@@ -11,7 +11,7 @@ Procedure:
 
 - Install DEPENDS
 - Run bidir-adapter:
-  bidir-adapter$ ./Server.py --Ice.Config=Server-WS.config
+  bidir-adapter$ ./server.py --Ice.Config=server-ws.config
 
 - Run the browser object:
   js$ make run-server
@@ -19,7 +19,7 @@ Procedure:
 - Click "Start" button in webpage and copy the object proxy.
 
 - Run a Printer client (any language) using the shown proxy:
-  py$ ./Client.py "<proxy>"
+  py$ ./client.py "<proxy>"
 
 - Invocations are shown in webpage
 

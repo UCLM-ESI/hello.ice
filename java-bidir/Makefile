@@ -8,7 +8,7 @@ all: Example Server.class Client.class PrinterI.class
 %.class: %.java
 	javac $(CLASSPATH) $<
 
-Example: Printer.ice Callback.ice
+Example: printer.ice callback.ice
 	slice2java -I/usr/share/Ice-3.6.1/slice $^
 
 dist:
@@ -25,7 +25,7 @@ clean:
 
 run-server: Server.class
 	java $(CLASSPATH) \
-	    Server --Ice.Config=Server.config | tee proxy.out
+	    Server --Ice.Config=server.config | tee proxy.out
 
 run-client: Client.class
 	java $(CLASSPATH) \

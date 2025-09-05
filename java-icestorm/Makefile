@@ -5,7 +5,7 @@ all: Example Subscriber.class Publisher.class
 %.class: %.java
 	javac $(CLASSPATH) $<
 
-Example: Printer.ice
+Example: printer.ice
 	slice2java $<
 
 clean:

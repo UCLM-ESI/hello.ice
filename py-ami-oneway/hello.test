@@ -1,9 +1,9 @@
-server = TestBG('./Server.py --Ice.Config=Server.config',
+server = TestBG('./server.py --Ice.Config=server.config',
                 cwd='$testdir',
                 signal=2, save_stdout=True,
                 post = StdOutContains('Hello World!'))
 
-client = Test('./Client.py "$(head -1 %s)"' % server.stdout,
+client = Test('./client.py "$(head -1 %s)"' % server.stdout,
               cwd='$testdir',
               shell=True,
               pre = [Poll(FileContains("printer1", server.stdout)),

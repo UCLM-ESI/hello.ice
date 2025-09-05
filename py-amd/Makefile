@@ -4,7 +4,7 @@ clean:
 	$(RM) *~ server.proxy
 
 run-server:
-	./Server.py --Ice.Config=Server.config | tee server.proxy
+	./server.py --Ice.Config=server.config | tee server.proxy
 
 run-client:
-	./Client.py '$(shell head -1 server.proxy)' 4
+	./client.py '$(shell head -1 server.proxy)' 4

@@ -3,8 +3,8 @@
 import sys
 import Ice
 
-Ice.loadSlice('Printer.ice')
-Ice.loadSlice('-I{} Callback.ice'.format(Ice.getSliceDir()))
+Ice.loadSlice('printer.ice')
+Ice.loadSlice('-I{} callback.ice'.format(Ice.getSliceDir()))
 import Example
 
 

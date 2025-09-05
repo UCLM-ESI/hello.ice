@@ -5,7 +5,7 @@ import Ice
 import Glacier2
 import IceStorm
 
-Ice.loadSlice('Printer.ice')
+Ice.loadSlice('printer.ice')
 import Example  # noqa
 
 

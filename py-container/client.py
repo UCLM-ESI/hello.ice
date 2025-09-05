@@ -14,7 +14,7 @@ class Client(Ice.Application):
         if not container:
             raise RuntimeError('Invalid proxy')
 
-        print container.list()
+        print(container.list())
 
         return 0
 

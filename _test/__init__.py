@@ -5,7 +5,7 @@ from prego import TestCase, Task, running, context
 
 
 class ClientServerMixin(TestCase):
-    def make_client_server(self, client, server, server_config='Server.config'):
+    def make_client_server(self, client, server, server_config='server.config'):
         context.cwd = '$testdir'
         servertask = Task('server', detach=True)
         server = servertask.command('{} --Ice.Config={}'.format(server, server_config),

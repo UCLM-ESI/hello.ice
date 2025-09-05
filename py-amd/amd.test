@@ -1,11 +1,11 @@
 TestBG(
-    './Server.py --Ice.Config=Server.config',
+    './server.py --Ice.Config=server.config',
     shell = True,
     cwd = '$testdir',
     stdout = '$testdir/server.proxy')
 
 Test(
-    './Client.py "$(head -1 server.proxy)" 4',
+    './client.py "$(head -1 server.proxy)" 4',
     shell = True,
     cwd = '$testdir',
     pre = Poll(FileContains('math1', '$testdir/server.proxy')),

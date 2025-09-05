@@ -4,7 +4,7 @@ import sys
 import Ice
 import IceGrid
 
-Ice.loadSlice('Printer.ice')
+Ice.loadSlice('printer.ice')
 import Example
 
 

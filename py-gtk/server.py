@@ -4,7 +4,7 @@
 import sys
 
 import Ice
-Ice.loadSlice('Printer.ice')
+Ice.loadSlice('printer.ice')
 import Example
 
 import gtk, gobject

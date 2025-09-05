@@ -14,7 +14,7 @@ clean:
 
 run-server: Server.class
 	java $(CLASSPATH) \
-		Server --Ice.Config=Server.config | tee proxy.out
+		Server --Ice.Config=server.config | tee proxy.out
 
 run-client-end: Client_end.class
 	java $(CLASSPATH) \
