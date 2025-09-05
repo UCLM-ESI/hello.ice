@@ -9,7 +9,7 @@ class Server: public Ice::Application {
 	Example::MathPtr servant = new Example::MathI();
 
     ObjectAdapterPtr adapter = \
-	  communicator()->createObjectAdapter("MathAdapter");
+      communicator()->createObjectAdapter("MathAdapter");
     ObjectPrx math = adapter->add(
       servant, stringToIdentity("math1"));
 

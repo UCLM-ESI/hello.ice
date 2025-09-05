@@ -1,5 +1,4 @@
-#!/usr/bin/python3 -u
-# -*- coding: utf-8 -*-
+#!/usr/bin/env -S python3 -u
 "usage: {} <server> <value>"
 
 import sys

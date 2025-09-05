@@ -1,5 +1,4 @@
-#!/usr/bin/python3 -u
-# -*- mode:python; coding:utf-8; tab-width:4 -*-
+#!/usr/bin/env -S python3 -u
 
 from time import sleep
 
