@@ -2,6 +2,7 @@
 
 import sys
 import Ice
+import time
 import IceStorm
 Ice.loadSlice('./printer.ice')
 import Example
@@ -37,8 +38,8 @@ class Publisher(Ice.Application):
         print("publishing 10 'Hello World' events")
         for i in range(10):
             printer.write("Hello World %s!" % i)
+            time.sleep(1)
 
         return 0
-
 
 sys.exit(Publisher().main(sys.argv))
