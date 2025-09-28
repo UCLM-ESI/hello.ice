@@ -5,19 +5,16 @@ import time
 
 import Ice
 
+import turret
+
 try:
     import Armory
 
 except ModuleNotFoundError:
-    Ice.loadSlice('Armory.ice')
+    Ice.loadSlice('armory.ice')
     import Armory
 
-try:
-    import turret
 
-except ModuleNotFoundError:
-    print("Error: cannot found 'turret' module")
-    sys.exit(1)
 
 
 class PanTiltI(Armory.PanTilt):
