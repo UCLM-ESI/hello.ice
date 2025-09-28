@@ -18,7 +18,7 @@ class Client(Ice.Application):
         while 1:
             try:
                 printer.write('Hello World!')
-                print('invocatión succed')
+                print('invocation succed')
             except Ice.NotRegisteredException:
                 print('invocation FAILED')
             time.sleep(1)
