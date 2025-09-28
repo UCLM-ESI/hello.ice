@@ -2,11 +2,13 @@
 
 import sys
 import Ice
+import gi
 
-Ice.loadSlice('Armory.ice')
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
+Ice.loadSlice("armory.ice")
 import Armory
-
-import gtk
 
 
 class GUI:
@@ -15,43 +17,47 @@ class GUI:
         self.build_gui()
 
     def build_gui(self):
-        vbox = gtk.VBox()
-        window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        window.resize(200, 100)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        window = Gtk.Window(title="Turret Control")
+        window.set_default_size(200, 100)
         window.add(vbox)
 
         buttons = {}
-        for name in ['down', 'up', 'left', 'right', 'fire']:
-            button = gtk.Button(name)
+        for name in ["down", "up", "left", "right", "fire"]:
+            button = Gtk.Button(label=name)
             buttons[name] = button
 
-        hbox1 = gtk.HBox(); vbox.add(hbox1)
-        hbox2 = gtk.HBox(); vbox.add(hbox2)
-        hbox3 = gtk.HBox(); vbox.add(hbox3)
+        hbox1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        hbox2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        hbox3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
-        hbox1.add(gtk.Label())
-        hbox1.add(buttons['up'])
-        hbox1.add(gtk.Label())
+        vbox.pack_start(hbox1, True, True, 0)
+        vbox.pack_start(hbox2, True, True, 0)
+        vbox.pack_start(hbox3, True, True, 0)
 
-        hbox2.add(buttons['left'])
-        hbox2.add(buttons['fire'])
-        hbox2.add(buttons['right'])
+        hbox1.pack_start(Gtk.Label(), True, True, 0)
+        hbox1.pack_start(buttons["up"], True, True, 0)
+        hbox1.pack_start(Gtk.Label(), True, True, 0)
 
-        hbox3.add(gtk.Label())
-        hbox3.add(buttons['down'])
-        hbox3.add(gtk.Label())
+        hbox2.pack_start(buttons["left"], True, True, 0)
+        hbox2.pack_start(buttons["fire"], True, True, 0)
+        hbox2.pack_start(buttons["right"], True, True, 0)
 
-        buttons['down'].connect('pressed', lambda w: self.app.turret.down())
-        buttons['up'].connect('pressed', lambda w: self.app.turret.up())
-        buttons['left'].connect('pressed', lambda w: self.app.turret.left())
-        buttons['right'].connect('pressed', lambda w: self.app.turret.right())
-        buttons['fire'].connect('pressed', lambda w: self.app.turret.fire())
+        hbox3.pack_start(Gtk.Label(), True, True, 0)
+        hbox3.pack_start(buttons["down"], True, True, 0)
+        hbox3.pack_start(Gtk.Label(), True, True, 0)
+
+        buttons["down"].connect("pressed", lambda w: self.app.turret.down())
+        buttons["up"].connect("pressed", lambda w: self.app.turret.up())
+        buttons["left"].connect("pressed", lambda w: self.app.turret.left())
+        buttons["right"].connect("pressed", lambda w: self.app.turret.right())
+        buttons["fire"].connect("pressed", lambda w: self.app.turret.fire())
 
         for button in buttons.values():
-            button.connect('released', self.on_button_released)
+            button.connect("released", self.on_button_released)
 
         window.show_all()
-        window.connect('destroy', gtk.main_quit)
+        window.connect("destroy", Gtk.main_quit)
 
     def on_button_released(self, wd):
         self.app.turret.stop()
@@ -64,7 +70,7 @@ class Client(Ice.Application):
         if not self.turret:
             raise RuntimeError("Invalid proxy")
 
-        gtk.main()
+        Gtk.main()
 
 
 app = Client()
