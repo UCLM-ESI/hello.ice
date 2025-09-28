@@ -9,14 +9,14 @@ try:
     import Armory
 
 except ModuleNotFoundError:
-    Ice.loadSlice('Armory.ice')
-    import Armory
+    Ice.loadSlice('armory.ice')
+    import Armory   # noqa: E402
 
 try:
     import turret
 
 except ModuleNotFoundError:
-    print("Error: cannot found 'turret' module")
+    print("Error: cannot find 'turret' module")
     sys.exit(1)
 
 

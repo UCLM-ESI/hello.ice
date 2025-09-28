@@ -3,22 +3,24 @@
 import sys
 import Ice
 
-Ice.loadSlice('Armory.ice')
-import Armory
+Ice.loadSlice('armory.ice')
+import Armory  # noqa: E402
 
 
 class Client(Ice.Application):
     def handle_command(self, cmd):
-        if cmd == "up":
-            self.turret.up()
-        elif cmd == "down":
-            self.turret.down()
-        elif cmd == "left":
-            self.turret.left()
-        elif cmd == "right":
-            self.turret.right()
-        elif cmd == "fire":
-            self.turret.fire()
+        commands = {
+            "up": self.turret.up,
+            "down": self.turret.down,
+            "left": self.turret.left,
+            "right": self.turret.right,
+            "fire": self.turret.fire,
+        }
+        action = commands.get(cmd)
+        if action:
+            action()
+        else:
+            print(f"Unknown command: {cmd}")
 
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
