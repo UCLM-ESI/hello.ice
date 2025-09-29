@@ -16,5 +16,8 @@ run-server: /etc/udev/rules.d/10-rocket-launcher.rules
 run-client:
 	./client.py '$(shell head -1 proxy.out)' up right left down
 
+run-client-gtk:
+	./client-gtk.py '$(shell head -1 proxy.out)'
+
 /etc/udev/rules.d/10-rocket-launcher.rules: 10-rocket-launcher.rules
 	sudo install $^ /etc/udev/rules.d/
