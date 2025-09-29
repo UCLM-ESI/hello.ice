@@ -6,17 +6,16 @@ Ice.loadSlice('printer.ice')
 import Example
 
 
-class Client(Ice.Application):
-    def run(self, argv):
-        proxy = self.communicator().stringToProxy(argv[1])
-        printer = Example.PrinterPrx.checkedCast(proxy)
+def main(ic):
+    proxy = ic.stringToProxy(sys.argv[1])
+    printer = Example.PrinterPrx.checkedCast(proxy)
 
-        if not printer:
-            raise RuntimeError('Invalid proxy')
+    if not printer:
+        raise RuntimeError('Invalid proxy')
 
-        printer.write('Hello World!')
-
-        return 0
+    printer.write('Hello World!')
 
 
-sys.exit(Client().main(sys.argv))
+if __name__ == "__main__":
+    with Ice.initialize(sys.argv) as communicator:
+        main(communicator)

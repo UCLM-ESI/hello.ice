@@ -7,23 +7,24 @@ Ice.loadSlice('printer.ice')
 import Example
 
 
-class Client(Ice.Application):
-    def run(self, argv):
-        proxy = self.communicator().stringToProxy(argv[1])
-        printer = Example.PrinterPrx.uncheckedCast(proxy)
+def main(ic):
+    proxy = ic.stringToProxy(sys.argv[1])
+    printer = Example.PrinterPrx.uncheckedCast(proxy)
 
-        if not printer:
-            raise RuntimeError('Invalid proxy')
+    if not printer:
+        raise RuntimeError('Invalid proxy')
 
-        while 1:
-            try:
-                printer.write('Hello World!')
-                print('invocation succed')
-            except Ice.NotRegisteredException:
-                print('invocation FAILED')
-            time.sleep(1)
+    while 1:
+        try:
+            printer.write('Hello World!')
+            print('invocation succed')
 
-        return 0
+        except Ice.NotRegisteredException:
+            print('invocation FAILED')
+
+        time.sleep(1)
 
 
-sys.exit(Client().main(sys.argv))
+if __name__ == "__main__":
+    with Ice.initialize(sys.argv) as communicator:
+        main(communicator)
