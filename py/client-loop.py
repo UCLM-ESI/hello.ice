@@ -26,5 +26,5 @@ def main(ic):
 
 
 if __name__ == "__main__":
-    with Ice.initialize(sys.argv) as communicator:
+    with Ice.initialize() as communicator:
         main(communicator)
