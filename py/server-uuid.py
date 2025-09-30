@@ -28,7 +28,7 @@ def main(ic):
 
 if __name__ == "__main__":
     try:
-        with Ice.initialize(sys.argv) as ic:
+        with Ice.initialize(sys.argv[1]) as ic:
             main(ic)
     except KeyboardInterrupt:
         pass
