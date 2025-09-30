@@ -20,7 +20,7 @@ def main(ic):
     adapter = ic.createObjectAdapter("PrinterAdapter")
     proxy = adapter.add(servant, ic.stringToIdentity("printer1"))
 
-    print(proxy, flush=True)
+    print(proxy)
 
     adapter.activate()
     ic.waitForShutdown()
