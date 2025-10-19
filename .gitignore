@@ -4,3 +4,4 @@ proxy.out
 *.proxy
 *.mdb
 *.lock
+py/dist/
