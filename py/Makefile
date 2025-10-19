@@ -16,7 +16,7 @@ clean:
 	$(RM) -rf dist /tmp/printer-server-py
 
 run-server:
-	./server.py server.config | tee proxy.out
+	./server.py --Ice.Config=server.config | tee proxy.out
 
 run-client:
 	./client.py '$(shell head -1 proxy.out)'
