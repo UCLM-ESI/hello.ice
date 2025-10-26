@@ -22,24 +22,23 @@ class PrinterFactoryI(Example.PrinterFactory):
         return Example.PrinterPrx.checkedCast(proxy)
 
 
-class Server(Ice.Application):
-    def run(self, argv):
-        broker = self.communicator()
-        servant = PrinterFactoryI()
+def run(ic):
+    servant = PrinterFactoryI()
 
-        adapter = broker.createObjectAdapter("PrinterFactoryAdapter")
-        proxy = adapter.add(servant,
-                            broker.stringToIdentity("printerFactory1"))
+    adapter = ic.createObjectAdapter("PrinterFactoryAdapter")
+    proxy = adapter.add(servant, ic.stringToIdentity("printerFactory1"))
 
-        print(proxy)
-        sys.stdout.flush()
+    print(proxy)
 
-        adapter.activate()
-        self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+    adapter.activate()
+    ic.waitForShutdown()
 
-        return 0
+    return 0
 
 
-server = Server()
-sys.exit(server.main(sys.argv))
+if __name__ == '__main__':
+    try:
+        with Ice.initialize(sys.argv) as communicator:
+            sys.exit(run(communicator))
+    except KeyboardInterrupt:
+        print("\nShutting down server...")
