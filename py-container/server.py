@@ -24,6 +24,14 @@ class ContainerI(Services.Container):
         print("unlink: {0}".format(key))
         del self.proxies[key]
 
+    def get(self, key, current=None):
+        if key not in self.proxies:
+            raise Services.NoSuchKey(key)
+
+        proxy = self.proxies[key]
+        print("get: {0} -> {1}".format(key, proxy))
+        return proxy
+
     def list(self, current=None):
         return self.proxies
 
