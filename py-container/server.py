@@ -30,7 +30,11 @@ class ContainerI(Services.Container):
 
 def run(ic):
     servant = ContainerI()
+def run(ic):
+    servant = ContainerI()
 
+    adapter = ic.createObjectAdapter("ContainerAdapter")
+    proxy = adapter.add(servant, ic.stringToIdentity("container1"))
     adapter = ic.createObjectAdapter("ContainerAdapter")
     proxy = adapter.add(servant, ic.stringToIdentity("container1"))
 
