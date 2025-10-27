@@ -12,7 +12,6 @@ class PrinterI(Example.Printer):
 
     def write(self, message, current=None):
         print("{0}: {1}".format(self.name, message))
-        sys.stdout.flush()
 
 
 class PrinterFactoryI(Example.PrinterFactory):
@@ -23,13 +22,12 @@ class PrinterFactoryI(Example.PrinterFactory):
         if name in self.objects:
             return self.objects[name]
 
+        print(f"Creating new printer: '{name}'")
+
         servant = PrinterI(name)
         proxy = current.adapter.addWithUUID(servant)
+        printer = self.objects[name] = Example.PrinterPrx.checkedCast(proxy)
 
-        printer = Example.PrinterPrx.checkedCast(proxy)
-        self.objects[name] = printer
-
-        print("Created printer:", name)
         return printer
 
 
