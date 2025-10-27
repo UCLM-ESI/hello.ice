@@ -16,10 +16,21 @@ class PrinterI(Example.Printer):
 
 
 class PrinterFactoryI(Example.PrinterFactory):
+    def __init__(self):
+        self.objects = {}
+
     def make(self, name, current=None):
+        if name in self.objects:
+            return self.objects[name]
+
         servant = PrinterI(name)
         proxy = current.adapter.addWithUUID(servant)
-        return Example.PrinterPrx.checkedCast(proxy)
+
+        printer = Example.PrinterPrx.checkedCast(proxy)
+        self.objects[name] = printer
+
+        print("Created printer:", name)
+        return printer
 
 
 def run(ic):
