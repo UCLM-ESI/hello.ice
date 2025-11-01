@@ -11,7 +11,8 @@
                <property name="Ice.ServerIdleTime" value="5"/>
                <property name="Identity" value="${name}"/>
             </properties>
-            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
+            <adapter name="PrinterAdapter" endpoints="default"
+               id="${server}.PrinterAdapter"/>
          </server>
       </server-template>
       <node name="node1">
