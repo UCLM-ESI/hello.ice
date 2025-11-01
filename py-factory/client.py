@@ -9,7 +9,6 @@ import Example
 def run(ic, args):
     proxy = ic.stringToProxy(args[1])
     factory = Example.PrinterFactoryPrx.checkedCast(proxy)
-
     if not factory:
         raise RuntimeError('Invalid proxy')
 

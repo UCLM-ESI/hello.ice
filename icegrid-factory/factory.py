@@ -11,7 +11,7 @@ from IceGrid import (LocatorPrx, ServerInstanceDescriptor,
 import IceGrid
 
 
-Ice.loadSlice('-Iexample --all factory.ice')
+Ice.loadSlice('-I. --all PrinterFactory.ice')
 import Example
 
 
@@ -34,16 +34,16 @@ class NodeObserverI(NodeObserver):
     def __init__(self, factory):
         self.factory = factory
 
-    def updateServer(self, node, updated_info, current):
+    def updateServer(self, node, updated_info, current=None):
         print("update server: new state:", node, updated_info.state)
 
-    def nodeInit(self, node, current):
+    def nodeInit(self, node, current=None):
         print("node init:", node)
 
-    def nodeDown(self, node_name, current):
+    def nodeDown(self, node_name, current=None):
         print("node down:", node_name)
 
-    def updateAdapter(self, node, adapter, current):
+    def updateAdapter(self, node, adapter, current=None):
         print("update adapter:", node, adapter)
 
 
@@ -52,7 +52,7 @@ class FactoryI(Example.PrinterFactory):
         self.admin_session = admin_session
         self.app = app
 
-    def make(self, server_name, current):
+    def make(self, server_name, current=None):
         node = 'node1'
         server_template = 'PrinterTemplate'
 

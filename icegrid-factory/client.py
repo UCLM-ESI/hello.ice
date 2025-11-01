@@ -4,8 +4,7 @@ import sys
 import Ice
 import time
 
-Ice.loadSlice('-I. --all factory.ice')
-Ice.loadSlice('-I. --all printer.ice')
+Ice.loadSlice('-I. --all printer.ice PrinterFactory.ice')
 
 import Example
 
