@@ -3,7 +3,7 @@
 import sys
 import Ice
 Ice.loadSlice('printer.ice')
-import Example  # noqa
+import Example
 
 
 class PrinterI(Example.Printer):

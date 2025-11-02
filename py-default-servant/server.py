@@ -5,25 +5,35 @@ import Ice
 from uuid import uuid4
 from Ice import identityToString as id2str, stringToIdentity as str2id
 Ice.loadSlice('printer.ice')
-import Example  # noqa
+import Example
 
 
 class PrinterI(Example.Printer):
-    n = 0
+    def __init__(self, identities):
+        super().__init__()
+        self.valid_identities = set(identities)
+
+    def ensure_valid_object(self, identity):
+        if identity.name not in self.valid_identities:
+            raise Ice.ObjectNotExistException()
+
+    def ice_ping(self, current=None):
+        self.ensure_valid_object(current.id)
 
     def write(self, message, current=None):
-        print(f"{self.n}: {id2str(current.id)} {message}")
-        sys.stdout.flush()
-        self.n += 1
+        self.ensure_valid_object(current.id)
+        print(f"{id2str(current.id)}: {message}")
 
 
 def main(ic):
-    servant = PrinterI()
-    adapter = ic.createObjectAdapter('PrinterAdapter')
-    adapter.addDefaultServant(servant, '')
+    identities = [f'printer-{uuid4().hex[:8]}' for _ in range(20)]
+    servant = PrinterI(identities)
 
-    for _ in range(20):
-        print(adapter.createDirectProxy(str2id(f'printer-{uuid4()}')))
+    adapter = ic.createObjectAdapter('PrinterAdapter')
+    adapter.addDefaultServant(servant, category='')
+
+    for identity in identities:
+        print(adapter.createDirectProxy(str2id(identity)))
 
     adapter.activate()
     ic.waitForShutdown()

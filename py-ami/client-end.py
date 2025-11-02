@@ -2,7 +2,7 @@
 
 import sys
 import Ice
-Ice.loadSlice('./factorial.ice')
+Ice.loadSlice('factorial.ice')
 import Example
 
 
