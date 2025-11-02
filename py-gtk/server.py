@@ -2,52 +2,72 @@
 "An Ice hello-world with GTK GUI"
 
 import sys
+import signal
+
+import gi
+gi.require_version('Gtk', '4.0')
+from gi.repository import Gtk
 
 import Ice
 Ice.loadSlice('printer.ice')
 import Example
 
-import gtk, gobject
-gobject.threads_init()
-
 
 class PrinterI(Example.Printer):
-    def write(self, s, current=None):
-        print "Client say: ", s
-        gobject.idle_add(gui.textbuffer.insert_at_cursor, s + '\n')
+    def __init__(self, callback):
+        self.on_message = callback
+
+    def write(self, message, current=None):
+        print(f"Client says: {message}")
+        self.on_message(message)
 
 
-class GUI:
-    def __init__(self):
-        window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        window.resize(200, 100)
-        textview = gtk.TextView()
-        window.add(textview)
-        window.show_all()
-        window.connect('destroy', gtk.main_quit)
-        self.textbuffer = textview.get_buffer()
+class PrinterServerWindow(Gtk.ApplicationWindow):
+    def __init__(self, app):
+        super().__init__(application=app, title="Printer Server")
+        self.set_default_size(300, 100)
+        self.set_resizable(False)
+
+        self.text_view = Gtk.TextView()
+        self.text_view.set_editable(False)
+        self.text_view.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.buffer = self.text_view.get_buffer()
+        self.set_child(self.text_view)
+
+    def add_message(self, message):
+        end_iter = self.buffer.get_end_iter()
+        self.buffer.insert(end_iter, message + '\n')
 
 
-class Server(Ice.Application):
-    def run(self, argv):
+class PrinterServerApp(Gtk.Application):
+    def __init__(self, ic):
+        super().__init__(application_id='com.example.printerserver')
+        self.ic = ic
+        self.adapter = None
+        self.window = None
 
-        ic = self.communicator()
-        servant = PrinterI()
+    def do_activate(self):
+        if not self.window:
+            self.window = PrinterServerWindow(self)
 
-        adapter = ic.createObjectAdapter("PrinterAdapter")
-        proxy = adapter.add(servant, ic.stringToIdentity("printer1"))
+            servant = PrinterI(self.window.add_message)
+            self.adapter = self.ic.createObjectAdapter("PrinterAdapter")
+            proxy = self.adapter.add(
+                servant, self.ic.stringToIdentity("printer1"))
 
-        print proxy
+            print(proxy)
+            self.window.add_message(str(proxy) + '\n----')
 
-        adapter.activate()
-        self.callbackOnInterrupt()
-        gtk.main()
-        ic.shutdown()
-        return 0
+            self.adapter.activate()
 
-    def interruptCallback(self, args):
-        gobject.idle_add(gtk.main_quit)
+        self.window.present()
 
 
-gui = GUI()
-sys.exit(Server().main(sys.argv))
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        sys.exit("Usage: server.py --Ice.Config=<config-file>")
+
+    with Ice.initialize(sys.argv) as communicator:
+        app = PrinterServerApp(communicator)
+        signal.signal(signal.SIGINT, lambda sig, frame: app.quit())
+        app.run(None)
