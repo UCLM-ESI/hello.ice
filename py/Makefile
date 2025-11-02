@@ -1,7 +1,4 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
-
-all:
 
 run-server:
 	./server.py --Ice.Config=server.config | tee proxy.out
@@ -13,7 +10,7 @@ dist:
 	mkdir dist
 
 gen-dist: clean dist
-	cp client.py server.py server-uuid.py printer.ice dist/
+	cp server.py server-uuid.py printer.ice dist/
 	icepatch2calc dist/
 	ln -sf $(PWD)/dist /tmp/printer-py
 
