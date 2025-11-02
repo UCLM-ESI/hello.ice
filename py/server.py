@@ -3,7 +3,7 @@
 import sys
 import Ice
 Ice.loadSlice('printer.ice')
-import Example  # noqa
+import Example
 
 
 class PrinterI(Example.Printer):
@@ -29,6 +29,6 @@ def main(ic):
 if __name__ == "__main__":
     try:
         with Ice.initialize(sys.argv) as communicator:
-            main(communicator)
+            sys.exit(main(communicator))
     except KeyboardInterrupt:
         print("\nShutting down server...")
