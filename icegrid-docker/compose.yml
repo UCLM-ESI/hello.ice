@@ -1,0 +1,30 @@
+services:
+  registry:
+    container_name: registry
+    image: zeroc/icegridregistry:3.7
+    hostname: registry
+    ports:
+      - "4061:4061"
+    volumes:
+      - "./registry.config:/etc/icegridregistry.conf:ro"
+      - "./db/icegrid:/var/lib/ice/icegrid:rw"
+
+  node1:
+    container_name: node1
+    image: zeroc/icegridnode:3.7
+    hostname: node1
+    depends_on:
+      - registry
+    volumes:
+      - "./node1.config:/etc/icegridnode.conf:ro"
+      - "./db/icegrid:/var/lib/ice/icegrid:rw"
+
+  node2:
+    container_name: node2
+    image: zeroc/icegridnode:3.7
+    hostname: node2
+    depends_on:
+      - registry
+    volumes:
+      - "./node2.config:/etc/icegridnode.conf:ro"
+      - "./db/icegrid:/var/lib/ice/icegrid:rw"

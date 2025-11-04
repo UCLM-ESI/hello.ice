@@ -4,3 +4,6 @@ proxy.out
 *.proxy
 *.mdb
 *.lock
+**/err.txt
+**/out.txt
+**/db
