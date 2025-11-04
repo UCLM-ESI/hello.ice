@@ -6,6 +6,7 @@ NODE_DIRS=$(addprefix /tmp/db/, $(NODES))
 IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
 
 start-grid: /tmp/db/registry $(NODE_DIRS)
+	cp default-templates.xml /tmp/
 	icegridnode --Ice.Config=node1.config &
 
 	@echo -- waiting registry to start...

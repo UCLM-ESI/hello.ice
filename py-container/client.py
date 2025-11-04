@@ -6,18 +6,18 @@ Ice.loadSlice('-I %s container.ice' % Ice.getSliceDir())
 import Services
 
 
-class Client(Ice.Application):
-    def run(self, argv):
-        proxy = self.communicator().stringToProxy(argv[1])
-        container = Services.ContainerPrx.checkedCast(proxy)
+def run(ic, args):
+    proxy = ic.stringToProxy(args[1])
+    container = Services.ContainerPrx.checkedCast(proxy)
 
-        if not container:
-            raise RuntimeError('Invalid proxy')
+    if not container:
+        raise RuntimeError('Invalid proxy')
 
-        print(container.list())
+    print(container.list())
 
-        return 0
+    return 0
 
 
 if __name__ == '__main__':
-    sys.exit(Client().main(sys.argv))
+    with Ice.initialize(sys.argv) as communicator:
+        sys.exit(run(communicator, sys.argv))

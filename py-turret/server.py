@@ -57,7 +57,7 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("TurretAdapter")
         proxy = adapter.add(servant, broker.stringToIdentity("turret1"))
 
-        print(proxy, flush=True)
+        print(proxy)
 
         adapter.activate()
         self.shutdownOnInterrupt()

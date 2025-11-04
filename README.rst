@@ -5,22 +5,8 @@ http://www.zeroc.com/
 To download this repository::
 
   ~$ sudo apt install git
-  ~$ https://github.com/UCLM-ESI/hello.ice.git
+  ~$ git clone https://github.com/UCLM-ESI/hello.ice.git
 
 To update (when you have have already download it)::
 
   ~/hello.ice$ git pull
-
-
-Running dependencies
---------------------
-
-- python3.5
-
-
-Testing dependencies
---------------------
-
-(from "deb https://uclm-arco.github.io/debian/ sid main")
-
-- python-prego

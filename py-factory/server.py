@@ -12,34 +12,42 @@ class PrinterI(Example.Printer):
 
     def write(self, message, current=None):
         print("{0}: {1}".format(self.name, message))
-        sys.stdout.flush()
 
 
 class PrinterFactoryI(Example.PrinterFactory):
+    def __init__(self):
+        self.objects = {}
+
     def make(self, name, current=None):
+        if name in self.objects:
+            return self.objects[name]
+
+        print(f"Creating new printer: '{name}'")
+
         servant = PrinterI(name)
         proxy = current.adapter.addWithUUID(servant)
-        return Example.PrinterPrx.checkedCast(proxy)
+        printer = self.objects[name] = Example.PrinterPrx.checkedCast(proxy)
+
+        return printer
 
 
-class Server(Ice.Application):
-    def run(self, argv):
-        broker = self.communicator()
-        servant = PrinterFactoryI()
+def run(ic):
+    servant = PrinterFactoryI()
 
-        adapter = broker.createObjectAdapter("PrinterFactoryAdapter")
-        proxy = adapter.add(servant,
-                            broker.stringToIdentity("printerFactory1"))
+    adapter = ic.createObjectAdapter("PrinterFactoryAdapter")
+    proxy = adapter.add(servant, ic.stringToIdentity("printerFactory1"))
 
-        print(proxy)
-        sys.stdout.flush()
+    print(proxy)
 
-        adapter.activate()
-        self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+    adapter.activate()
+    ic.waitForShutdown()
 
-        return 0
+    return 0
 
 
-server = Server()
-sys.exit(server.main(sys.argv))
+if __name__ == '__main__':
+    try:
+        with Ice.initialize(sys.argv) as communicator:
+            sys.exit(run(communicator))
+    except KeyboardInterrupt:
+        print("\nShutting down server...")

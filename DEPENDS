@@ -1,4 +1,14 @@
-zeroc-ice37/testing
-g++ (~26MB)
-libdb5.3-java
-mono-devel/testing (~106MB)
+- zeroc-ice-compilers
+
+python:
+- python3-zeroc-ice
+
+c++:
+- zeroc-ice37
+- g++
+
+java:
+- libdb5.3-java
+
+c#:
+- mono-devel/testing (~106MB)

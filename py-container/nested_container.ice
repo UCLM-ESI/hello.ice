@@ -9,5 +9,6 @@ module Services {
     void unlink(string key) throws NoSuchKey;
     Object* get(string key) throws NoSuchKey;
     ObjectPrxDict list();
+    Container* makeContainer(string key);
   };
 };

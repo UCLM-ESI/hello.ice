@@ -24,26 +24,35 @@ class ContainerI(Services.Container):
         print("unlink: {0}".format(key))
         del self.proxies[key]
 
+    def get(self, key, current=None):
+        if key not in self.proxies:
+            raise Services.NoSuchKey(key)
+
+        proxy = self.proxies[key]
+        print("get: {0} -> {1}".format(key, proxy))
+        return proxy
+
     def list(self, current=None):
         return self.proxies
 
 
-class Server(Ice.Application):
-    def run(self, argv):
-        broker = self.communicator()
-        servant = ContainerI()
+def run(ic):
+    servant = ContainerI()
 
-        adapter = broker.createObjectAdapter("ContainerAdapter")
-        proxy = adapter.add(servant, broker.stringToIdentity("container1"))
+    adapter = ic.createObjectAdapter("ContainerAdapter")
+    proxy = adapter.add(servant, ic.stringToIdentity("container1"))
 
-        print(proxy)
+    print(proxy)
 
-        adapter.activate()
-        self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+    adapter.activate()
+    ic.waitForShutdown()
 
-        return 0
+    return 0
 
 
 if __name__ == '__main__':
-    sys.exit(Server().main(sys.argv))
+    try:
+        with Ice.initialize(sys.argv) as communicator:
+            sys.exit(run(communicator))
+    except KeyboardInterrupt:
+        print("\nShutting down server...")

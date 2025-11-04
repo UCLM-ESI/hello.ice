@@ -1,95 +1,112 @@
 #!/usr/bin/env -S python3 -u
 
 import sys
-import threading
 import time
+from functools import cached_property
 
 import Ice
 from IceGrid import (LocatorPrx, ServerInstanceDescriptor,
                      NodeUpdateDescriptor, ApplicationUpdateDescriptor,
-                     NodeObserverPrx, NodeObserver, ServerState)
+                     NodeObserver)
 import IceGrid
 
-Ice.loadSlice('-I. --all factory.ice')
-import Example  # noqa
+
+Ice.loadSlice('-I. --all PrinterFactory.ice')
+import Example
+
+
+def ensure_proxy(proxy, cls):
+    for _ in range(5):
+        try:
+            proxy.ice_ping()
+            break
+        except Ice.LocalException:
+            time.sleep(0.5)
+
+    retval = cls.checkedCast(proxy)
+    if retval is None:
+        raise RuntimeError(f'Invalid proxy for {cls.__name__}')
+
+    return retval
 
 
 class NodeObserverI(NodeObserver):
     def __init__(self, factory):
         self.factory = factory
 
-    def updateServer(self, node, updated_info, current):
-        print("updateServer: new state: {}".format(updated_info.state))
-        return
-        if updated_info.state in [ServerState.Inactive, ServerState.Destroyed]:
-            self.factory.remove_server(updated_info.id)
+    def updateServer(self, node, updated_info, current=None):
+        print("update server: new state:", node, updated_info.state)
 
-    def nodeDown(self, node_name, current):
-        print("Node {} down".format(node_name))
-        sys.stdout.flush()
+    def nodeInit(self, node, current=None):
+        print("node init:", node)
 
+    def nodeDown(self, node_name, current=None):
+        print("node down:", node_name)
 
-class KeepAliveThread(threading.Thread):
-    def __init__(self, admin_session):
-        super().__init__(daemon=True)
-        self.session = admin_session
-
-    def run(self):
-        while True:
-            print('Keep alive')
-            self.session.keepAlive()
-            time.sleep(5)
+    def updateAdapter(self, node, adapter, current=None):
+        print("update adapter:", node, adapter)
 
 
-class FactoryI(Example.Factory):
-    def __init__(self, admin_session):
+class FactoryI(Example.PrinterFactory):
+    def __init__(self, admin_session, app):
         self.admin_session = admin_session
-        self._admin = None
+        self.app = app
 
-        self.app = 'App'
-        self.deploy_node = 'node1'
-        self.template = 'PrinterServer'
-        self.template_adapter = 'PrinterAdapter'
+    def make(self, server_name, current=None):
+        node = 'node1'
+        server_template = 'PrinterTemplate'
 
-    def make(self, server_name, current):
+        if node not in self.admin.getAllNodeNames():
+            raise Example.FactoryError(
+                f"Node '{node}' not defined in app '{self.app}'.")
+
+        if server_template not in self.server_templates:
+            raise Example.FactoryError(
+                f"Server template '{server_template}' not defined in app '{self.app}'.")
+
         try:
-            self.admin().getServerInfo(server_name)
-            state = self.admin().getServerState(server_name)
+            self.admin.getServerInfo(server_name)
+            state = self.admin.getServerState(server_name)
             if state == IceGrid.ServerState.Inactive:
-                self.admin().startServer(server_name)
+                self.admin.startServer(server_name)
 
         except IceGrid.ServerNotExistException:
-            self.create_server(server_name)
+            self.create_server(node, server_template, server_name)
 
-        return self.get_direct_proxy(server_name, broker = current.adapter.getCommunicator())
+        proxy = self.get_direct_proxy(server_template, server_name)
+        return ensure_proxy(proxy, Example.PrinterPrx)
 
+    @cached_property
     def admin(self):
-        if self._admin is not None:
-            return self._admin
+        return self.admin_session.getAdmin()
 
-        self._admin = self.admin_session.getAdmin()
-        return self._admin
-
-    def get_direct_proxy(self, server_name, broker):
-        adapters = self.admin().getAdapterInfo('{}.{}'.format(server_name, self.template_adapter))
+    def get_direct_proxy(self, template, server_name):
+        adapter_name = self.get_server_template_adapter_name(template)
+        adapters = self.admin.getAdapterInfo(f'{server_name}.{adapter_name}')
         if not adapters:
             return None
 
         dummy_prx = adapters[0].proxy
-        return dummy_prx.ice_identity(broker.stringToIdentity(server_name))
+        return dummy_prx.ice_identity(Ice.stringToIdentity(server_name))
 
-    def create_server(self, server_name):
+    def get_server_template_adapter_name(self, template):
+        template_descriptor = self.server_templates[template]
+        adapter_name = template_descriptor.descriptor.adapters[0].name
+        return adapter_name
+
+    @cached_property
+    def server_templates(self):
+        return self.admin.getApplicationInfo(self.app).descriptor.serverTemplates
+
+    def create_server(self, node, template, name):
         server_instance_desc = ServerInstanceDescriptor()
-        server_instance_desc.template = self.template
-        server_instance_desc.parameterValues = {
-            'name': server_name,
-        }
+        server_instance_desc.template = template
+        server_instance_desc.parameterValues = {'name': name}
 
-        self.admin().instantiateServer(self.app, self.deploy_node, server_instance_desc)
-        self.admin().startServer(server_name)
+        self.admin.instantiateServer(self.app, node, server_instance_desc)
+        self.admin.startServer(name)
 
     def remove_server(self, server_name):
-        print('Trying to remove server {}'.format(server_name))
         node_update_desc = NodeUpdateDescriptor()
         node_update_desc.name = self.deploy_node
         node_update_desc.removeServers = [server_name]
@@ -98,50 +115,25 @@ class FactoryI(Example.Factory):
         app_update_desc.name = self.app
         app_update_desc.nodes = [node_update_desc]
 
-        self.admin().updateApplication(app_update_desc)
+        self.admin.updateApplication(app_update_desc)
 
 
-class FactoryServer(Ice.Application):
-    def run(self, argv):
-        broker = self.communicator()
-        self.adapter = broker.createObjectAdapter('Adapter')
-        self.adapter.activate()
+def run(ic):
+    admin_session = LocatorPrx.checkedCast(ic.getDefaultLocator()).\
+        getLocalRegistry().createAdminSession('user', 'pass')
 
-        self.properties = broker.getProperties()
-        self.admin_session = self.get_admin_session()
+    servant = FactoryI(admin_session, 'App')
 
-        identity = broker.stringToIdentity(
-            self.properties.getPropertyWithDefault('Identity', 'factory'))
+    adapter = ic.createObjectAdapter('PrinterFactory.Adapter')
+    adapter.activate()
+    proxy = adapter.add(servant, Ice.stringToIdentity('factory'))
 
-        self.servant = FactoryI(self.admin_session)
-        proxy = self. adapter.add(self.servant, identity)
-        print(proxy)
+    print(proxy)
 
-        self.set_node_observer()
-        self.keep_sesion()
-
-        self.shutdownOnInterrupt()
-        broker.waitForShutdown()
-
-        return 0
-
-    def get_admin_session(self):
-        user = self.properties.getProperty('user')
-        pwd = self.properties.getProperty('pwd')
-
-        registry = LocatorPrx.checkedCast(self.communicator().getDefaultLocator()).getLocalRegistry()
-        return registry.createAdminSession(user, pwd)
-
-    def set_node_observer(self):
-        observer = NodeObserverI(self.servant)
-        observer = NodeObserverPrx.uncheckedCast(self.adapter.addWithUUID(observer))
-        print(observer)
-        self.admin_session.setObservers(None, observer, None, None, None)
-
-    def keep_session(self):
-        keep_alive_thread = KeepAliveThread(self.admin_session)
-        keep_alive_thread.start()
+    ic.waitForShutdown()
+    return 0
 
 
 if __name__ == '__main__':
-    sys.exit(FactoryServer().main(sys.argv))
+    with Ice.initialize(sys.argv) as communicator:
+        sys.exit(run(communicator))

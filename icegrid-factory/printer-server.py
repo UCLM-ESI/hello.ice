@@ -18,18 +18,19 @@ class PrinterI(Example.Printer):
 def main(ic):
     servant = PrinterI()
     adapter = ic.createObjectAdapter("PrinterAdapter")
-    proxy = adapter.add(servant, ic.stringToIdentity("printer1"))
+
+    identity = ic.getProperties().getProperty("Identity")
+    proxy = adapter.add(servant, ic.stringToIdentity(identity))
 
     print(proxy)
 
     adapter.activate()
     ic.waitForShutdown()
-    return 0
 
 
 if __name__ == "__main__":
     try:
         with Ice.initialize(sys.argv) as communicator:
-            sys.exit(main(communicator))
+            main(communicator)
     except KeyboardInterrupt:
         print("\nShutting down server...")

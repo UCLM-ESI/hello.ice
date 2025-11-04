@@ -2,27 +2,42 @@
 
 import sys
 import Ice
+import time
 
-Ice.loadSlice('-I. --all factory.ice')
-Ice.loadSlice('-I. --all printer.ice')
+Ice.loadSlice('-I. --all printer.ice PrinterFactory.ice')
 
-import Example  # noqa
-
-
-class Client(Ice.Application):
-    def run(self, argv):
-        proxy = self.communicator().stringToProxy(argv[1])
-        factory = Example.FactoryPrx.checkedCast(proxy)
-
-        if not factory:
-            raise RuntimeError('Invalid proxy')
-
-        proxy = factory.make("printer1")
-        printer = Example.PrinterPrx.checkedCast(proxy)
-
-        printer.write('Hello World!')
-
-        return 0
+import Example
 
 
-sys.exit(Client().main(sys.argv))
+def ensure_proxy(proxy, cls):
+    for _ in range(5):
+        try:
+            proxy.ice_ping()
+            break
+        except Ice.LocalException:
+            time.sleep(0.5)
+
+    retval = cls.checkedCast(proxy)
+    if retval is None:
+        raise RuntimeError(f'Invalid proxy for {cls.__name__}')
+
+    return retval
+
+
+def main(ic):
+    proxy = ic.stringToProxy(sys.argv[1])
+    factory = ensure_proxy(proxy, Example.PrinterFactoryPrx)
+
+    proxy1 = factory.make('printer1')
+    proxy2 = factory.make('printer2')
+
+    printer = ensure_proxy(proxy1, Example.PrinterPrx)
+
+    printer.write('Hello World!')
+    print('ok')
+
+    return 0
+
+
+with Ice.initialize(sys.argv) as communicator:
+    sys.exit(main(communicator))

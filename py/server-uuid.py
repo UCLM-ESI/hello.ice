@@ -20,7 +20,7 @@ def main(ic):
     adapter = ic.createObjectAdapter("PrinterAdapter")
     proxy = adapter.addWithUUID(servant)
 
-    print(proxy, flush=True)
+    print(proxy)
 
     adapter.activate()
     ic.waitForShutdown()
@@ -28,7 +28,7 @@ def main(ic):
 
 if __name__ == "__main__":
     try:
-        with Ice.initialize(sys.argv[1]) as ic:
+        with Ice.initialize(sys.argv) as ic:
             main(ic)
     except KeyboardInterrupt:
         pass

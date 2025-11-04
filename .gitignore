@@ -7,3 +7,4 @@ proxy.out
 **/err.txt
 **/out.txt
 **/db
+py/dist/

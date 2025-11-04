@@ -1,7 +1,9 @@
 #include <printer.ice>
 
 module Example {
+  exception FactoryError { string reason; };
+
   interface PrinterFactory {
-    Printer* make(string name);
+    Printer* make(string name) throws FactoryError;
   };
 };

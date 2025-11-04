@@ -38,4 +38,5 @@ class Server(Ice.Application):
         work_queue.destroy()
         return 0
 
+
 sys.exit(Server().main(sys.argv))

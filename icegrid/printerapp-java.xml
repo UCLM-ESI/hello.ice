@@ -92,7 +92,7 @@
          </icebox>
       </server-template>
       <node name="node1">
-         <server-instance template="IcePatch2" directory="/tmp/printer-server-java">
+         <server-instance template="IcePatch2" directory="/tmp/printer-java">
             <properties>
                <property name="Ice.ServerIdleTime" value="5"/>
             </properties>

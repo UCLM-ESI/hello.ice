@@ -1,9 +1,3 @@
-
-all:
-
-clean:
-	$(RM) *~ proxy.out
-
 run-server:
 	./server.py --Ice.Config=server.config | tee proxy.out
 
