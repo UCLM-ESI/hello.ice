@@ -4,7 +4,7 @@ module Services {
 
   dictionary<string, Object*> ObjectPrxDict;
 
-  interface Container {
+  interface NestedContainer {
     void link(string key, Object* proxy) throws AlreadyExists;
     void unlink(string key) throws NoSuchKey;
     Object* get(string key) throws NoSuchKey;
