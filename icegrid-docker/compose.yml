@@ -5,9 +5,13 @@ services:
     hostname: registry
     ports:
       - "4061:4061"
+      - "4062:4062"
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.10
     volumes:
       - "./registry.config:/etc/icegridregistry.conf:ro"
-      - "./db/icegrid:/var/lib/ice/icegrid:rw"
+    #   - "./db/icegrid:/var/lib/ice/icegrid:rw"
 
   node1:
     container_name: node1
@@ -15,16 +19,31 @@ services:
     hostname: node1
     depends_on:
       - registry
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.11
     volumes:
       - "./node1.config:/etc/icegridnode.conf:ro"
-      - "./db/icegrid:/var/lib/ice/icegrid:rw"
+    #   - "./db/icegrid:/var/lib/ice/icegrid:rw"
 
-  node2:
-    container_name: node2
-    image: zeroc/icegridnode:3.7
-    hostname: node2
+  debug:
+    container_name: debug
+    image: debian:bookworm-slim
+    hostname: debug
+    command: ["sleep", "infinity"]
+    tty: true
+    stdin_open: true
     depends_on:
       - registry
-    volumes:
-      - "./node2.config:/etc/icegridnode.conf:ro"
-      - "./db/icegrid:/var/lib/ice/icegrid:rw"
+      - node1
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.50
+
+networks:
+  icegrid:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1
