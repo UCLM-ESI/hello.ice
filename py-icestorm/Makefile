@@ -11,14 +11,15 @@ start:  icebox.config icestorm.config
 	@while ! netstat -lptn 2> /dev/null | grep ":2000" > /dev/null; do \
 	    sleep 1; \
 	done
-	icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"
+	-icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"
 
 stop: icestorm.config
 	icestormadmin --Ice.Config=icestorm.config -e "destroy PrinterTopic"
 	killall icebox
 
-run-publisher:  icestorm.config
+run-publisher: publisher.config
+	sleep 1
 	./publisher.py --Ice.Config=publisher.config
 
-run-subscriber: icestorm.config
+run-subscriber: subscriber.config
 	./subscriber.py --Ice.Config=subscriber.config
