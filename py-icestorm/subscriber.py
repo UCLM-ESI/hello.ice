@@ -9,27 +9,25 @@ import Example
 
 class PrinterI(Example.Printer):
     def write(self, message, current=None):
-        print("Event received: {0}".format(message))
-        sys.stdout.flush()
+        print(f"Event received: {message}")
 
 
 def get_topic_manager(ic):
     key = 'IceStorm.TopicManager.Proxy'
     proxy = ic.propertyToProxy(key)
     if proxy is None:
-        print("property '{}' not set".format(key))
-        return None
+        raise KeyError(f"property '{key}' not set")
 
     print("Using IceStorm in: '%s'" % key)
-    return IceStorm.TopicManagerPrx.checkedCast(proxy)
+    retval = IceStorm.TopicManagerPrx.checkedCast(proxy)
+    if not retval:
+        raise ValueError("Invalid proxy for TopicManager")
+
+    return retval
 
 
 def main(ic):
     topic_mgr = get_topic_manager(ic)
-    if not topic_mgr:
-        print("Invalid proxy")
-        return 2
-
     servant = PrinterI()
     adapter = ic.createObjectAdapter("PrinterAdapter")
     subscriber = adapter.addWithUUID(servant)
@@ -58,4 +56,4 @@ if __name__ == "__main__":
             sys.exit(main(ic))
 
     except KeyboardInterrupt:
-        print("\nShutting down subscriber...")
+        print("Shutting down subscriber...")

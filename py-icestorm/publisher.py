@@ -12,23 +12,23 @@ def get_topic_manager(ic):
     key = 'IceStorm.TopicManager.Proxy'
     proxy = ic.propertyToProxy(key)
     if proxy is None:
-        print("property {} not set".format(key))
-        return None
+        raise KeyError(f"property '{key}' not set")
 
     print("Using IceStorm in: '%s'" % key)
-    return IceStorm.TopicManagerPrx.checkedCast(proxy)
+    retval = IceStorm.TopicManagerPrx.checkedCast(proxy)
+    if not retval:
+        raise ValueError("Invalid proxy for TopicManager")
+
+    return retval
+
 
 def main(ic):
     topic_mgr = get_topic_manager(ic)
-    if not topic_mgr:
-        print('Invalid proxy')
-        return 2
 
     topic_name = "PrinterTopic"
     try:
         topic = topic_mgr.retrieve(topic_name)
     except IceStorm.NoSuchTopic:
-        print("no such topic found, creating")
         topic = topic_mgr.create(topic_name)
 
     publisher = topic.getPublisher()
@@ -41,11 +41,11 @@ def main(ic):
 
     return 0
 
+
 if __name__ == "__main__":
     try:
         with Ice.initialize(sys.argv) as ic:
             sys.exit(main(ic))
 
     except KeyboardInterrupt:
-        print("\nShutting down publisher")
-
+        print("Shutting down publisher")

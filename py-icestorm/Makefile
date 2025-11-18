@@ -1,25 +1,20 @@
-
-all:
-
 clean:
 	$(RM) *~
 	$(RM) -r db
 
-start:  icebox.config icestorm.config
+start: icebox.config icestorm.config
 	@if ! [ -d db ]; then mkdir db; fi
 	icebox --Ice.Config=icebox.config &
-	@while ! netstat -lptn 2> /dev/null | grep ":2000" > /dev/null; do \
-	    sleep 1; \
-	done
+	@while ! ss -ltnH 2>/dev/null | grep -q ':2000'; do sleep 1; done
 	-icestormadmin --Ice.Config=icestorm.config -e "create PrinterTopic"
 
 stop: icestorm.config
-	icestormadmin --Ice.Config=icestorm.config -e "destroy PrinterTopic"
+	icestormadmin --Ice.Config=$< -e "destroy PrinterTopic"
 	killall icebox
 
 run-publisher: publisher.config
 	sleep 1
-	./publisher.py --Ice.Config=publisher.config
+	./publisher.py --Ice.Config=$<
 
 run-subscriber: subscriber.config
-	./subscriber.py --Ice.Config=subscriber.config
+	./subscriber.py --Ice.Config=$<
