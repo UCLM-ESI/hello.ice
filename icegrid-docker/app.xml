@@ -1,1 +1,25 @@
-../icegrid/printerapp-py.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<icegrid>
+   <application name="PrinterApp">
+      <node name="node1">
+         <server id="PrinterServer1" activation="manual" exe="./server.py" pwd="/app">
+            <properties>
+               <property name="Ice.StdOut"/>
+               <property name="Ice.StdErr"/>
+            </properties>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
+               <object identity="printer1" type="::Example::Printer"/>
+            </adapter>
+         </server>
+      </node>
+      <node name="node2">
+         <server id="PrinterServer2" activation="manual" exe="./server-uuid.py" pwd="/app">
+            <properties>
+               <property name="Ice.StdOut"/>
+               <property name="Ice.StdErr"/>
+            </properties>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
+         </server>
+      </node>
+   </application>
+</icegrid>

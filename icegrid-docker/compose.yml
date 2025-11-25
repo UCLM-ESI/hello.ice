@@ -3,42 +3,43 @@ services:
     container_name: registry
     image: zeroc/icegridregistry:3.7
     hostname: registry
-    ports:
-      - "4061:4061"
-      - "4062:4062"
     networks:
       icegrid:
         ipv4_address: 172.28.0.10
     volumes:
       - "./registry.config:/etc/icegridregistry.conf:ro"
-    #   - "./db/icegrid:/var/lib/ice/icegrid:rw"
+    healthcheck:
+      test: "bash -c 'echo > /dev/tcp/172.28.0.10/4061'"
+      interval: 1s
 
   node1:
     container_name: node1
-    image: zeroc/icegridnode:3.7
+    build: docker/ignode
+    image: ignode
     hostname: node1
     depends_on:
-      - registry
+      registry:
+        condition: service_healthy
     networks:
       icegrid:
         ipv4_address: 172.28.0.11
     volumes:
       - "./node1.config:/etc/icegridnode.conf:ro"
-    #   - "./db/icegrid:/var/lib/ice/icegrid:rw"
+      - "../py/dist:/app:ro"
 
-  debug:
-    container_name: debug
-    image: debian:bookworm-slim
-    hostname: debug
-    command: ["sleep", "infinity"]
-    tty: true
-    stdin_open: true
+  node2:
+    container_name: node2
+    image: ignode
+    hostname: node1
     depends_on:
-      - registry
-      - node1
+      registry:
+        condition: service_healthy
     networks:
       icegrid:
-        ipv4_address: 172.28.0.50
+        ipv4_address: 172.28.0.12
+    volumes:
+      - "./node2.config:/etc/icegridnode.conf:ro"
+      - "../py/dist:/app:ro"
 
 networks:
   icegrid:

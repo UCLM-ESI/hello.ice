@@ -12,11 +12,11 @@ down:
 show-nodes:
 	$(IG_ADMIN) -e "node list"
 
-add-app:
+add-app: rm-app
 	$(IG_ADMIN) -e "application add app.xml"
 
 rm-app:
-	$(IG_ADMIN) -e "application remove PrinterApp"
+	-$(IG_ADMIN) -e "application remove PrinterApp"
 
 clean: stop-grid
 	-$(RM) *~
