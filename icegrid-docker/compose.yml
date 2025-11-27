@@ -25,7 +25,7 @@ services:
         ipv4_address: 172.28.0.11
     volumes:
       - "./node1.config:/etc/icegridnode.conf:ro"
-      - "../py/dist:/app:ro"
+      - "../py:/app:ro"
 
   node2:
     container_name: node2
@@ -41,7 +41,7 @@ services:
         ipv4_address: 172.28.0.12
     volumes:
       - "./node2.config:/etc/icegridnode.conf:ro"
-      - "../py/dist:/app:ro"
+      - "../py:/app:ro"
 
 networks:
   icegrid:
