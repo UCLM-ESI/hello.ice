@@ -1,7 +1,7 @@
 services:
   registry:
     container_name: registry
-    image: zeroc/icegridregistry:3.7
+    build: docker/igregistry
     hostname: registry
     networks:
       icegrid:
@@ -30,8 +30,10 @@ services:
   node2:
     container_name: node2
     image: ignode
-    hostname: node1
+    hostname: node2
     depends_on:
+      node1:
+        condition: service_started
       registry:
         condition: service_healthy
     networks:
