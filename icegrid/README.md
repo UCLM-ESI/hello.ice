@@ -3,7 +3,7 @@ Description
 
 This example describes a distributed application with IceGrid that deploys two Printer servers on two nodes (node1 and node2). The application includes the definition of a "well-known" object called "printer1" for the Printer object of the server deployed on node1.
 
-It creates three IceGrid nodes on the user's computer, although only the first two are used.
+In a real production deployment, it would be normal to run a single IceGrid Node on each computer involved. Here, for simplicity, we run the two IceGrid nodes that we are going to use on the user's computer.
 
 Here is the usage and meaning of the different files:
 
