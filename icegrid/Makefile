@@ -10,23 +10,19 @@ start-grid: /tmp/db/registry $(NODE_DIRS)
 	icegridnode --Ice.Config=node1.config &
 
 	@echo -- waiting registry to start...
-	@while ! netstat -lptn 2> /dev/null | grep ":4061" > /dev/null; do \
-	    sleep 1; \
-	done
+	@while ! ss -ltnH 2>/dev/null | grep -q ':4061'; do sleep 1; done
 
 	@for node in $(filter-out node1, $(NODES)); do \
-	    icegridnode --Ice.Config=$$node.config & \
-	    echo -- $$node started; \
+		icegridnode --Ice.Config=$$node.config & \
+		echo -- $$node started; \
 	done
 
 	@echo -- ok
 
 stop-grid:
-	@for node in $(NODES); do \
-	    $(IG_ADMIN) -e "node shutdown $$node"; \
-	done
-
-	@killall icegridnode
+	$(IG_ADMIN) -e "node shutdown node1"
+	@while ss -ltnH 2>/dev/null | grep -q ':4061'; do sleep 1; done
+	killall icegridnode || true
 	@echo -- ok
 
 show-nodes:
