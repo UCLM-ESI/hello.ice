@@ -1,8 +1,8 @@
 #!/usr/bin/make -f
 
-NODE_DIRS=$(addprefix /tmp/icedata/, $(NODES))
 IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
 NODES=$(basename $(shell ls node*.config | sort -r))
+NODE_DIRS=$(addprefix /tmp/icedata/, $(NODES))
 
 start-grid: /tmp/icedata/registry $(NODE_DIRS)
 	cp default-templates.xml /tmp/icedata/
