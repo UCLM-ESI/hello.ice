@@ -1,35 +1,30 @@
 #!/usr/bin/make -f
 
-IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
+define ig_admin
+	icegridadmin --Ice.Config=locator.config -u user -p pass -e "$(1)"
+endef
 
-up:
+up: down
 	reset
-	docker compose up --remove-orphans
+	docker compose up -d --remove-orphans
 
-down: rm-app
+down:
 	docker compose down
 
-show-nodes:
-	$(IG_ADMIN) -e "node list"
-
-add-app: rm-app
-	$(IG_ADMIN) -e "application add app.xml"
+logs:
+	docker compose logs -f
 
 rm-app:
-	-$(IG_ADMIN) -e "application remove PrinterApp" 2> /dev/null
+	-$(call ig_admin, application remove PrinterApp)
+
+add-app: up rm-app
+	$(call ig_admin, application add app.xml)
 
 client:
 	../py/client.py --Ice.Config=locator.config "printer1 @ PrinterServer1.PrinterAdapter"
 
-sockets:
-	reset
-	@echo registry:
-	docker compose exec registry bash -c "ss -lptn"
-	docker compose exec registry bash -c "netstat -lptn"
-	@echo node1:
-	docker compose exec node1 bash -c "ss -lptn"
-	docker compose exec node1 bash -c "netstat -lptn"
-
+client-wko:
+	../py/client.py --Ice.Config=locator.config printer1
 
 clean: down
 	-$(RM) *~

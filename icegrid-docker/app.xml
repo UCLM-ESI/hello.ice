@@ -2,23 +2,15 @@
 <icegrid>
    <application name="PrinterApp">
       <node name="node1">
-         <server id="PrinterServer1" activation="manual" exe="./server.py" pwd="/app">
+         <server id="PrinterServer1" activation="on-demand" exe="./server.py" user="ice" pwd="/app">
             <properties>
                <property name="Ice.StdOut"/>
                <property name="Ice.StdErr"/>
+               <property name="Ice.ServerIdleTime" value="5"/>
             </properties>
             <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
-               <object identity="printer1" type="::Example::Printer"/>
+               <object identity="printer1"/>
             </adapter>
-         </server>
-      </node>
-      <node name="node2">
-         <server id="PrinterServer2" activation="manual" exe="./server-uuid.py" pwd="/app">
-            <properties>
-               <property name="Ice.StdOut"/>
-               <property name="Ice.StdErr"/>
-            </properties>
-            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
          </server>
       </node>
    </application>
