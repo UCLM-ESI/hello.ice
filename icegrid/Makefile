@@ -1,12 +1,11 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
-NODES=$(basename $(shell ls node*.config | sort -r))
-NODE_DIRS=$(addprefix /tmp/db/, $(NODES))
+NODE_DIRS=$(addprefix /tmp/icedata/, $(NODES))
 IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
+NODES=$(basename $(shell ls node*.config | sort -r))
 
-start-grid: /tmp/db/registry $(NODE_DIRS)
-	cp default-templates.xml /tmp/
+start-grid: /tmp/icedata/registry $(NODE_DIRS)
+	cp default-templates.xml /tmp/icedata/
 	icegridnode --Ice.Config=node1.config &
 
 	@echo -- waiting registry to start...
@@ -20,15 +19,15 @@ start-grid: /tmp/db/registry $(NODE_DIRS)
 	@echo -- ok
 
 stop-grid:
-	$(IG_ADMIN) -e "node shutdown node1"
-	@while ss -ltnH 2>/dev/null | grep -q ':4061'; do sleep 1; done
-	killall icegridnode || true
+	-$(IG_ADMIN) -e "node shutdown node1"
+	@while ss -ltnH | grep -q ":4061"; do sleep 1; done
+	-killall icegridnode
 	@echo -- ok
 
 show-nodes:
 	$(IG_ADMIN) -e "node list"
 
-/tmp/db/%:
+/tmp/icedata/%:
 	mkdir -p $@
 
 clean: stop-grid
