@@ -3,7 +3,9 @@
 import sys
 import time
 import Ice
-Ice.loadSlice('printer.ice')
+from pathlib import Path
+
+Ice.loadSlice(str(Path(__file__).parent / 'printer.ice'))
 import Example
 
 
