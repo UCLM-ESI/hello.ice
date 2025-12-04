@@ -1,68 +1,72 @@
-Descripción
+Description
 ===========
 
-Este ejemplo describe una aplicación distribuida con IceGrid que despliega dos servidores Printer en dos nodos (node1 y node2). La aplicación incluye la definición de un objeto "bien conocido" llamado "printer1" para el objeto Printer del servidor desplegado en node1.
+This example describes a distributed application with IceGrid that deploys two Printer servers on two nodes (node1 and node2). The application includes the definition of a "well-known" object called "printer1" for the Printer object of the server deployed on node1.
 
-Crea tres nodos IceGrid en el computador de usuario, aunque solo se utilizan los dos primeros.
+It creates three IceGrid nodes on the user's computer, although only the first two are used.
 
-Aquí se indica el uso y significado de los distintos ficheros:
+Here is the usage and meaning of the different files:
 
-- `Makefile`: Tiene objetivos para arrancar y parar los tres nodos.
-- `node1.config`: Configuración del primer nodo IceGrid. Incluye un Registry "colocalizado", es decir, que ambos se ejecutan en el mismo proceso.
-- `node2.config`: Configuración del segundo nodo iceGrid.
-- `node3.config`: Configuración del tercer nodo iceGrid.
-- `locator.config`: Configuración de la referencia del Locator, necesaria para los clientes que accedan a los objetos desplegados.
-- `default-templates.xml`: Las plantillas de servicios para la creación de aplicaciones desde el Registry.
-- `printerapp-cpp.xml`: Aplicación distribuida que usa el Printer implementado en C++ (directorio hello.ice/cpp).
-- `printerapp-java.xml`: Aplicación distribuida que usa el Printer implementado en Java (directorio hello.ice/java).
-- `printerapp-py.xml`: Aplicación distribuida que usa el Printer implementado en Python (directorio hello.ice/py).
-- `well-known.py`: Un cliente Python que invoca el objeto bien conocido "printer1".
-- `query-client.py`: Ejemplo de uso de la interfaz IceGrid::Query para la búsqueda de objetos.
+- `Makefile`: Has targets to start and stop the three nodes.
+- `node1.config`: Configuration of the first IceGrid node. Includes a "collocated" Registry, meaning both run in the same process.
+- `node2.config`: Configuration of the second IceGrid node.
+- `node3.config`: Configuration of the third IceGrid node.
+- `locator.config`: Configuration of the Locator reference, necessary for clients accessing the deployed objects.
+- `default-templates.xml`: Service templates for creating applications from the Registry.
+- `printerapp-cpp.xml`: Distributed application using the Printer implemented in C++ (hello.ice/cpp directory).
+- `printerapp-java.xml`: Distributed application using the Printer implemented in Java (hello.ice/java directory).
+- `printerapp-py.xml`: Distributed application using the Printer implemented in Python (hello.ice/py directory).
+- `well-known.py`: A Python client that invokes the well-known object "printer1".
+- `query-client.py`: Example usage of the IceGrid::Query interface for object search.
 
 
-Ejecución
+Execution
 =========
 
-Estas instrucciones utilizan el programa icegridadmin, pero todos estos pasos se pueden realizar también con icegridgui.
+These instructions use the icegridadmin program, but all these steps can also be performed with icegridgui.
 
-Arrancar los nodos:
+Start the nodes:
 
     $ make start-grid
 
-Cargar la aplicación en el Registry:
+Load the application into the Registry:
 
     $ icegridadmin --Ice.Config=locator.config -u user -p pass -e "application add printerapp-py.xml"
 
-Distribución de los ficheros. La aplicación busca los programas a ejecutar en ${application.distrib}, que es una variable que contiene la ruta en la que el servicio de distribución IcePatch2 colocará los ficheros. Por tanto, es necesario ejecutar primero la distribución. Esto requiere dos pasos:
+File distribution. The application looks for programs to execute in ${application.distrib}, which is a variable containing the path where the IcePatch2 distribution service will place the files. Therefore, it's necessary to run the distribution first. This requires two steps:
 
-1. Preparar los ficheros. Por ejemplo para hello.ice/py se puede hacer con:
+1. Prepare the files. For example, for `hello.ice/py` this can be done with:
 
+    ```bash
     py$ make gen-dist
+    ```
 
-que crea un directorio py/dist con los archivos listos para la distribución y un enlace en /tmp/printer-py, que facilita la configuración de IcePatch2.
+    This creates a `py/dist` directory with the files ready for distribution and a link in `/tmp/printer-py`, which facilitates the IcePatch2 configuration.
 
-2. Ejecutar la distribución en sí.
+1. Execute the distribution itself.
 
+    ```bash
     $ icegridadmin --Ice.Config=locator.config -u user -p pass -e "application patch PrinterApp"
+    ```
 
-Todos los detalles de la configuración de IcePatch2 los puedes comprobar mirando directamente la descripción en el fichero XML o cargándolo con icegridgui.
+    You can check all the IcePatch2 configuration details by looking directly at the description in the XML file or loading it with **icegridgui**.
 
-Arrancar los servidores (ya que tienen activación manual):
+Start the servers (since they have manual activation):
 
     $ icegridadmin --Ice.Config=locator.config -u user -p pass -e "server start PrinterServer1"
     $ icegridadmin --Ice.Config=locator.config -u user -p pass -e "server start PrinterServer2"
 
-Puedes ver la salida de los servidores (dónde aparece el proxy del objeto) con:
+You can see the server output (where the object proxy appears) with:
 
     $ icegridadmin --Ice.Config=locator.config -u user -p pass -e "server show PrinterServer1 stdout"
     server `PrinterServer1' stdout:
     printer1 -t -e 1.1 @ PrinterServer1.PrinterAdapter
 
-Por último, puedes invocar el servidor PrinterServer1 con:
+Finally, you can invoke the PrinterServer1 server with:
 
     $ ../py/client.py --Ice.Config=locator.config "printer1 -t -e 1.1 @ PrinterServer1.PrinterAdapter"
 
-Y comprobar que se ha ejecutado mirando de nuevo la salida del servidor:
+And verify that it has been executed by checking the server output again:
 
     $ icegridadmin --Ice.Config=locator.config -u user -p pass -e "server show PrinterServer1 stdout"
     server `PrinterServer1' stdout:
