@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<icegrid>
+   <application name="ToolApp">
+      <node name="node1">
+         <server id="ToolServer1" activation="on-demand" exe="./server.py" user="ice" pwd="/app">
+            <properties>
+               <property name="Ice.StdOut"/>
+               <property name="Ice.StdErr"/>
+               <property name="Ice.ServerIdleTime" value="5"/>
+            </properties>
+            <adapter name="ToolAdapter" endpoints="default" id="${server}.ToolAdapter"/>
+         </server>
+      </node>
+         <node name="node2">
+         <server id="ToolServer2" activation="on-demand" exe="./server.py" user="ice" pwd="/app">
+            <properties>
+               <property name="Ice.StdOut"/>
+               <property name="Ice.StdErr"/>
+               <property name="Ice.ServerIdleTime" value="5"/>
+            </properties>
+            <adapter name="ToolAdapter" endpoints="default" id="${server}.ToolAdapter"/>
+         </server>
+      </node>
+   </application>
+</icegrid>
