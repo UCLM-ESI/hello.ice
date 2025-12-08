@@ -1,5 +1,5 @@
 module Example {
-  interface StringUtil {
+  interface Tool {
     string upper(string message);
   };
 };

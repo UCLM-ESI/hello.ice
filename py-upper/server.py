@@ -8,16 +8,16 @@ Ice.loadSlice(str(Path(__file__).parent / 'upper.ice'))
 import Example
 
 
-class StringUtilI(Example.StringUtil):
+class ToolI(Example.Tool):
     def upper(self, message, current=None):
         print("Client sent:", message)
         return message.upper()
 
 
 def main(ic):
-    servant = StringUtilI()
-    adapter = ic.createObjectAdapter("StringAdapter")
-    proxy = adapter.add(servant, ic.stringToIdentity("string1"))
+    servant = ToolI()
+    adapter = ic.createObjectAdapter("ToolAdapter")
+    proxy = adapter.add(servant, ic.stringToIdentity("tool1"))
 
     print(proxy)
 

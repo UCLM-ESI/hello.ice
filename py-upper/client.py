@@ -26,8 +26,8 @@ def get_proxy(ic, str_proxy, cls):
     return object
 
 def main(ic):
-    stringutil = get_proxy(ic, sys.argv[1], Example.StringUtilPrx)
-    print(stringutil.upper('Hello World!'))
+    tool = get_proxy(ic, sys.argv[1], Example.ToolPrx)
+    print(tool.upper('Hello World!'))
 
 
 if __name__ == "__main__":
