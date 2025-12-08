@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <icegrid>
-   <application name="ToolApp">
+   <application name="App">
+      <replica-group id="ToolGroup">
+         <load-balancing type="round-robin"/>
+      </replica-group>
       <node name="node1">
-         <server id="ToolServer1" activation="on-demand" exe="./server.py" user="ice" pwd="/app">
+         <server id="ToolServer1" activation="always" user="ice" exe="/app/server.py">
             <properties>
-               <property name="Ice.StdOut"/>
-               <property name="Ice.StdErr"/>
-               <property name="Ice.ServerIdleTime" value="5"/>
+               <property name="Ice.StdOut" value=""/>
+               <property name="Ice.StdErr" value=""/>
             </properties>
-            <adapter name="ToolAdapter" endpoints="default" id="${server}.ToolAdapter"/>
+            <adapter name="ToolAdapter" replica-group="ToolGroup"/>
          </server>
       </node>
-         <node name="node2">
-         <server id="ToolServer2" activation="on-demand" exe="./server.py" user="ice" pwd="/app">
+      <node name="node2">
+         <server id="ToolServer2" activation="always" user="ice" exe="/app/server.py">
             <properties>
-               <property name="Ice.StdOut"/>
-               <property name="Ice.StdErr"/>
-               <property name="Ice.ServerIdleTime" value="5"/>
+               <property name="Ice.StdOut" value=""/>
+               <property name="Ice.StdErr" value=""/>
             </properties>
-            <adapter name="ToolAdapter" endpoints="default" id="${server}.ToolAdapter"/>
+            <adapter name="ToolAdapter" replica-group="ToolGroup"/>
          </server>
       </node>
    </application>

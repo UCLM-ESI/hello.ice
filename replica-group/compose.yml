@@ -1,0 +1,58 @@
+services:
+  registry:
+    image: zeroc/icegridregistry:3.7
+    container_name: registry
+    hostname: registry
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.10
+    volumes:
+      - "./registry.config:/etc/icegridregistry.conf:ro"
+    healthcheck:
+      test: "bash -c 'echo > /dev/tcp/127.0.0.1/4061'"
+      interval: 1s
+
+  node1:
+    build: docker/ignode
+    image: ignode
+    container_name: node1
+    hostname: node1
+    depends_on:
+      registry:
+        condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 1024
+    networks:
+      - icegrid
+    volumes:
+      - "./node1.config:/etc/icegridnode.conf:ro"
+      - "../py-upper:/app"
+
+  node2:
+    image: ignode
+    container_name: node2
+    hostname: node2
+    depends_on:
+      registry:
+        condition: service_healthy
+      node1:
+        condition: service_started
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 1024
+    networks:
+      - icegrid
+    volumes:
+      - "./node2.config:/etc/icegridnode.conf:ro"
+      - "../py-upper:/app"
+
+networks:
+  icegrid:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1
