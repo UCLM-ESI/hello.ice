@@ -1,22 +1,27 @@
 #!/usr/bin/make -f
 
-IG_ADMIN=icegridadmin --Ice.Config=locator.config -u user -p pass
+define ig_admin
+	icegridadmin --Ice.Config=locator.config -u user -p pass -e "$(1)"
+endef
 
 start: ./tmp/db/registry ./tmp/db/node1
 	icegridnode --Ice.Config=node1.config &
 
 	@echo -- waiting registry to start...
-	@while ! ss -ltnH 2>/dev/null | grep -q ':4061'; do sleep 1; done
+	@while ! bash -c 'echo > /dev/tcp/127.0.0.1/4061' 2>/dev/null; do sleep 1; done
+	@echo -- ok
 
 stop:
-	$(IG_ADMIN) -e "node shutdown node1"
-	@while ss -ltnH 2>/dev/null | grep -q ':4061'; do sleep 1; done
-
-add-app: start app.xml
-	$(IG_ADMIN) -e "application add app.xml"
+	-$(call ig_admin, node shutdown node1)
+	@while bash -c 'echo > /dev/tcp/127.0.0.1/4061' 2>/dev/null; do sleep 1; done
+	-killall icegridnode
+	@echo -- ok
 
 rm-app:
-	$(IG_ADMIN) -e "application remove App"
+	-$(call ig_admin, application remove App)
+
+add-app: start rm-app app.xml
+	$(call ig_admin, application add app.xml)
 
 run-client:
 	./client.py --Ice.Config=locator.config factory
