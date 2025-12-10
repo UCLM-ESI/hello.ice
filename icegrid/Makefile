@@ -13,7 +13,7 @@ start-grid: /tmp/icedata/registry $(NODE_DIRS)
 	icegridnode --Ice.Config=node1.config &
 
 	@echo -- waiting registry to start...
-	@while ! bash -c 'echo > /dev/tcp/127.0.0.1/4061' 2>/dev/null; do sleep 1; done
+	@while ! bash -c ':> /dev/tcp/127.0.0.1/4061' 2>/dev/null; do sleep 1; done
 
 	@for node in $(filter-out node1, $(NODES)); do \
 		icegridnode --Ice.Config=$$node.config & \
@@ -24,7 +24,7 @@ start-grid: /tmp/icedata/registry $(NODE_DIRS)
 
 stop-grid:
 	-$(call ig_admin, node shutdown node1)
-	@while bash -c 'echo > /dev/tcp/127.0.0.1/4061' 2>/dev/null; do sleep 1; done
+	@while bash -c ':> /dev/tcp/127.0.0.1/4061' 2>/dev/null; do sleep 1; done
 	-killall icegridnode
 	@echo -- ok
 

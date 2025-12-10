@@ -9,7 +9,7 @@ services:
     volumes:
       - "./registry.config:/etc/icegridregistry.conf:ro"
     healthcheck:
-      test: "bash -c 'echo > /dev/tcp/127.0.0.1/4061'"
+      test: "bash -c ':> /dev/tcp/127.0.0.1/4061'"
       interval: 1s
 
   node1:
