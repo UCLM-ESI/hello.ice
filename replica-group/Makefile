@@ -17,7 +17,7 @@ logs:
 rm-app:
 	-$(call ig_admin, application remove App)
 
-add-app: rm-app
+add-app: rm-app app.xml
 	$(call ig_admin, application add app.xml)
 
 client:
