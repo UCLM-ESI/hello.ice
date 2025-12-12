@@ -3,7 +3,9 @@
 import sys
 import Ice
 import IceStorm
-Ice.loadSlice('printer.ice')
+from pathlib import Path
+
+Ice.loadSlice(str(Path(__file__).parent / 'printer.ice'))
 import Example
 
 

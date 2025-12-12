@@ -4,7 +4,9 @@ import sys
 import Ice
 import time
 import IceStorm
-Ice.loadSlice('./printer.ice')
+from pathlib import Path
+
+Ice.loadSlice(str(Path(__file__).parent / 'printer.ice'))
 import Example
 
 
@@ -34,9 +36,9 @@ def main(ic):
     publisher = topic.getPublisher()
     printer = Example.PrinterPrx.uncheckedCast(publisher)
 
-    print("publishing 10 'Hello World' events")
-    for i in range(10):
-        printer.write("Hello World %s!" % i)
+    print("publishing events")
+    for i in range(1000):
+        printer.write(f"Hello World #{i}")
         time.sleep(1)
 
     return 0

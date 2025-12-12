@@ -1,1 +1,5 @@
-../cpp/Printer.ice
+module Example {
+  interface Printer {
+    void write(string message);
+  };
+};
