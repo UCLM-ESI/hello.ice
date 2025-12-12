@@ -17,8 +17,9 @@ logs:
 rm-app:
 	-$(call ig_admin, application remove App)
 
-add-app: rm-app app.xml
-	$(call ig_admin, application add app.xml)
+random round-robin ordered adaptive:
+%: %.xml rm-app
+	$(call ig_admin, application add $(@).xml)
 
 client:
 	../py-upper/client.py --Ice.Config=locator.config "tool1 @ ToolGroup"
