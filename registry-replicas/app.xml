@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<icegrid>
+   <application name="App">
+      <server-template id="ToolServerTemplate">
+         <parameter name="index"/>
+         <server id="ToolServer${index}" activation="always" exe="/app/server.py">
+            <properties>
+               <property name="Ice.StdOut"/>
+               <property name="Ice.StdErr"/>
+            </properties>
+            <adapter name="ToolAdapter"
+               id="${server}.ToolAdapter" endpoints="default"/>
+         </server>
+      </server-template>
+      <node name="node1">
+         <server-instance template="ToolServerTemplate" index="1"/>
+      </node>
+   </application>
+</icegrid>
