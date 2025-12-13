@@ -17,7 +17,7 @@ logs:
 rm-app:
 	-$(call ig_admin, application remove PrinterApp)
 
-add-app: up rm-app app-xml
+add-app: up rm-app app.xml
 	$(call ig_admin, application add app.xml)
 
 client:
