@@ -17,10 +17,10 @@ logs:
 rm-app:
 	-$(call ig_admin, application remove App)
 
-add-app: rm-app app.xml
+add-app: app.xml rm-app
 	$(call ig_admin, application add app.xml)
 
-client:
+run-client:
 	../py-upper/client.py --Ice.Config=locator.config "tool1 @ ToolServer1.ToolAdapter"
 
 clean: down
