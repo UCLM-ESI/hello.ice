@@ -1,0 +1,137 @@
+services:
+  registry:
+    image: zeroc/icegridregistry:3.7
+    container_name: registry
+    hostname: registry
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.10
+    volumes:
+      - "./registry.config:/etc/icegridregistry.conf:ro"
+    healthcheck:
+      test: "bash -c ':> /dev/tcp/127.0.0.1/4061'"
+      interval: 1s
+
+  node1:
+    build: docker/ignode-redis
+    image: ignode-redis
+    container_name: node1
+    hostname: node1
+    depends_on:
+      registry:
+        condition: service_healthy
+      sentinel-1:
+        condition: service_started
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 1024
+    networks:
+      - icegrid
+    volumes:
+      - "./node1.config:/etc/icegridnode.conf:ro"
+      - "counter:/app"
+
+  node2:
+    image: ignode-redis
+    container_name: node2
+    hostname: node2
+    depends_on:
+      registry:
+        condition: service_healthy
+      sentinel-1:
+        condition: service_started
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 1024
+    networks:
+      - icegrid
+    volumes:
+      - "./node2.config:/etc/icegridnode.conf:ro"
+      - "counter:/app"
+
+  # -----------------------
+  # Redis data plane
+  # -----------------------
+
+  redis-master:
+    image: redis:7
+    container_name: redis-master
+    hostname: redis-master
+    command: redis-server --appendonly yes
+    networks:
+      - icegrid
+
+  redis-replica-1:
+    image: redis:7
+    container_name: redis-replica-1
+    hostname: redis-replica-1
+    command: redis-server --replicaof redis-master 6379
+    depends_on:
+      - redis-master
+    networks:
+      - icegrid
+
+  redis-replica-2:
+    image: redis:7
+    container_name: redis-replica-2
+    hostname: redis-replica-2
+    command: redis-server --replicaof redis-master 6379
+    depends_on:
+      - redis-master
+    networks:
+      - icegrid
+
+  # -----------------------
+  # Redis control plane
+  # -----------------------
+
+  sentinel-1:
+    build: docker/sentinel
+    image: redis-sentinel
+    container_name: sentinel-1
+    hostname: sentinel-1
+    networks: [icegrid]
+    depends_on:
+      redis-master:
+        condition: service_started
+      redis-replica-1:
+        condition: service_started
+      redis-replica-2:
+        condition: service_started
+
+  sentinel-2:
+    image: redis-sentinel
+    container_name: sentinel-2
+    hostname: sentinel-2
+    networks: [icegrid]
+    depends_on:
+      redis-master:
+        condition: service_started
+      redis-replica-1:
+        condition: service_started
+      redis-replica-2:
+        condition: service_started
+
+  sentinel-3:
+    image: redis-sentinel
+    container_name: sentinel-3
+    hostname: sentinel-3
+    networks: [icegrid]
+    depends_on:
+      redis-master:
+        condition: service_started
+      redis-replica-1:
+        condition: service_started
+      redis-replica-2:
+        condition: service_started
+
+
+networks:
+  icegrid:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1
