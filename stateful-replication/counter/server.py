@@ -18,9 +18,9 @@ class CounterI(Example.Counter):
     def __init__(self):
         sentinel = Sentinel(
             [
-                ('sentinel-1', 26379),
-                ('sentinel-2', 26379),
-                ('sentinel-3', 26379),
+                ('stateful-replication-sentinel-1', 26379),
+                ('stateful-replication-sentinel-2', 26379),
+                ('stateful-replication-sentinel-3', 26379),
             ],
             socket_timeout=0.5
         )
@@ -61,7 +61,7 @@ class CounterI(Example.Counter):
             raise Example.NotFound(name)
 
         # Atomic increment
-        return self.redis.hincrby(self.key, name, delta)
+        self.redis.hincrby(self.key, name, delta)
 
     def get(self, name, current=None):
         logger.info(f"Received request to get counter: {name}")
