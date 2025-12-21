@@ -7,6 +7,10 @@
             <properties>
                <property name="Ice.StdOut"/>
                <property name="Ice.StdErr"/>
+               <property name="Redis.Sentinels" value="
+                  stateful-replication-sentinel-1
+                  stateful-replication-sentinel-2
+                  stateful-replication-sentinel-3"/>
             </properties>
             <adapter name="CounterAdapter" id="${server}.CounterAdapter"
                endpoints="default" replica-group="CounterGroup"/>

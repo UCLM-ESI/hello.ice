@@ -15,15 +15,11 @@ logging.basicConfig(level=logging.INFO)
 
 
 class CounterI(Example.Counter):
-    def __init__(self):
-        sentinel = Sentinel(
-            [
-                ('stateful-replication-sentinel-1', 26379),
-                ('stateful-replication-sentinel-2', 26379),
-                ('stateful-replication-sentinel-3', 26379),
-            ],
-            socket_timeout=0.5
-        )
+    def __init__(self, sentinel_hosts):
+        if not sentinel_hosts:
+            raise ValueError("At least one Sentinel host must be provided")
+        sentinels_endpoints = [(host, 26379) for host in sentinel_hosts]
+        sentinel = Sentinel(sentinels_endpoints, socket_timeout=0.5)
 
         for _ in range(10):
             try:
@@ -81,10 +77,12 @@ class CounterI(Example.Counter):
 
 
 def main(ic):
-    servant = CounterI()
+    sentinels = ic.getProperties().getPropertyAsList('Redis.Sentinels')
+    print(f"Connecting to Redis Sentinels at: {sentinels}")
+
+    servant = CounterI(sentinels)
     adapter = ic.createObjectAdapter('CounterAdapter')
     proxy = adapter.add(servant, ic.stringToIdentity('counter'))
-
     print(proxy)
 
     adapter.activate()
