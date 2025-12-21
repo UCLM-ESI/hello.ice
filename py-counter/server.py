@@ -29,7 +29,6 @@ class CounterI(Example.Counter):
             raise Example.NotFound(name)
 
         self.counters[name] += delta
-        return self.counters[name]
 
     def get(self, name, current=None):
         logger.info(f"Received request to get counter: {name}")
@@ -46,7 +45,7 @@ class CounterI(Example.Counter):
 def main(ic):
     servant = CounterI()
     adapter = ic.createObjectAdapter("CounterAdapter")
-    proxy = adapter.add(servant, ic.stringToIdentity("counter-server"))
+    proxy = adapter.add(servant, ic.stringToIdentity("counter"))
 
     print(proxy)
 
@@ -55,9 +54,9 @@ def main(ic):
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     try:
         with Ice.initialize(sys.argv) as communicator:
             sys.exit(main(communicator))
     except KeyboardInterrupt:
-        print("\nShutting down server...")
+        print("Shutting down server...")

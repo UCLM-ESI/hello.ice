@@ -16,19 +16,8 @@ def main(ic):
         raise RuntimeError('Invalid proxy')
 
     counter.create("counter1")
-    counter.create("counter2")
-
-    result1 = counter.increment("counter1", 5)
-    print(f"After incrementing counter1 by 5: {result1}")
-
-    result2 = counter.increment("counter2", 10)
-    print(f"After incrementing counter2 by 10: {result2}")
-
-    value = counter.get("counter1")
-    print(f"Value of counter1: {value}")
-
-    all_counters = counter.list()
-    print(f"All counters: {all_counters}")
+    counter.increment("counter1", 5)
+    print(f"After incrementing counter1 by 5: {counter.get("counter1")}")
 
 
 if __name__ == "__main__":

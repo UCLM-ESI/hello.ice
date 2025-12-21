@@ -5,7 +5,7 @@ module Example {
 
     interface Counter {
         void create(string name);
-        long increment(string name, long delta) throws NotFound;
+        void increment(string name, long delta) throws NotFound;
         long get(string name) throws NotFound;
         CounterDict list();
     }
