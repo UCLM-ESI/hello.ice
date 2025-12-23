@@ -1,4 +1,7 @@
 services:
+
+  ## - application plane -
+
   registry:
     image: zeroc/icegridregistry:3.7
     container_name: registry
@@ -26,8 +29,7 @@ services:
       nofile:
         soft: 1024
         hard: 1024
-    networks:
-      - icegrid
+    networks: [icegrid]
     volumes:
       - "./node1.config:/etc/icegridnode.conf:ro"
       - "./counter:/app"
@@ -45,42 +47,48 @@ services:
       nofile:
         soft: 1024
         hard: 1024
-    networks:
-      - icegrid
+    networks: [icegrid]
     volumes:
       - "./node2.config:/etc/icegridnode.conf:ro"
       - "./counter:/app"
 
-  ## - Redis data plane
+  ## - Redis data plane -
 
   redis-master:
     image: redis:7
     container_name: redis-master
     hostname: redis-master
-    command: redis-server --appendonly yes
-    networks:
-      - icegrid
+    command: redis-server --appendonly yes --replica-announce-ip redis-master
+    networks: [icegrid]
 
-  redis-replica:
+  redis-replica-1:
     image: redis:7
-    command: redis-server --replicaof redis-master 6379
+    container_name: redis-replica-1
+    hostname: redis-replica-1
+    command: redis-server --replicaof redis-master 6379 --replica-announce-ip redis-replica-1
     depends_on:
       - redis-master
-    networks:
-      - icegrid
+    networks: [icegrid]
 
-  ## - Redis control plane
+  redis-replica-2:
+    image: redis:7
+    container_name: redis-replica-2
+    hostname: redis-replica-2
+    command: redis-server --replicaof redis-master 6379 --replica-announce-ip redis-replica-2
+    depends_on:
+      - redis-master
+    networks: [icegrid]
+
+  ## - Redis control plane -
 
   sentinel:
     build: docker/sentinel
-    image: redis-sentinel
-    networks: [icegrid]
+    deploy:
+      replicas: 3
     depends_on:
       redis-master:
         condition: service_started
-      redis-replica:
-        condition: service_started
-
+    networks: [icegrid]
 
 networks:
   icegrid:
