@@ -19,13 +19,16 @@ class CounterI(Example.Counter):
         if not sentinel_hosts:
             raise ValueError("At least one Sentinel host must be provided")
         sentinels_endpoints = [(host, 26379) for host in sentinel_hosts]
-        sentinel = Sentinel(sentinels_endpoints, socket_timeout=0.5)
+        sentinel = Sentinel(
+            sentinels_endpoints, socket_timeout=5.0, socket_connect_timeout=5.0)
 
         for _ in range(10):
             try:
                 self.redis = sentinel.master_for(
                     service_name='mymaster',
-                    socket_timeout=0.5,
+                    socket_timeout=5.0,
+                    socket_connect_timeout=5.0,
+                    socket_keepalive=True,
                     retry_on_timeout=True,
                     decode_responses=True
                 )
@@ -44,8 +47,7 @@ class CounterI(Example.Counter):
     def create(self, name, current=None):
         logger.info(f"Received request to create counter: {name}")
 
-        # HSETNX: set only if not exists
-        created = self.redis.hsetnx(self.key, name, 0)
+        created = self.redis.hsetnx(self.key, name,  0)  # HSETNX: set only if not exists
         if not created:
             logger.info(f"Counter {name} already exists")
 
