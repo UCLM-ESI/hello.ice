@@ -3,17 +3,18 @@
    <application name="App">
       <server-template id="CounterServerTemplate">
          <parameter name="index"/>
-         <server id="CounterServer${index}" activation="always" exe="/app/server.py">
+         <server id="CounterServer${index}" activation="on-demand" exe="/app/server.py">
             <properties>
                <property name="Ice.StdOut"/>
                <property name="Ice.StdErr"/>
+               <property name="IceGrid.Node.DisableOnFailure" value="5"/>
                <property name="Redis.Sentinels" value="
                   stateful-replication-sentinel-1
                   stateful-replication-sentinel-2
                   stateful-replication-sentinel-3"/>
             </properties>
             <adapter name="CounterAdapter" id="${server}.CounterAdapter"
-               endpoints="default" replica-group="CounterGroup"/>
+               endpoints="default -t 5000" replica-group="CounterGroup"/>
          </server>
       </server-template>
       <node name="node1">
