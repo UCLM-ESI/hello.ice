@@ -20,7 +20,7 @@ You can view the service logs with:
 
 Deploy the application with:
 
-    $ make add-app
+    $ make app-deploy
 
 Run the client with:
 

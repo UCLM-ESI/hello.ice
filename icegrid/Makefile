@@ -8,7 +8,8 @@ define ig_admin
 endef
 
 
-start-grid: /tmp/icedata/registry $(NODE_DIRS)
+grid-start: /tmp/icedata/registry $(NODE_DIRS)
+	reset
 	cp default-templates.xml /tmp/icedata/
 	icegridnode --Ice.Config=node1.config &
 
@@ -22,7 +23,7 @@ start-grid: /tmp/icedata/registry $(NODE_DIRS)
 
 	@echo -- ok
 
-stop-grid:
+grid-stop:
 	-$(call ig_admin, node shutdown node1)
 	@while bash -c ':> /dev/tcp/127.0.0.1/4061' 2>/dev/null; do sleep 1; done
 	-killall icegridnode
@@ -30,6 +31,28 @@ stop-grid:
 
 show-nodes:
 	$(call ig_admin, node list)
+
+app-deploy: ../py/dist/IcePatch2.sum
+	-$(call ig_admin, application remove PrinterApp)
+	$(call ig_admin, application add printerapp-py.xml)
+
+app-distrib: app-deploy
+	$(call ig_admin, application patch PrinterApp)
+
+server-start:
+	$(call ig_admin, server start PrinterServer1)
+
+show-server-stdout:
+	$(call ig_admin, server show -f PrinterServer1 stdout)
+
+run-client:
+	../py/client.py --Ice.Config=locator.config "printer1 @ PrinterServer1.PrinterAdapter" hello
+
+icegrridgui:
+	GDK_SCALE=2 icegridgui&
+
+../py/dist/IcePatch2.sum:
+	cd ../py && $(MAKE) gen-dist
 
 /tmp/icedata/%:
 	mkdir -p $@

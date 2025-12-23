@@ -77,7 +77,7 @@ This command:
 ### Deploy the Application
 
 ```bash
-make add-app
+make app-deploy
 ```
 
 This registers the Counter application with IceGrid and deploys the server instances.

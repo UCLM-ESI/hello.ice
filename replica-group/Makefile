@@ -14,14 +14,14 @@ down:
 logs:
 	docker compose logs -f
 
-rm-app:
+app-rm:
 	-$(call ig_admin, application remove App)
 
 random round-robin ordered adaptive:
-%: %.xml rm-app
+%: %.xml app-rm
 	$(call ig_admin, application add $(@).xml)
 
-client:
+round-client:
 	../py-upper/client.py --Ice.Config=locator.config "tool1 @ ToolGroup"
 
 clean: down

@@ -5,6 +5,7 @@ define ig_admin
 endef
 
 start: ./tmp/db/registry ./tmp/db/node1
+	reset
 	icegridnode --Ice.Config=node1.config &
 
 	@echo -- waiting registry to start...
@@ -17,10 +18,10 @@ stop:
 	-killall icegridnode
 	@echo -- ok
 
-rm-app:
+app-rm:
 	-$(call ig_admin, application remove App)
 
-add-app: start rm-app app.xml
+app-deploy: start app-rm app.xml
 	$(call ig_admin, application add app.xml)
 
 run-client:

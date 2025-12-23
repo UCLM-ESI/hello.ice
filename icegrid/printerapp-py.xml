@@ -28,9 +28,7 @@
                <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
                <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
             </properties>
-            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
-               <object identity="printer1" type="::Example::Printer"/>
-            </adapter>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
          </server>
       </node>
       <node name="node2">

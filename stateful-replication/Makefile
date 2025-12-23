@@ -17,13 +17,13 @@ build:
 logs:
 	docker compose logs -f
 
-rm-app:
+app-rm:
 	-$(call ig_admin, application remove App)
 
-add-app: app.xml rm-app
+app-deploy: app.xml app-rm
 	$(call ig_admin, application add app.xml)
 
-client:
+run-client:
 	counter/client.py --Ice.Config=locator.config "counter @ CounterGroup"
 
 clean: down

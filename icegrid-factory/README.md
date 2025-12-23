@@ -4,7 +4,7 @@ A server that create objects spawing IceGrid servers.
 
 Start an IceGrid Registry and Node and add IceGrid application (app.xml). This App deploys a PrinterFactory, an object able to spawn Printer IceGrid servers.
 
-    $ make add-app  (that also executes 'start' rule)
+    $ make app-deploy  (that also executes 'start' rule)
 
 Run client:
 
