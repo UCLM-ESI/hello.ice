@@ -6,7 +6,7 @@ endef
 
 up:
 	reset
-	docker compose up --scale redis-replica=2 --scale sentinel=3 -d --remove-orphans
+	docker compose up -d --remove-orphans
 
 down:
 	docker compose down
@@ -22,6 +22,9 @@ app-rm:
 
 app-deploy: app.xml app-rm
 	$(call ig_admin, application add app.xml)
+
+sentinel-status:
+	docker exec stateful-replication-sentinel-1  redis-cli -p 26379 SENTINEL get-master-addr-by-name mymaster
 
 run-client:
 	counter/client.py --Ice.Config=locator.config "counter @ CounterGroup"
