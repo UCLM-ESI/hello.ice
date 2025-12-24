@@ -33,8 +33,8 @@ show-nodes:
 	$(call ig_admin, node list)
 
 app-deploy: ../py/dist/IcePatch2.sum
-	-$(call ig_admin, application remove PrinterApp)
-	$(call ig_admin, application add printerapp-py.xml)
+	-$(call ig_admin, application add printerapp-py.xml)
+	$(call ig_admin, application update printerapp-py.xml)
 
 app-distrib: app-deploy
 	$(call ig_admin, application patch PrinterApp)
@@ -57,6 +57,6 @@ icegrridgui:
 /tmp/icedata/%:
 	mkdir -p $@
 
-clean: stop-grid
+clean: grid-stop
 	-$(RM) *~
-	-$(RM) -r /tmp/icedata
+	-$(RM) -r /tmp/icedata ../py/dist
