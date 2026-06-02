@@ -9,9 +9,9 @@
                <property name="Ice.StdErr"/>
                <property name="IceGrid.Node.DisableOnFailure" value="5"/>
                <property name="Redis.Sentinels" value="
-                  stateful-replication-sentinel-1
-                  stateful-replication-sentinel-2
-                  stateful-replication-sentinel-3"/>
+                  sentinel-1
+                  sentinel-2
+                  sentinel-3"/>
             </properties>
             <adapter name="CounterAdapter" id="${server}.CounterAdapter"
                endpoints="default -t 5000" replica-group="CounterGroup"/>

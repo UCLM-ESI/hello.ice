@@ -60,13 +60,11 @@ interface Counter {
 
 ### Prerequisites
 - Docker and Docker Compose
-- Python 3.x (for client)
+- Python 3.x
 
 ### Bring Up the Demo
 
-```bash
-make up
-```
+    make up
 
 This command:
 - Starts the IceGrid registry
@@ -76,17 +74,13 @@ This command:
 
 ### Deploy the Application
 
-```bash
-make app-deploy
-```
+    make app-deploy
 
 This registers the Counter application with IceGrid and deploys the server instances.
 
 ### Run a Client
 
-```bash
-make client
-```
+    make client
 
 This executes the test client which:
 1. Creates a counter named "counter1"
@@ -95,9 +89,7 @@ This executes the test client which:
 
 ### View Logs
 
-```bash
-make logs
-```
+    make logs
 
 Monitor the output from all containers in real-time.
 
@@ -134,20 +126,32 @@ You can stop individual containers to test fault tolerance:
 ### Test Node Failure
 
 Stop a server node to verify failover to the replica:
-```bash
-docker compose stop node1
-```
+
+    docker compose stop node1
+
 Then run the client again - requests should automatically route to node2.
 
 ### Test Redis Master Failure
 
 To test Redis Sentinel failover:
 
-```bash
-docker compose stop redis-master
-```
+    docker compose stop redis-master
 
 Sentinel will automatically promote one of the replicas within seconds. The server instances will detect the new master via Sentinel and continue operating without interruption.
+
+**What happens during failover:**
+- Sentinel detects the master is down (after ~5 seconds)
+- All 3 Sentinels reach consensus (quorum: 2/3)
+- One replica is promoted to master
+- The other replica(s) will need to be restarted to connect to the new master
+
+To verify failover succeeded:
+
+    docker compose exec sentinel-1 redis-cli -p 26379 sentinel masters
+
+To restart a replica to point to the new master:
+
+    docker compose restart redis-replica-1
 
 ## Further Reading
 
