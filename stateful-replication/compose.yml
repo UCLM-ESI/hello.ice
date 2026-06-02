@@ -23,7 +23,7 @@ services:
     depends_on:
       registry:
         condition: service_healthy
-      sentinel-1:
+      sentinel:
         condition: service_started
     ulimits:
       nofile:
@@ -41,7 +41,7 @@ services:
     depends_on:
       registry:
         condition: service_healthy
-      sentinel-1:
+      sentinel:
         condition: service_started
     ulimits:
       nofile:
@@ -62,57 +62,58 @@ services:
     networks:
       icegrid:
         ipv4_address: 172.28.0.20
-
+    volumes:
+      - redis-master-data:/data
 
   redis-replica-1:
-    image: redis:7
+    build: docker/redis-replica
+    image: redis-replica
     container_name: redis-replica-1
     hostname: redis-replica-1
-    command: redis-server --replicaof redis-master 6379 --repl-diskless-load on-empty-db --protected-mode no
     depends_on:
-      - redis-master
+      - sentinel
     networks: [icegrid]
+    environment:
+      SENTINEL_HOST: sentinel-1
+      SENTINEL_PORT: 26379
 
   redis-replica-2:
-    image: redis:7
+    build: docker/redis-replica
+    image: redis-replica
     container_name: redis-replica-2
     hostname: redis-replica-2
-    command: redis-server --replicaof redis-master 6379 --repl-diskless-load on-empty-db --protected-mode no
     depends_on:
-      - redis-master
+      - sentinel
     networks: [icegrid]
+    environment:
+      SENTINEL_HOST: sentinel-2
+      SENTINEL_PORT: 26379
 
   ## - Redis control plane -
 
-  sentinel-1:
+  sentinel: &sentinel-base
     build: docker/sentinel
     image: redis-sentinel
-    container_name: sentinel-1
     restart: unless-stopped
     depends_on:
       redis-master:
         condition: service_started
     networks: [icegrid]
+
+  sentinel-1:
+    <<: *sentinel-base
+    container_name: sentinel-1
+    hostname: sentinel-1
 
   sentinel-2:
-    build: docker/sentinel
-    image: redis-sentinel
+    <<: *sentinel-base
     container_name: sentinel-2
-    restart: unless-stopped
-    depends_on:
-      redis-master:
-        condition: service_started
-    networks: [icegrid]
+    hostname: sentinel-2
 
   sentinel-3:
-    build: docker/sentinel
-    image: redis-sentinel
+    <<: *sentinel-base
     container_name: sentinel-3
-    restart: unless-stopped
-    depends_on:
-      redis-master:
-        condition: service_started
-    networks: [icegrid]
+    hostname: sentinel-3
 
 networks:
   icegrid:
@@ -121,3 +122,6 @@ networks:
       config:
         - subnet: 172.28.0.0/16
           gateway: 172.28.0.1
+
+volumes:
+  redis-master-data:
