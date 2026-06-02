@@ -1,3 +1,19 @@
+x-sentinel-base: &sentinel-base
+  build: docker/sentinel
+  image: redis-sentinel
+  restart: unless-stopped
+  depends_on:
+    redis-master:
+      condition: service_started
+  networks: [icegrid]
+
+x-redis-replica-base: &redis-replica-base
+  build: docker/redis-replica
+  image: redis-replica
+  depends_on:
+    - sentinel-1
+  networks: [icegrid]
+
 services:
 
   ## - application plane -
@@ -23,7 +39,7 @@ services:
     depends_on:
       registry:
         condition: service_healthy
-      sentinel:
+      sentinel-1:
         condition: service_started
     ulimits:
       nofile:
@@ -41,7 +57,7 @@ services:
     depends_on:
       registry:
         condition: service_healthy
-      sentinel:
+      sentinel-1:
         condition: service_started
     ulimits:
       nofile:
@@ -66,39 +82,22 @@ services:
       - redis-master-data:/data
 
   redis-replica-1:
-    build: docker/redis-replica
-    image: redis-replica
+    <<: *redis-replica-base
     container_name: redis-replica-1
     hostname: redis-replica-1
-    depends_on:
-      - sentinel
-    networks: [icegrid]
     environment:
       SENTINEL_HOST: sentinel-1
       SENTINEL_PORT: 26379
 
   redis-replica-2:
-    build: docker/redis-replica
-    image: redis-replica
+    <<: *redis-replica-base
     container_name: redis-replica-2
     hostname: redis-replica-2
-    depends_on:
-      - sentinel
-    networks: [icegrid]
     environment:
       SENTINEL_HOST: sentinel-2
       SENTINEL_PORT: 26379
 
   ## - Redis control plane -
-
-  sentinel: &sentinel-base
-    build: docker/sentinel
-    image: redis-sentinel
-    restart: unless-stopped
-    depends_on:
-      redis-master:
-        condition: service_started
-    networks: [icegrid]
 
   sentinel-1:
     <<: *sentinel-base
