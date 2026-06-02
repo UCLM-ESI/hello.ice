@@ -33,6 +33,7 @@ show-nodes:
 	$(call ig_admin, node list)
 
 app-deploy: ../py/dist/IcePatch2.sum
+	-$(call ig_admin, application remove PrinterApp)
 	-$(call ig_admin, application add printerapp-py.xml)
 	$(call ig_admin, application update printerapp-py.xml)
 
@@ -52,7 +53,7 @@ icegrridgui:
 	GDK_SCALE=2 icegridgui&
 
 ../py/dist/IcePatch2.sum:
-	cd ../py && $(MAKE) gen-dist
+	$(MAKE) -C py gen-dist
 
 /tmp/icedata/%:
 	mkdir -p $@
