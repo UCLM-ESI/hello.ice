@@ -30,6 +30,31 @@ services:
       - "./node1.config:/etc/icegridnode.conf:ro"
       - "../py:/app"
 
+  deployer:
+    image: ignode
+    container_name: deployer
+    hostname: deployer
+    networks:
+      - icegrid
+    volumes:
+      - "./app.xml:/app.xml:ro"
+      - "./locator.config:/locator.config:ro"
+    command:
+      - "/bin/bash"
+      - "-c"
+      - |
+        icegridadmin --Ice.Config=/locator.config -u_ -p_ -e "application add /app.xml" || \
+        icegridadmin --Ice.Config=/locator.config -u_ -p_ -e "application update /app.xml"
+    depends_on:
+      registry:
+        condition: service_healthy
+      node1:
+        condition: service_started
+    develop:
+      watch:
+        - action: restart
+          path: ./app.xml
+
 networks:
   icegrid:
     driver: bridge
