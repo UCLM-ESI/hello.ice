@@ -49,4 +49,4 @@ class Job:
         self.future.set_result(factorial(self.value))
 
     def cancel(self):
-        self.future.set_exception(Example.RequestCancelException())
+        self.future.set_exception(Example.RequestCanceledException())
