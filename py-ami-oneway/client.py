@@ -8,6 +8,10 @@ Ice.loadSlice('printer.ice')
 import Example
 
 
+# NOTE: this example uses the deprecated begin_/end_ AMI API (begin_write,
+# isSent), kept only for reference. Use the <operation>Async() methods instead,
+# which return a future.
+
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])

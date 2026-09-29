@@ -6,6 +6,10 @@ Ice.loadSlice('factorial.ice')
 import Example
 
 
+# NOTE: this example uses the deprecated begin_/end_ AMI API, kept only for
+# reference. Use the <operation>Async() methods instead, which return a future
+# (see client-block.py, client-callback.py and client-await.py).
+
 class Client(Ice.Application):
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
