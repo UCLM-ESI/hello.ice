@@ -7,5 +7,4 @@ proxy.out
 **/err.txt
 **/out.txt
 **/db
-py/dist/
 icegrid-docker-full
