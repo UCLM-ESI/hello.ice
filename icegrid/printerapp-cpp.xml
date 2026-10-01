@@ -18,12 +18,12 @@
          </server>
       </server-template>
       <node name="node1">
-         <server-instance template="IcePatch2" directory="/tmp/printer-cpp">
+         <server-instance template="IcePatch2" directory="/tmp/printer-server-cpp">
             <properties>
                <property name="Ice.ServerIdleTime" value="5"/>
             </properties>
          </server-instance>
-         <server id="PrinterServer1" activation="manual" exe="./Server" pwd="${application.distrib}">
+         <server id="PrinterServer1" activation="manual" exe="./server" pwd="${application.distrib}">
             <properties>
                <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
                <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
@@ -34,7 +34,7 @@
          </server>
       </node>
       <node name="node2">
-         <server id="PrinterServer2" activation="manual" exe="./Server" pwd="${application.distrib}">
+         <server id="PrinterServer2" activation="manual" exe="./server-uuid" pwd="${application.distrib}">
             <properties>
                <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
                <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
