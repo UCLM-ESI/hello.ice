@@ -1,3 +1,4 @@
-To launch Server, use:
+To launch server and client, use:
 
-  $ java -classpath /usr/share/java/Ice.jar:. Server --Ice.Config=hello.cfg
+  $ make run-server
+  $ make run-client
