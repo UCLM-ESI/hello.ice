@@ -23,9 +23,9 @@ dist:
 	mkdir dist
 
 gen-dist: clean all dist
-	cp client server dist/
+	cp client server server-uuid dist/
 	icepatch2calc dist/
-	ln -sf $(PWD)/dist /tmp/printer-server-cpp
+	ln -sf $(CURDIR)/dist /tmp/printer-server-cpp
 
 clean:
 	$(RM) $(TARGET) $(STUBS) *.o *~

@@ -53,7 +53,7 @@ icegrridgui:
 	GDK_SCALE=2 icegridgui&
 
 ../py/dist/IcePatch2.sum:
-	$(MAKE) -C py gen-dist
+	$(MAKE) -C ../py gen-dist
 
 /tmp/icedata/%:
 	mkdir -p $@

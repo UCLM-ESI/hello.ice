@@ -16,7 +16,7 @@ dist:
 gen-dist: clean all dist
 	cp -r *.class Example dist/
 	icepatch2calc dist/
-	ln -sf $(PWD)/dist /tmp/printer-server-java
+	ln -sf $(CURDIR)/dist /tmp/printer-server-java
 
 clean:
 	$(RM) *.class proxy.out *~

@@ -14,7 +14,7 @@ dist:
 gen-dist: clean dist
 	cp server.py server-uuid.py printer.ice dist/
 	icepatch2calc dist/
-	ln -sf $(PWD)/dist /tmp/printer-py
+	ln -sf $(CURDIR)/dist /tmp/printer-py
 
 clean:
 	$(RM) *~ proxy.out
