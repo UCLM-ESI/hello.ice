@@ -15,3 +15,6 @@ run-client-callback:
 
 run-client-await:
 	./client-await.py '$(shell head -1 server.proxy)' 4
+
+run-client-poll:
+	./client-poll.py '$(shell head -1 server.proxy)' 4
