@@ -1,6 +1,6 @@
-import Ice.*;
+import com.zeroc.Ice.*;
 
-public class Server extends Ice.Application {
+public class Server extends Application {
   class ShutdownHook extends Thread {
     public void run() {
       _workQueue._destroy();

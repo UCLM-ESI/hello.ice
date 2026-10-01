@@ -4,7 +4,7 @@ SUBDIRS = $(shell ls -d */)
 SUBDIRS = \
 	cpp   cpp-icestorm  cpp-ami  cpp-amd  \
 	py    py-icestorm   py-ami   py-amd \
-	java  java-icestorm java-ami java-amd java-freeze
+	java  java-icestorm java-ami java-amd
 
 all:     RULE = all
 install: RULE = install
@@ -14,7 +14,7 @@ all clean install: subdirs
 
 check: export PYTHONPATH = $(shell pwd)
 check: all
-	find -name "test.py" | xargs prego3
+	find -name "test.py" | xargs prego -- --import-mode=importlib
 
 clean:
 	$(RM) *~

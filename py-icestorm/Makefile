@@ -1,3 +1,5 @@
+all:
+
 clean:
 	$(RM) *~
 	$(RM) -r db

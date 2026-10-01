@@ -9,10 +9,10 @@ class Hello(TestCase):
         context.cwd = '$testdir'
         servertask = Task('server', detach=True)
         server = servertask.command(
-            'mono --runtime=v4.0 Server.exe --Ice.Config=server.config', signal=2)
+            'mono --runtime=v4.0 server.exe --Ice.Config=server.config', signal=2)
         servertask.wait_that(server.stdout.content, contains_string('Hello, World!'))
 
         clientside = Task('client')
         clientside.wait_that(server, running())
         clientside.wait_that(server.stdout.content, contains_string('printer1'))
-        clientside.command('mono --runtime=v4.0 Client.exe "$(head -1 %s)"' % server.stdout.path)
+        clientside.command('mono --runtime=v4.0 client.exe "$(head -1 %s)"' % server.stdout.path)

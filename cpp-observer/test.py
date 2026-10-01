@@ -15,7 +15,7 @@ class Observer(TestCase):
         icebox.command('icebox --Ice.Config=icebox.config', signal=2)
 
         servertask = Task('server', detach=True)
-        server = servertask.command('./Server --Ice.Config=server.cfg', signal=2)
+        server = servertask.command('./server --Ice.Config=server.cfg', signal=2)
 
         create = Task('create')
         create.wait_that(server.stdout.content, contains_string('factory'))

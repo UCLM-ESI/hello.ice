@@ -1,8 +1,7 @@
-# -*- mode:makefile -*-
 
-all: Server.exe Client.exe
-Server.exe: Server.cs Printer.cs
-Client.exe: Client.cs Printer.cs
+all: server.exe client.exe
+server.exe: server.cs printer.cs
+client.exe: client.cs printer.cs
 
 %.exe: %.cs
 	mono-csc -out:$@ -pkg:Ice-3.5 $^
@@ -11,10 +10,10 @@ Client.exe: Client.cs Printer.cs
 	slice2cs $<
 
 clean:
-	$(RM) *~ *.exe proxy.out Printer.cs
+	$(RM) *~ *.exe proxy.out printer.cs
 
-run-server: Server.exe
-	mono Server.exe --Ice.Config=server.config | tee proxy.out
+run-server: server.exe
+	mono server.exe --Ice.Config=server.config | tee proxy.out
 
-run-client: Client.exe
-	mono Client.exe '$(shell head -1 proxy.out)'
+run-client: client.exe
+	mono client.exe '$(shell head -1 proxy.out)'

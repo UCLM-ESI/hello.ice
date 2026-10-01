@@ -1,7 +1,9 @@
-public class Client extends Ice.Application {
+import com.zeroc.Ice.*;
+
+public class Client extends Application {
     public int run(String[] args) {
-	Ice.ObjectPrx proxy = communicator().stringToProxy(args[0]);
-	Example.MathPrx math = Example.MathPrxHelper.checkedCast(proxy);
+	ObjectPrx proxy = communicator().stringToProxy(args[0]);
+	Example.MathPrx math = Example.MathPrx.checkedCast(proxy);
 
 	System.out.println(math.factorial(Integer.parseInt(args[1])));
 

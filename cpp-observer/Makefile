@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
 include ../cpp-common.mk
 
@@ -7,12 +6,12 @@ LDLIBS += -lFreeze -lIceStorm
 
 SLICES=$(wildcard *.ice)
 GENERATED=$(SLICES:.ice=.cpp) $(SLICES:.ice=.h)
-TARGET=Server Create Modify Monitor
+TARGET=server Create Modify Monitor
 
 all: $(TARGET)
 
-Server: Server.o Bool.o BoolPersistent.o BoolFactory.o
-Server.o: Server.cpp Bool.h BoolPersistent.h BoolFactory.h
+server: server.o Bool.o BoolPersistent.o BoolFactory.o
+server.o: server.cpp Bool.h BoolPersistent.h BoolFactory.h
 
 Create: Create.o BoolFactory.o
 Create.o: Create.cpp BoolFactory.h
@@ -41,12 +40,12 @@ start: db/icestorm /usr/bin/icebox /usr/bin/icestormadmin
 
 stop:
 	-killall icebox
-	-killall Server
+	-killall server
 	sleep 2
 	$(RM) -r db
 
-run-server: Server
-	./Server --Ice.Config=server.cfg > server.proxy &
+run-server: server
+	./server --Ice.Config=server.cfg > server.proxy &
 
 run-create: factory.proxy
 	./Create "$$(cat server.proxy)" > obj.proxy

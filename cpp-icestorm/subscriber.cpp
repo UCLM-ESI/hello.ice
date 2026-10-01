@@ -2,7 +2,7 @@
 #include <Ice/Application.h>
 #include <IceStorm/IceStorm.h>
 #include <IceUtil/UUID.h>
-#include "Printer.h"
+#include "printer.h"
 
 using namespace std;
 using namespace Ice;

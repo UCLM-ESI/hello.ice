@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
 CLASSPATH=-classpath .:/usr/share/java/Ice.jar
 
@@ -25,8 +24,8 @@ clean:
 
 run-server: Server.class
 	java $(CLASSPATH) \
-	    Server --Ice.Config=server.config | tee proxy.out
+		Server --Ice.Config=server.config | tee proxy.out
 
 run-client: Client.class
 	java $(CLASSPATH) \
-	    Client '$(shell head -1 proxy.out)'
+		Client '$(shell head -1 proxy.out)'

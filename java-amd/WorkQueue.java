@@ -1,17 +1,8 @@
-// **********************************************************************
-//
-// Copyright (c) 2003-2011 ZeroC, Inc. All rights reserved.
-//
-// This copy of Ice is licensed to you under the terms described in the
-// ICE_LICENSE file included in this distribution.
-//
-// **********************************************************************
-
-import Example.*;
+import java.util.concurrent.CompletableFuture;
 
 public class WorkQueue extends Thread {
     class CallbackEntry {
-        AMD_Math_factorial cb;
+        CompletableFuture<Long> future;
         int value;
     }
 
@@ -31,23 +22,23 @@ public class WorkQueue extends Thread {
                 if(!_done) {
                     // send response.
                     _callbacks.removeFirst();
-                    entry.cb.ice_response(result);
+                    entry.future.complete(result);
                 }
             }
         }
 
         // Throw exception for any outstanding requests.
 	for(CallbackEntry p : _callbacks) {
-            p.cb.ice_exception(new RequestCanceledException());
+            p.future.completeExceptionally(new Example.RequestCanceledException());
         }
     }
 
     public synchronized void
-    add(AMD_Math_factorial cb, int value) {
+    add(CompletableFuture<Long> future, int value) {
         if (!_done) {
             // Add the work item.
             CallbackEntry entry = new CallbackEntry();
-            entry.cb = cb;
+            entry.future = future;
             entry.value = value;
 
             if(_callbacks.size() == 0) {
@@ -57,7 +48,7 @@ public class WorkQueue extends Thread {
         }
 	else {
             // Destroyed, throw exception.
-            cb.ice_exception(new RequestCanceledException());
+            future.completeExceptionally(new Example.RequestCanceledException());
         }
     }
 

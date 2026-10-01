@@ -1,13 +1,22 @@
-public class Client_end extends Ice.Application {
+import com.zeroc.Ice.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+public class Client_end extends Application {
   public int run(String[] args) {
-    Ice.ObjectPrx proxy = communicator().stringToProxy(args[0]);
-    Example.MathPrx math = Example.MathPrxHelper.checkedCast(proxy);
+    ObjectPrx proxy = communicator().stringToProxy(args[0]);
+    Example.MathPrx math = Example.MathPrx.checkedCast(proxy);
 
     int value = Integer.parseInt(args[1]);
-	 Ice.AsyncResult async_result = math.begin_factorial(value);
+    CompletableFuture<Long> async_result = math.factorialAsync(value);
     System.out.println("that was an async call");
 
-    System.out.println(math.end_factorial(async_result));
+    try {
+      System.out.println(async_result.get());
+    } catch (InterruptedException | ExecutionException ex) {
+      System.err.println("Exception is: " + ex);
+      return 1;
+    }
     return 0;
   }
 

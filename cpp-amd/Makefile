@@ -1,28 +1,27 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
 include ../cpp-common.mk
 
 SLICE=factorial
 STUBS=$(addprefix $(SLICE), .h .cpp)
 
-all: Server Client
+all: server client
 
-Server: Server.o $(SLICE)I.o $(SLICE).o WorkQueue.o
-Client: Client.o $(SLICE).o
+server: server.o $(SLICE)I.o $(SLICE).o WorkQueue.o
+client: client.o $(SLICE).o
 
-Server.cpp Client.cpp: $(STUBS)
+server.cpp client.cpp: $(STUBS)
 
 %.cpp %.h: %.ice
 	slice2cpp $<
 
 clean:
-	$(RM) Server Client *.o server.proxy
+	$(RM) server client *.o server.proxy
 	$(RM) $(STUBS) *~
 	$(RM) *.bz2 IcePatch2.sum
 
-run-server: Server
-	./Server --Ice.Config=./server.config | tee server.proxy
+run-server: server
+	./server --Ice.Config=./server.config | tee server.proxy
 
-run-client: Client
-	./Client '$(shell head -1 server.proxy)' 4
+run-client: client
+	./client '$(shell head -1 server.proxy)' 4

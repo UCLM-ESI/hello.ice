@@ -1,11 +1,17 @@
-public final class MathI extends Example._MathDisp {
+import com.zeroc.Ice.Current;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CompletableFuture;
+
+public final class MathI implements Example.Math {
   public MathI(WorkQueue workQueue) {
     _workQueue = workQueue;
   }
 
-  public void factorial_async(Example.AMD_Math_factorial cb,
-  				int value, Ice.Current current) {
-    _workQueue.add(cb, value);
+  @Override
+  public CompletionStage<Long> factorialAsync(int value, Current current) {
+    CompletableFuture<Long> future = new CompletableFuture<>();
+    _workQueue.add(future, value);
+    return future;
   }
 
   private WorkQueue _workQueue;

@@ -1,7 +1,9 @@
-public class Client extends Ice.Application {
+import com.zeroc.Ice.*;
+
+public class Client extends Application {
   public int run(String[] args) {
-    Ice.ObjectPrx obj = communicator().stringToProxy(args[0]);
-    Example.PrinterPrx printer = Example.PrinterPrxHelper.checkedCast(obj);
+    ObjectPrx obj = communicator().stringToProxy(args[0]);
+    Example.PrinterPrx printer = Example.PrinterPrx.checkedCast(obj);
 
     printer.write("Hello World!");
 

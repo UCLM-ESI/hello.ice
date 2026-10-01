@@ -4,7 +4,7 @@ BoolFactory.h
 BoolFactory.cpp
 BoolPersistent.h
 BoolPersistent.cpp
-Server
+server
 Create
 Modify
 Monitor

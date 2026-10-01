@@ -1,19 +1,18 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
 include ../cpp-common.mk
 
 # APP=Callback Printer
 # STUBS=$(addprefix $(APP), .h .cpp)
-TARGET=Server Client
+TARGET=server client
 
 all: $(TARGET)
 
-Server: Server.o CallbackI.o Callback.o Printer.o
-# Server-UUID: Server-UUID.o $(APP)I.o $(APP).o
-Client: Client.o Callback.o Printer.o PrinterI.o
+server: server.o callbackI.o callback.o printer.o
+# server-uuid: server-uuid.o $(APP)I.o $(APP).o
+client: client.o callback.o printer.o printerI.o
 
-Server.cpp Client.cpp: Callback.h Callback.cpp Printer.h Printer.cpp
+server.cpp client.cpp: callback.h callback.cpp printer.h printer.cpp
 
 %.cpp %.h: %.ice
 	slice2cpp -I/usr/share/Ice-3.6.1/slice $<
@@ -22,19 +21,19 @@ dist:
 	mkdir dist
 
 gen-dist: all dist
-	cp Client Server dist/
+	cp client server dist/
 	icepatch2calc dist/
 
 clean:
-	$(RM) $(TARGET) Callback.h Callback.cpp Printer.h Printer.cpp *.o *~
+	$(RM) $(TARGET) callback.h callback.cpp printer.h printer.cpp *.o *~
 	$(RM) *.bz2 IcePatch2.sum
 	$(RM) -r dist
 
 calc:
 	icepatch2calc .
 
-run-server: Server
-	./Server --Ice.Config=server.config | tee proxy.out
+run-server: server
+	./server --Ice.Config=server.config | tee proxy.out
 
-run-client: Client
-	./Client '$(shell head -1 proxy.out)'
+run-client: client
+	./client '$(shell head -1 proxy.out)'

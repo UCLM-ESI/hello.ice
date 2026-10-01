@@ -1,11 +1,10 @@
-import java.util.HashMap;
-import Ice.*;
-import IceStorm.*;
-import Example.*;
+import com.zeroc.Ice.*;
+import com.zeroc.IceStorm.*;
 
 public class Subscriber extends Application {
-  public class PrinterI extends _PrinterDisp {
-    public void write(String message, Ice.Current current) {
+  public class PrinterI implements Example.Printer {
+    @Override
+    public void write(String message, Current current) {
       System.out.println(String.format("Event received: %s", message));
     }
   }
@@ -13,7 +12,7 @@ public class Subscriber extends Application {
   public int run(String[] args) {
     String key = "IceStorm.TopicManager.Proxy";
     ObjectPrx prx = communicator().propertyToProxy(key);
-    TopicManagerPrx manager = TopicManagerPrxHelper.checkedCast(prx);
+    TopicManagerPrx manager = TopicManagerPrx.checkedCast(prx);
 
     if (manager == null) {
       System.err.println("invalid proxy");

@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
 include ../cpp-common.mk
 
@@ -9,28 +8,28 @@ LDLIBS=-lIce -lIceUtil -lstdc++ -lpthread -lrt
 
 SLICE=counter
 
-all: Server Client
+all: server client
 
-Server: LDLIBS+=-lFreeze
-Server: Server.o $(SLICE).o
-Server.o: Server.cpp $(SLICE).h
+server: LDLIBS+=-lFreeze
+server: server.o $(SLICE).o
+server.o: server.cpp $(SLICE).h
 
-Client: Client.o $(SLICE).o
-Client.o: Client.cpp $(SLICE).h
+client: client.o $(SLICE).o
+client.o: client.cpp $(SLICE).h
 
 %.h %.cpp: %.ice
 	slice2cpp $<
 
-run-server: Server db
-	./Server --Ice.Config=server.cfg | tee server.out
+run-server: server db
+	./server --Ice.Config=server.cfg | tee server.out
 
-run-client: Client
+run-client: client
 	grep -v "^--" server.out > proxy.out
-	./Client '$$(head -1 proxy.out)'
+	./client '$$(head -1 proxy.out)'
 
 db:
 	mkdir db
 
 clean:
-	$(RM) *~ *.o $(SLICE).h $(SLICE).cpp Server Client
+	$(RM) *~ *.o $(SLICE).h $(SLICE).cpp server client
 	$(RM) db/* server.out proxy.out

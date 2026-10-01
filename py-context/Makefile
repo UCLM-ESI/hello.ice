@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
 clean:
 	$(RM) *~ proxy.out

@@ -1,4 +1,6 @@
-public final class MathI extends Example._MathDisp
+import com.zeroc.Ice.Current;
+
+public final class MathI implements Example.Math
 {
     public MathI() { }
 
@@ -9,8 +11,9 @@ public final class MathI extends Example._MathDisp
 	return n * factorial_(n-1);
     }
 
+    @Override
     public long
-    factorial(int value, Ice.Current current) {
+    factorial(int value, Current current) {
         return factorial_(value);
     }
 }

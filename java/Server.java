@@ -1,8 +1,9 @@
-import Ice.*;
+import com.zeroc.Ice.Object;
+import com.zeroc.Ice.*;
 
-public class Server extends Ice.Application {
+public class Server extends Application {
     public int run(String[] args) {
-        Ice.Object servant = new PrinterI();
+        Object servant = new PrinterI();
 
         ObjectAdapter adapter =
 	       communicator().createObjectAdapter("PrinterAdapter");

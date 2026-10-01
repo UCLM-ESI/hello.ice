@@ -14,7 +14,7 @@ class AMI(TestCase):
     def test_client_server(self):
         context.cwd = '$testdir'
         servertask = Task('server', detach=True)
-        self.server = servertask.command('./Server --Ice.Config=server.config', signal=2)
+        self.server = servertask.command('./server --Ice.Config=server.config', signal=2)
 
-        self.run_client('Client-end')
-        self.run_client('Client-callback')
+        self.run_client('client-end')
+        self.run_client('client-callback')

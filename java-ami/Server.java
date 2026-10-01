@@ -1,6 +1,6 @@
-import Ice.*;
+import com.zeroc.Ice.*;
 
-public class Server extends Ice.Application {
+public class Server extends Application {
     public int run(String[] args) {
 	ObjectAdapter adapter = communicator().createObjectAdapter("MathAdapter");
 	ObjectPrx math = adapter.add(new MathI(), Util.stringToIdentity("math1"));

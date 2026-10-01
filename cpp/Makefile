@@ -1,21 +1,20 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
 include ../cpp-common.mk
 
 CC=g++ -std=c++11
 
-APP=Printer
-STUBS=$(addprefix $(APP), .h .cpp)
-TARGET=Server Server-UUID Client
+SLICE=printer
+STUBS=$(addprefix $(SLICE), .h .cpp)
+TARGET=server server-uuid client
 
 all: $(TARGET)
 
-Server: Server.o $(APP)I.o $(APP).o
-Server-UUID: Server-UUID.o $(APP)I.o $(APP).o
-Client: Client.o $(APP).o
+server: server.o $(SLICE)I.o $(SLICE).o
+server-uuid: server-uuid.o $(SLICE)I.o $(SLICE).o
+client: client.o $(SLICE).o
 
-Server.cpp Client.cpp: $(STUBS)
+server.cpp client.cpp: $(STUBS)
 
 %.cpp %.h: %.ice
 	slice2cpp $<
@@ -24,7 +23,7 @@ dist:
 	mkdir dist
 
 gen-dist: clean all dist
-	cp Client Server dist/
+	cp client server dist/
 	icepatch2calc dist/
 	ln -sf $(PWD)/dist /tmp/printer-server-cpp
 
@@ -36,8 +35,8 @@ clean:
 calc:
 	icepatch2calc .
 
-run-server: Server
-	./Server --Ice.Config=server.config | tee proxy.out
+run-server: server
+	./server --Ice.Config=server.config | tee proxy.out
 
-run-client: Client
-	./Client '$(shell head -1 proxy.out)'
+run-client: client
+	./client '$(shell head -1 proxy.out)'

@@ -1,11 +1,10 @@
 #!/usr/bin/make -f
-# -*- mode:makefile -*-
 
 include ../cpp-common.mk
 
 LDLIBS += -lIceStorm
 
-APP=Printer
+APP=printer
 STUBS=$(addprefix $(APP), .h .cpp)
 
 all: publisher subscriber

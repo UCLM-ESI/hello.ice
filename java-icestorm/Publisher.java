@@ -1,12 +1,11 @@
-import Ice.*;
-import IceStorm.*;
-import Example.*;
+import com.zeroc.Ice.*;
+import com.zeroc.IceStorm.*;
 
 public class Publisher extends Application {
   public int run(String[] args) {
     String key = "IceStorm.TopicManager.Proxy";
     ObjectPrx prx = communicator().propertyToProxy(key);
-    TopicManagerPrx manager = TopicManagerPrxHelper.checkedCast(prx);
+    TopicManagerPrx manager = TopicManagerPrx.checkedCast(prx);
 
     if (manager == null) {
       System.err.println("invalid proxy");
@@ -27,7 +26,7 @@ public class Publisher extends Application {
     }
 
     ObjectPrx publisher = topic.getPublisher();
-    PrinterPrx printer = PrinterPrxHelper.uncheckedCast(publisher);
+    Example.PrinterPrx printer = Example.PrinterPrx.uncheckedCast(publisher);
 
     System.out.println("publishing 10 'Hello World' events");
     for(int i=0; i < 10; i++)
