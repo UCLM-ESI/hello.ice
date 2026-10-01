@@ -1,9 +1,10 @@
-#!/usr/bin/python -u
+#!/usr/bin/env -S python3 -u
 
 import sys
-
 import Ice
-Ice.loadSlice('factorial.ice')
+from pathlib import Path
+
+Ice.loadSlice(str(Path(__file__).parent / 'factorial.ice'))
 import Example
 
 from work_queue import WorkQueue
@@ -19,24 +20,28 @@ class MathI(Example.Math):
         return future
 
 
-class Server(Ice.Application):
-    def run(self, argv):
-        work_queue = WorkQueue()
-        servant = MathI(work_queue)
+def main(ic):
+    work_queue = WorkQueue()
 
-        broker = self.communicator()
+    adapter = ic.createObjectAdapter("MathAdapter")
+    proxy = adapter.add(MathI(work_queue), Ice.stringToIdentity("math1"))
 
-        adapter = broker.createObjectAdapter("MathAdapter")
-        print(adapter.add(servant, broker.stringToIdentity("math1")))
-        adapter.activate()
+    print(proxy)
 
-        work_queue.start()
+    adapter.activate()
+    work_queue.start()
 
-        self.shutdownOnInterrupt()
-        broker.waitForShutdown()
-
+    try:
+        ic.waitForShutdown()
+    finally:
         work_queue.destroy()
-        return 0
+
+    return 0
 
 
-sys.exit(Server().main(sys.argv))
+if __name__ == "__main__":
+    try:
+        with Ice.initialize(sys.argv) as communicator:
+            sys.exit(main(communicator))
+    except KeyboardInterrupt:
+        print("\nShutting down server...")

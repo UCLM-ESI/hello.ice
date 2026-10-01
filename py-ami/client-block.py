@@ -2,30 +2,32 @@
 
 import sys
 import Ice
-Ice.loadSlice('./factorial.ice')
+from pathlib import Path
+
+Ice.loadSlice(str(Path(__file__).parent / 'factorial.ice'))
 import Example
 
 
-class Client(Ice.Application):
-    def run(self, argv):
-        proxy = self.communicator().stringToProxy(argv[1])
-        math = Example.MathPrx.checkedCast(proxy)
-        value = int(argv[2])
+def main(ic):
+    if len(sys.argv) != 3:
+        print(f"usage: {sys.argv[0]} <proxy> <value>")
+        return 1
 
-        if not math:
-            raise RuntimeError("Invalid proxy")
+    proxy = ic.stringToProxy(sys.argv[1])
+    math = Example.MathPrx.checkedCast(proxy)
+    value = int(sys.argv[2])
 
-        future = math.factorialAsync(value)
-        print("That was an async call")
+    if not math:
+        raise RuntimeError('Invalid proxy')
 
-        print(f"Async result is: {future.result()}")
+    future = math.factorialAsync(value)
+    print("That was an async call")
 
-        return 0
+    print(f"Async result is: {future.result()}")
+
+    return 0
 
 
-if len(sys.argv) != 3:
-    print(f"usage: {__file__} <server> <value>")
-    sys.exit(1)
-
-app = Client()
-sys.exit(app.main(sys.argv))
+if __name__ == "__main__":
+    with Ice.initialize(sys.argv) as communicator:
+        sys.exit(main(communicator))

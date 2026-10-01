@@ -1,30 +1,29 @@
 #!/usr/bin/env -S python3 -u
 
 import sys
-
 import Ice
-Ice.loadSlice('factorial.ice')
+from pathlib import Path
+
+Ice.loadSlice(str(Path(__file__).parent / 'factorial.ice'))
 import Example
 
 
-class Client(Ice.Application):
+def main(ic):
+    if len(sys.argv) != 3:
+        print(f"usage: {sys.argv[0]} <proxy> <value>")
+        return 1
 
-    def run(self, argv):
-        base = self.communicator().stringToProxy(argv[1])
-        math = Example.MathPrx.checkedCast(base)
+    proxy = ic.stringToProxy(sys.argv[1])
+    math = Example.MathPrx.checkedCast(proxy)
 
-        if not math:
-            raise RuntimeError("Invalid proxy")
+    if not math:
+        raise RuntimeError('Invalid proxy')
 
-        print(math.factorial(int(argv[2])))
+    print(math.factorial(int(sys.argv[2])))
 
-        return 0
-
-
-if len(sys.argv) != 3:
-    print(f"usage: {__file__} <server> <value>")
-    sys.exit(1)
+    return 0
 
 
-app = Client()
-sys.exit(app.main(sys.argv))
+if __name__ == "__main__":
+    with Ice.initialize(sys.argv) as communicator:
+        sys.exit(main(communicator))

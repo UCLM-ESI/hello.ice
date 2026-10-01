@@ -2,8 +2,9 @@
 
 import sys
 import Ice
+from pathlib import Path
 
-Ice.loadSlice('./factorial.ice')
+Ice.loadSlice(str(Path(__file__).parent / 'factorial.ice'))
 import Example
 
 
@@ -19,20 +20,20 @@ class MathI(Example.Math):
         return factorial(n)
 
 
-class Server(Ice.Application):
-    def run(self, argv):
-        broker = self.communicator()
+def main(ic):
+    adapter = ic.createObjectAdapter("MathAdapter")
+    proxy = adapter.add(MathI(), Ice.stringToIdentity("math1"))
 
-        adapter = broker.createObjectAdapter("MathAdapter")
-        math = adapter.add(MathI(), broker.stringToIdentity("math1"))
+    print(proxy)
 
-        print(math)
-
-        adapter.activate()
-        self.shutdownOnInterrupt()
-        broker.waitForShutdown()
-
-        return 0
+    adapter.activate()
+    ic.waitForShutdown()
+    return 0
 
 
-sys.exit(Server().main(sys.argv))
+if __name__ == "__main__":
+    try:
+        with Ice.initialize(sys.argv) as communicator:
+            sys.exit(main(communicator))
+    except KeyboardInterrupt:
+        print("\nShutting down server...")

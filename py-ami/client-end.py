@@ -2,7 +2,9 @@
 
 import sys
 import Ice
-Ice.loadSlice('factorial.ice')
+from pathlib import Path
+
+Ice.loadSlice(str(Path(__file__).parent / 'factorial.ice'))
 import Example
 
 
@@ -10,25 +12,25 @@ import Example
 # reference. Use the <operation>Async() methods instead, which return a future
 # (see client-block.py, client-callback.py and client-await.py).
 
-class Client(Ice.Application):
-    def run(self, argv):
-        proxy = self.communicator().stringToProxy(argv[1])
-        math = Example.MathPrx.checkedCast(proxy)
+def main(ic):
+    if len(sys.argv) != 3:
+        print(f"usage: {sys.argv[0]} <proxy> <value>")
+        return 1
 
-        if not math:
-            raise RuntimeError("Invalid proxy")
+    proxy = ic.stringToProxy(sys.argv[1])
+    math = Example.MathPrx.checkedCast(proxy)
 
-        async_result = math.begin_factorial(int(argv[2]))
-        print('that was an async call')
+    if not math:
+        raise RuntimeError('Invalid proxy')
 
-        print(math.end_factorial(async_result))
+    async_result = math.begin_factorial(int(sys.argv[2]))
+    print('that was an async call')
 
-        return 0
+    print(math.end_factorial(async_result))
+
+    return 0
 
 
-if len(sys.argv) != 3:
-    print(f"usage: {__file__} <server> <value>")
-    sys.exit(1)
-
-app = Client()
-sys.exit(app.main(sys.argv))
+if __name__ == "__main__":
+    with Ice.initialize(sys.argv) as communicator:
+        sys.exit(main(communicator))
