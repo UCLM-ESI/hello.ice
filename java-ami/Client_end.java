@@ -1,6 +1,5 @@
 import com.zeroc.Ice.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class Client_end extends Application {
   public int run(String[] args) {
@@ -13,7 +12,7 @@ public class Client_end extends Application {
 
     try {
       System.out.println(async_result.get());
-    } catch (InterruptedException | ExecutionException ex) {
+    } catch (java.lang.Exception ex) {
       System.err.println("Exception is: " + ex);
       return 1;
     }
