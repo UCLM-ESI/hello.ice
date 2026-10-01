@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import sys
 
@@ -21,8 +21,11 @@ class CounterI(Example.Counter):
 with Ice.initialize(sys.argv) as communicator:
     adapter = communicator.createObjectAdapter('CounterAdapter')
 
-    for name in ['counter1', 'counter2']:
-        print(adapter.add(CounterI(), Ice.stringToIdentity(name)), flush=True)
+    proxy1 = adapter.add(CounterI(), Ice.stringToIdentity('counter1'))
+    proxy2 = adapter.add(CounterI(), Ice.stringToIdentity('counter2'))
+
+    print(proxy1)
+    print(proxy2)
 
     adapter.activate()
     communicator.waitForShutdown()
