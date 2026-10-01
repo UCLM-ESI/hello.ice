@@ -1,3 +1,6 @@
 tmp
 *.err
 *.out
+printer_ice.py
+PrinterFactory_ice.py
+Example

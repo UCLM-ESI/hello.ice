@@ -8,3 +8,11 @@ proxy.out
 **/out.txt
 **/db
 icegrid-docker-full
+
+*.o
+*.class
+*.exe
+*.bz2
+IcePatch2.sum
+*_ice.py
+dist/
