@@ -1,14 +1,12 @@
+import com.zeroc.Ice.Current;
+import com.zeroc.Ice.Identity;
+import com.zeroc.Ice.Util;
 import Example.*;
 
-class CallbackI extends _CallbackDisp implements java.lang.Runnable {
-  private Ice.Communicator _broker;
+class CallbackI implements Callback, java.lang.Runnable {
   private boolean _destroy = false;
   private java.util.List<PrinterPrx> _clients =
     new java.util.ArrayList<PrinterPrx>();
-
-  CallbackI(Ice.Communicator communicator) {
-    _broker = communicator;
-  }
 
   synchronized public void
   destroy() {
@@ -16,16 +14,14 @@ class CallbackI extends _CallbackDisp implements java.lang.Runnable {
     _destroy = true;
 
     notify();
-
   }
 
   @Override
-  public void
-  attach(Ice.Identity ident, Ice.Current current) {
-    System.out.println("new printer '" + _broker.identityToString(ident) + "'");
+  synchronized public void
+  attach(Identity ident, Current current) {
+    System.out.println("new printer '" + Util.identityToString(ident) + "'");
 
-    Ice.ObjectPrx base = current.con.createProxy(ident);
-    PrinterPrx client = PrinterPrxHelper.uncheckedCast(base);
+    PrinterPrx client = PrinterPrx.uncheckedCast(current.con.createProxy(ident));
     _clients.add(client);
   }
 
@@ -58,8 +54,8 @@ class CallbackI extends _CallbackDisp implements java.lang.Runnable {
             remote_printer.write("text " + num);
           }
 
-          catch(Ice.Exception ex) {
-            System.out.println("removing client '" + _broker.identityToString(
+          catch(com.zeroc.Ice.LocalException ex) {
+            System.out.println("removing client '" + Util.identityToString(
                                  remote_printer.ice_getIdentity()) + "'");
 
             synchronized(this) {
@@ -68,7 +64,6 @@ class CallbackI extends _CallbackDisp implements java.lang.Runnable {
           }
         }
       }
-
     }
   }
 }

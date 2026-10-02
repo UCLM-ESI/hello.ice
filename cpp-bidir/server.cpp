@@ -11,7 +11,7 @@ class Server: public Application {
     ObjectAdapterPtr adapter =
          communicator()->createObjectAdapter("CallbackAdapter");
     ObjectPrx proxy = adapter->add(
-	 servant, communicator()->stringToIdentity("callback"));
+	 servant, stringToIdentity("callback"));
 
     cout << communicator()->proxyToString(proxy) << endl;
 

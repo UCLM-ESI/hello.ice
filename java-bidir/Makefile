@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-CLASSPATH=-classpath .:/usr/share/java/Ice.jar
+CLASSPATH=-classpath .:/usr/share/java/ice-3.7.10.jar
 
 all: Example Server.class Client.class PrinterI.class
 
@@ -8,7 +8,7 @@ all: Example Server.class Client.class PrinterI.class
 	javac $(CLASSPATH) $<
 
 Example: printer.ice callback.ice
-	slice2java -I/usr/share/Ice-3.6.1/slice $^
+	slice2java -I/usr/share/ice/slice $^
 
 dist:
 	mkdir dist

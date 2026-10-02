@@ -1,8 +1,8 @@
-import Ice.*;
+import com.zeroc.Ice.*;
 
-public class Server extends Ice.Application {
+public class Server extends Application {
   public int run(String[] args) {
-    CallbackI servant = new CallbackI(communicator());
+    CallbackI servant = new CallbackI();
 
     ObjectAdapter adapter =
       communicator().createObjectAdapter("CallbackAdapter");
@@ -16,6 +16,7 @@ public class Server extends Ice.Application {
     Thread thread = new Thread(servant);
     thread.start();
 
+    shutdownOnInterrupt();
     try {
       communicator().waitForShutdown();
     }

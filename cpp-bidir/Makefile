@@ -15,7 +15,7 @@ client: client.o callback.o printer.o printerI.o
 server.cpp client.cpp: callback.h callback.cpp printer.h printer.cpp
 
 %.cpp %.h: %.ice
-	slice2cpp -I/usr/share/Ice-3.6.1/slice $<
+	slice2cpp -I/usr/share/ice/slice $<
 
 dist:
 	mkdir dist

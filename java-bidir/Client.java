@@ -1,6 +1,6 @@
-import Ice.*;
+import com.zeroc.Ice.*;
 
-public class Client extends Ice.Application {
+public class Client extends Application {
   public int run(String[] args) {
     PrinterI servant = new PrinterI();
 
@@ -10,8 +10,7 @@ public class Client extends Ice.Application {
     adapter.activate();
 
     ObjectPrx server_proxy = communicator().stringToProxy(args[0]);
-    Example.CallbackPrx server = Example.CallbackPrxHelper.checkedCast(
-      server_proxy);
+    Example.CallbackPrx server = Example.CallbackPrx.checkedCast(server_proxy);
 
     server.ice_getConnection().setAdapter(adapter);
     server.attach(proxy.ice_getIdentity());
