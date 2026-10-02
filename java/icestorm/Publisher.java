@@ -30,7 +30,7 @@ public class Publisher extends Application {
 
     System.out.println("publishing 10 'Hello World' events");
     for(int i=0; i < 10; i++)
-       printer.write(String.format("Hello World %s!", i));
+       printer.write(String.format("Hello World #%d", i));
 
     return 0;
   }
