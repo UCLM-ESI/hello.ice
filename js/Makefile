@@ -1,11 +1,13 @@
 #!/usr/bin/make -f
 
-all:
+all: printer.js BidirAdapter.js
 
-run-server: BidirAdapter.js
+%.js: %.ice
+	slice2js -I/usr/share/ice/slice $<
+
+run-server: all
 	@echo "Open http://localhost:8080"
 	python3 -m http.server 8080
 
-BidirAdapter.js:
-	slice2js -I /usr/share/slice BidirAdapter.ice
-	cat BidirAdapterHelper.js.in >> $@
+clean:
+	$(RM) *~ printer.js BidirAdapter.js

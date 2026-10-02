@@ -1,2 +1,3 @@
 deb:zeroc-ice-compilers
+deb:zeroc-glacier2
 deb:python3-zeroc-ice

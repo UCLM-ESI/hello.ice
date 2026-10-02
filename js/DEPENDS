@@ -1,3 +1,2 @@
-deb:npm
-deb:nodejs-legacy
-cmd:npm install slice2js --save-dev
+deb:zeroc-ice-compilers
+deb:python3-zeroc-ice

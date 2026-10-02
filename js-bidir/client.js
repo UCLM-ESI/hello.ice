@@ -1,155 +1,61 @@
 (function() {
 
-var PrinterPrx = Example.PrinterPrx;
-
-var PrinterI = Ice.Class(Example.Printer, {
-    write: function(message, current) {
+class PrinterI extends Example.Printer {
+    write(message, current) {
         writeLine("received callback: " + message);
-    },
-});
+    }
+}
 
-var id = new Ice.InitializationData();
-id.properties = Ice.createProperties();
+const communicator = Ice.initialize();
+let connection;
 
-var communicator = Ice.initialize(id);
-var connection;
+async function start() {
+    const hostname = document.location.hostname || "127.0.0.1";
+    const proxy = communicator.stringToProxy(`callback:ws -h ${hostname} -p 7071`);
 
-var start = function() {
-    // Create a proxy to the sender object.
-    var hostname = document.location.hostname || "127.0.0.1";
-    var proxy = communicator.stringToProxy("callback:ws -p 10002 -h " + hostname);
+    const adapter = await communicator.createObjectAdapter("");
+    const printer = adapter.addWithUUID(new PrinterI());
+    const server = await Example.CallbackPrx.checkedCast(proxy);
 
-    return communicator.createObjectAdapter("").then(on_adapter_ready);
+    connection = proxy.ice_getCachedConnection();
+    connection.setAdapter(adapter);
+    await server.attach(printer.ice_getIdentity());
+}
 
-    function on_adapter_ready(adapter) {
-	var printer = adapter.addWithUUID(new PrinterI());
-	return Example.CallbackPrx.checkedCast(proxy).then(on_server_ready);
-
-	function on_server_ready(server) {
-        connection = proxy.ice_getCachedConnection();
-        connection.setAdapter(adapter);
-
-        return server.attach(printer.ice_getIdentity());
-	};
-    };
-};
-
-var stop = function() {
-    // Close the connection, the server will unregister the client
-    // when it tries to invoke on the bi-dir proxy.
+async function stop() {
+    // The server unregisters the client when it fails to invoke the bidir proxy
+    await connection.close(Ice.ConnectionClose.Gracefully);
     writeLine("browser object connection closed.");
-    return connection.close(false);
-};
+}
 
-// button click handlers
-$("#start").click(function() {
-    if (isConnected())
-	return false;
+function writeLine(msg) {
+    const output = document.getElementById("output");
+    output.value += msg + "\n";
+    output.scrollTop = output.scrollHeight;
+}
 
-    setState(State.Connecting);
-    Ice.Promise.try(
-	function() {
-        return start().then(function() {
-                setState(State.Connected);
-        });
-        }
-    ).exception(
-        function(ex) {
-            $("#output").val(ex.toString());
-            setState(State.Disconnected);
-        }
-    );
-    return false;
-});
+function setRunning(running) {
+    document.getElementById("start").disabled = running;
+    document.getElementById("stop").disabled = !running;
+}
 
-$("#stop").click(function() {
-    if (isDisconnected())
-	return false;
-
-    setState(State.Disconnecting);
-    Ice.Promise.try(
-        function() {
-            return stop();
-        }
-    ).exception(
-	function(ex) {
-            $("#output").val(ex.toString());
-        }
-    ).finally(
-        function() {
-            setState(State.Disconnected);
-        }
-    );
-    return false;
-});
-
-// Handle client state
-var State = {
-    Disconnected: 0,
-    Connecting: 1,
-    Connected: 2,
-    Disconnecting: 3
-};
-
-var isConnected = function() {
-    return state == State.Connected;
-};
-
-var isDisconnected = function() {
-    return state == State.Disconnected;
-};
-
-var writeLine = function(msg) {
-    $("#output").val($("#output").val() + msg + "\n");
-    $("#output").scrollTop($("#output").get(0).scrollHeight);
-};
-
-var state;
-
-var setState = function(s) {
-    if (state == s) {
-        return;
-    }
-
-    state = s;
-    switch(s) {
-    case State.Disconnected: {
-        $("#start").removeClass("disabled");
-
-        $("#progress").hide();
-        $("body").removeClass("waiting");
-        break;
-    }
-    case State.Connecting: {
-        $("#output").val("");
-        $("#start").addClass("disabled");
-
-        $("#progress .message").text("Connecting...");
-        $("#progress").show();
-        $("body").addClass("waiting");
-        break;
-    }
-    case State.Connected: {
-        $("#stop").removeClass("disabled");
-
-        $("#progress").hide();
-        $("body").removeClass("waiting");
-        break;
-    }
-    case State.Disconnecting: {
-        $("#stop").addClass("disabled");
-
-        $("#progress .message").text("Disconnecting...");
-        $("#progress").show();
-        $("body").addClass("waiting");
-        break;
-    }
-    default: {
-        break;
-    }
+document.getElementById("start").onclick = async () => {
+    setRunning(true);
+    try {
+        await start();
+    } catch (ex) {
+        writeLine(ex.toString());
+        setRunning(false);
     }
 };
 
-setState(State.Disconnected);
+document.getElementById("stop").onclick = async () => {
+    try {
+        await stop();
+    } catch (ex) {
+        writeLine(ex.toString());
+    }
+    setRunning(false);
+};
 
 }());

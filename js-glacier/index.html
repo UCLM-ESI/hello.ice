@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Glacier2 | Ice for JavaScript</title>
+    <style>
+      body { font-family: sans-serif; max-width: 50em; margin: 2em auto; padding: 0 1em; }
+      input, textarea { width: 100%; box-sizing: border-box; margin-bottom: 1em; }
+      textarea { min-height: 10em; }
+    </style>
+  </head>
+
+  <body>
+    <h2>Glacier2 | Ice for JavaScript</h2>
+
+    <label for="proxy">Printer proxy (as seen from the router)</label>
+    <input id="proxy" value="printer1 -t:tcp -h 127.0.0.1 -p 7070">
+
+    <label for="message">Message</label>
+    <input id="message" value="Hello World!">
+
+    <button id="send">Send</button>
+
+    <textarea id="output" readonly></textarea>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ice/3.7.100/Ice.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ice/3.7.100/Glacier2.min.js"></script>
+    <script src="printer.js"></script>
+    <script src="client.js"></script>
+  </body>
+</html>

@@ -1,153 +1,57 @@
 (function() {
 
-var PrinterPrx = Example.PrinterPrx;
-
-var PrinterI = Ice.Class(Example.Printer, {
-    write: function(message, current) {
+class PrinterI extends Example.Printer {
+    write(message, current) {
         writeLine("message received: " + message);
-    },
-});
+    }
+}
 
-start = function() {
-    var idata = new Ice.InitializationData();
-    broker = Ice.initialize(idata);
+const communicator = Ice.initialize();
+let adapter;
 
-    var strprx = "bidir-adapter -t:ws -h " + location.hostname + " -p 9080";
-    return createBidirAdapter(broker, strprx)
-        .then(on_adapter_ready);
+async function start() {
+    const hostname = document.location.hostname || "127.0.0.1";
+    adapter = await createBidirAdapter(
+        communicator, `bidir-adapter -t:ws -h ${hostname} -p 7071`);
+    const printer = await adapter.addWithUUID(new PrinterI());
+    document.getElementById("proxy").value = printer.toString();
+}
 
-    function on_adapter_ready(adapter_) {
-	adapter = adapter_;
-	var servant = new PrinterI();
-	return adapter.addWithUUID(servant)
-        .then(on_printer_ready);
-    };
-
-    function on_printer_ready(printer) {
-	writeProxy(printer);
-    };
-};
-
-var stop = function() {
-    // Close the connection, the server will unregister the client
-    // when it tries to invoke on the bi-dir proxy.
+async function stop() {
+    // The BidirAdapter discards our proxy when it fails to forward an invocation
+    await adapter.getConnection().close(Ice.ConnectionClose.Gracefully);
+    document.getElementById("proxy").value = "";
     writeLine("browser object connection closed.");
-    return adapter.getConnection().close(false);
-};
+}
 
-// button click handlers
-$("#start").click(function() {
-    if (isConnected())
-	return false;
+function writeLine(msg) {
+    const output = document.getElementById("output");
+    output.value += msg + "\n";
+    output.scrollTop = output.scrollHeight;
+}
 
-    setState(State.Connecting);
-    Ice.Promise.try(
-	function() {
-        return start().then(function() {
-                setState(State.Connected);
-        });
-        }
-    ).exception(
-        function(ex) {
-            $("#output").val(ex.toString());
-            setState(State.Disconnected);
-        }
-    );
-    return false;
-});
+function setRunning(running) {
+    document.getElementById("start").disabled = running;
+    document.getElementById("stop").disabled = !running;
+}
 
-$("#stop").click(function() {
-    if (isDisconnected())
-	return false;
-
-    setState(State.Disconnecting);
-    Ice.Promise.try(
-        function() {
-            return stop();
-        }
-    ).exception(
-	function(ex) {
-            $("#output").val(ex.toString());
-        }
-    ).finally(
-        function() {
-            setState(State.Disconnected);
-        }
-    );
-    return false;
-});
-
-var writeProxy = function(proxy) {
-    $("#proxy").val(proxy);
-};
-
-var writeLine = function(msg) {
-    $("#output").val($("#output").val() + msg + "\n");
-    $("#output").scrollTop($("#output").get(0).scrollHeight);
-};
-
-// Handle client state
-var State = {
-    Disconnected: 0,
-    Connecting: 1,
-    Connected: 2,
-    Disconnecting: 3
-};
-
-var isConnected = function() {
-    return state == State.Connected;
-};
-
-var isDisconnected = function() {
-    return state == State.Disconnected;
-};
-
-var state;
-
-var setState = function(s) {
-    if (state == s) {
-        return;
-    }
-
-    state = s;
-    switch(s) {
-    case State.Disconnected: {
-        $("#start").removeClass("disabled");
-
-        $("#progress").hide();
-        $("body").removeClass("waiting");
-        break;
-    }
-    case State.Connecting: {
-        $("#output").val("");
-        $("#start").addClass("disabled");
-
-        $("#progress .message").text("Connecting...");
-        $("#progress").show();
-        $("body").addClass("waiting");
-        break;
-    }
-    case State.Connected: {
-        $("#stop").removeClass("disabled");
-
-        $("#progress").hide();
-        $("body").removeClass("waiting");
-        break;
-    }
-    case State.Disconnecting: {
-        $("#stop").addClass("disabled");
-
-        $("#progress .message").text("Disconnecting...");
-        $("#progress").show();
-        $("body").addClass("waiting");
-        break;
-    }
-    default: {
-        break;
-    }
+document.getElementById("start").onclick = async () => {
+    setRunning(true);
+    try {
+        await start();
+    } catch (ex) {
+        writeLine(ex.toString());
+        setRunning(false);
     }
 };
 
-setState(State.Disconnected);
+document.getElementById("stop").onclick = async () => {
+    try {
+        await stop();
+    } catch (ex) {
+        writeLine(ex.toString());
+    }
+    setRunning(false);
+};
 
 }());
