@@ -5,7 +5,7 @@ BoolFactory.cpp
 BoolObservable.h
 BoolObservable.cpp
 server
-Create
-Modify
-Monitor
+create
+modify
+monitor
 *.proxy

@@ -16,19 +16,19 @@ class Observer(TestCase):
 
         create = Task('create')
         create.wait_that(server.stdout.content, contains_string('factory'))
-        creator = create.command('./Create "$(head -1 %s)"' % server.stdout.path)
+        creator = create.command('./create "$(head -1 %s)"' % server.stdout.path)
 
         monitor = Task('monitor', detach=True)
         monitor.wait_that(creator.stdout.content, contains_string('tcp'))
         mon = monitor.command(
-            './Monitor --Ice.Config=monitor.cfg "$(head -1 %s)"' % creator.stdout.path,
+            './monitor --Ice.Config=monitor.cfg "$(head -1 %s)"' % creator.stdout.path,
             signal=2)
 
         modify = Task('modify')
         modify.wait_that(mon, running())
-        # give Monitor time to subscribe before Modify triggers the notification
+        # give monitor time to subscribe before modify triggers the notification
         Delay(modify, 0.5)
-        cmd = modify.command('./Modify "$(head -1 %s)" true' % creator.stdout.path)
+        cmd = modify.command('./modify "$(head -1 %s)" true' % creator.stdout.path)
         modify.assert_that(cmd.stdout.content, contains_string('previous value: 0'))
         modify.assert_that(cmd.stdout.content, contains_string('new value: 1'))
 
