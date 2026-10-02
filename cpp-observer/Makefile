@@ -2,7 +2,7 @@
 
 include ../cpp-common.mk
 
-LDLIBS += -lFreeze -lIceStorm
+LDLIBS += -lIceStorm
 
 SLICES=$(wildcard *.ice)
 GENERATED=$(SLICES:.ice=.cpp) $(SLICES:.ice=.h)
@@ -10,8 +10,8 @@ TARGET=server Create Modify Monitor
 
 all: $(TARGET)
 
-server: server.o Bool.o BoolPersistent.o BoolFactory.o
-server.o: server.cpp Bool.h BoolPersistent.h BoolFactory.h
+server: server.o Bool.o BoolObservable.o BoolFactory.o
+server.o: server.cpp Bool.h BoolObservable.h BoolFactory.h
 
 Create: Create.o BoolFactory.o
 Create.o: Create.cpp BoolFactory.h
@@ -19,8 +19,10 @@ Create.o: Create.cpp BoolFactory.h
 Modify: Modify.o Bool.o
 Modify.o: Modify.cpp Bool.h
 
-Monitor: Monitor.o Bool.o BoolPersistent.o
-Monitor.o: Monitor.cpp BoolPersistent.h Bool.h
+Monitor: Monitor.o Bool.o BoolObservable.o
+Monitor.o: Monitor.cpp BoolObservable.h Bool.h
+
+BoolObservable.h BoolObservable.cpp: Bool.ice
 
 %.h %.cpp: %.ice
 	slice2cpp -I/usr/share/ice/slice $<
@@ -28,29 +30,22 @@ Monitor.o: Monitor.cpp BoolPersistent.h Bool.h
 clean:
 	$(RM) $(TARGET)
 	$(RM) *.o *~ $(GENERATED)
-	$(RM) -rf db
-
 	$(RM) server.proxy obj.proxy
 
-db/%:
-	mkdir -p $@
-
-start: db/icestorm /usr/bin/icebox /usr/bin/icestormadmin
+start: /usr/bin/icebox
 	icebox --Ice.Config=icebox.config &
 
 stop:
 	-killall icebox
 	-killall server
-	sleep 2
-	$(RM) -r db
 
 run-server: server
-	./server --Ice.Config=server.cfg > server.proxy &
+	./server --Ice.Config=server.cfg | tee server.proxy
 
-run-create: factory.proxy
-	./Create "$$(cat server.proxy)" > obj.proxy
+run-create: Create
+	./Create "$$(head -1 server.proxy)" | tee obj.proxy
 
-run-monitor: Monitor obj.proxy
+run-monitor: Monitor
 	@echo Keep this console open
 	./Monitor --Ice.Config=monitor.cfg "$$(cat obj.proxy)"
 

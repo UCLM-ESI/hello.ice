@@ -8,9 +8,6 @@ class Observer(TestCase):
     def test_observer(self):
         context.cwd = '$testdir'
 
-        setup = Task('setup')
-        setup.command('mkdir -p db/icestorm')
-
         icebox = Task('icebox', detach=True)
         icebox.command('icebox --Ice.Config=icebox.config', signal=2)
 

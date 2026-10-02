@@ -1,142 +1,106 @@
-#include "BoolPersistent.h"
-#include "BoolFactory.h"
-#include <Freeze/Freeze.h>
-#include <IceUtil/IceUtil.h>
+#include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
-#include <Ice/Application.h>
+#include <IceUtil/IceUtil.h>
+#include "BoolObservable.h"
+#include "BoolFactory.h"
 
 using namespace std;
 using namespace Ice;
 using namespace IceUtil;
 using namespace IceStorm;
-using namespace Freeze;
 using namespace IBool;
 
 namespace IBool {
 
-class RWPersistentI : public RWPersistent,
-                      public AbstractMutexI<Mutex>
-{
+class RWObservableI : public RWObservable {
 public:
-    RWPersistentI(const TopicManagerPrx& mgr) : _mgr(mgr) {
-        value = false;
-        topic = 0;
+    RWObservableI(const TopicManagerPrx& mgr) : _value(false) {
+        _topic = mgr->create(generateUUID());
+        _publisher = WPrx::uncheckedCast(_topic->getPublisher());
     }
 
     virtual bool get(const Current&) {
-        return value;
+        Mutex::Lock lock(_mutex);
+        return _value;
     }
 
-    virtual void set(bool v,
-                     const Identity& id,
-                     const Current&) {
-        value = v;
-        getPublisher()->set(v, id);
+    virtual void set(bool v, const Identity& id, const Current&) {
+        {
+            Mutex::Lock lock(_mutex);
+            _value = v;
+        }
+        _publisher->set(v, id);
     }
 
-    virtual void addListener(const WPrx& obj,
-                             const Current&) {
-        getTopic()->subscribeAndGetPublisher(QoS(), obj);
+    virtual void addListener(const WPrx& listener, const Current&) {
+        try {
+            _topic->subscribeAndGetPublisher(QoS(), listener);
+        } catch (const AlreadySubscribed&) {
+        }
     }
 
-    virtual void removeListener(const WPrx& obj,
-                                const Current&) {
-        getTopic()->unsubscribe(obj);
+    virtual void removeListener(const WPrx& listener, const Current&) {
+        _topic->unsubscribe(listener);
+    }
+
+    void destroyTopic() {
+        _topic->destroy();
     }
 
 private:
-    WPrx getPublisher() {
-        if (_pub != 0) return _pub;
-        return _pub = WPrx::uncheckedCast(getTopic()
-                                          ->getPublisher());
-    }
-
-    TopicPrx getTopic() {
-        if (topic != 0) return topic;
-        return topic = _mgr->create(generateUUID());
-    }
-
-    WPrx _pub;
-    TopicManagerPrx _mgr;
+    Mutex _mutex;
+    bool _value;
+    TopicPrx _topic;
+    WPrx _publisher;
 };
+typedef IceUtil::Handle<RWObservableI> RWObservableIPtr;
 
-}
-class RWObjectFactory: public ObjectFactory {
-public:
-    RWObjectFactory(const TopicManagerPrx& mgr) : _mgr(mgr) {}
-
-    virtual ObjectPtr create(const string& type) {
-        return new RWPersistentI(_mgr);
-    }
-
-    virtual void destroy() {}
-
-private:
-    TopicManagerPrx _mgr;
-};
-class RWInitializer: public Freeze::ServantInitializer {
-public:
-    virtual void initialize(const ObjectAdapterPtr& oa,
-                            const Identity& ident,
-                            const string& str,
-                            const ObjectPtr& obj) {
-    }
-};
-
-
-namespace IBool {
 
 class RWRemoteFactoryI : public RWRemoteFactory {
 public:
-    RWRemoteFactoryI(const EvictorPtr& e,
-                     const TopicManagerPrx& mgr) : _e(e), _mgr(mgr) {}
+    RWRemoteFactoryI(const TopicManagerPrx& mgr) : _mgr(mgr) {}
 
-    virtual ObjectPrx create(const Current& c) {
-        Ice::Identity identity = c.adapter->getCommunicator()->stringToIdentity(generateUUID());
-	return _e->add(new RWPersistentI(_mgr), identity);
+    virtual ObjectPrx create(const Current& current) {
+        return current.adapter->addWithUUID(new RWObservableI(_mgr));
     }
 
-    virtual void destroy(const ObjectPrx& obj, const Current&) {
-        _e->remove(obj->ice_getIdentity());
+    virtual void destroy(const ObjectPrx& obj, const Current& current) {
+        ObjectPtr servant = current.adapter->remove(obj->ice_getIdentity());
+        RWObservableIPtr::dynamicCast(servant)->destroyTopic();
     }
 
 private:
-    EvictorPtr _e;
     TopicManagerPrx _mgr;
 };
 
 }
 
+
 class Server: public Application {
 public:
-    virtual int run (int argc, char* argv[]) {
-        PropertiesPtr prop = communicator()->getProperties();
-        string id = prop->getPropertyWithDefault("IceStorm.TopicManager.Proxy",
-                                                 "IceStorm/TopicManager");
+    virtual int run(int argc, char* argv[]) {
+        string key = "IceStorm.TopicManager.Proxy";
+        TopicManagerPrx mgr = TopicManagerPrx::checkedCast(
+            communicator()->propertyToProxy(key));
+        if (!mgr) {
+            cerr << appName() << ": property " << key << " not set" << endl;
+            return EXIT_FAILURE;
+        }
 
-        ObjectPrx o = communicator()->stringToProxy(id);
-        TopicManagerPrx mgr = TopicManagerPrx::checkedCast(o);
-        communicator()->addObjectFactory(new RWObjectFactory(mgr),
-                                         RWPersistent::ice_staticId());
         ObjectAdapterPtr oa = communicator()->createObjectAdapter("OA");
-        Freeze::EvictorPtr e = createBackgroundSaveEvictor(
-                oa, "db", "rw",
-                new RWInitializer());
-        oa->addServantLocator(e, "");
-        oa->activate();
-
-        ObjectPrx obj = oa->add(new RWRemoteFactoryI(e, mgr),
-                                communicator()->stringToIdentity("factory"));
+        ObjectPrx obj = oa->add(new RWRemoteFactoryI(mgr),
+                                stringToIdentity("factory"));
         cout << communicator()->proxyToString(obj) << endl;
 
+        oa->activate();
         shutdownOnInterrupt();
         communicator()->waitForShutdown();
         cout << "Done" << endl;
-        return 0;
+        return EXIT_SUCCESS;
     }
 };
 
-int main (int argc, char* argv[]) {
-  Server* app = new Server();
-  app->main(argc, argv);
+int main(int argc, char* argv[]) {
+    Server app;
+    return app.main(argc, argv);
 }

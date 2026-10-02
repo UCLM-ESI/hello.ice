@@ -2,9 +2,10 @@ Bool.h
 Bool.cpp
 BoolFactory.h
 BoolFactory.cpp
-BoolPersistent.h
-BoolPersistent.cpp
+BoolObservable.h
+BoolObservable.cpp
 server
 Create
 Modify
 Monitor
+*.proxy

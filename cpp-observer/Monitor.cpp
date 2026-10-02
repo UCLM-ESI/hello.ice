@@ -1,6 +1,5 @@
-#include "BoolPersistent.h"
-#include <Ice/Application.h>
-#include <IceUtil/IceUtil.h>
+#include <Ice/Ice.h>
+#include "BoolObservable.h"
 
 using namespace std;
 using namespace Ice;
@@ -8,12 +7,9 @@ using namespace IBool;
 
 namespace IBool {
 
-class WI : public W
-{
+class WI : public W {
 public:
-    virtual void set(bool v,
-                     const Identity&,
-                     const Current&) {
+    virtual void set(bool v, const Identity&, const Current&) {
         cout << "new value: " << v << endl;
     }
 };
@@ -23,20 +19,29 @@ public:
 
 class MyApp: public Application {
 public:
-    virtual int run (int argc, char* argv[]) {
+    virtual int run(int argc, char* argv[]) {
+        if (argc != 2) {
+            cerr << "usage: " << appName() << " <bool-proxy>" << endl;
+            return EXIT_FAILURE;
+        }
+
         ObjectAdapterPtr oa = communicator()->createObjectAdapter("OA");
-        ObjectPrx obj = communicator()->stringToProxy(argv[1]);
-        ObservablePrx o = ObservablePrx::checkedCast(obj);
-        ObjectPrx listener = oa->addWithUUID(new WI());
-        o->addListener(WPrx::uncheckedCast(listener));
+        WPrx listener = WPrx::uncheckedCast(oa->addWithUUID(new WI()));
         oa->activate();
+
+        ObjectPrx obj = communicator()->stringToProxy(argv[1]);
+        ObservablePrx observable = ObservablePrx::checkedCast(obj);
+        observable->addListener(listener);
+
+        shutdownOnInterrupt();
         communicator()->waitForShutdown();
-        return 0;
+
+        observable->removeListener(listener);
+        return EXIT_SUCCESS;
     }
 };
 
-int main (int argc, char* argv[]) {
-  MyApp* app = new MyApp();
-  app->main(argc, argv);
-  exit(0);
+int main(int argc, char* argv[]) {
+    MyApp app;
+    return app.main(argc, argv);
 }

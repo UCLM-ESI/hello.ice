@@ -5,7 +5,6 @@ module IBool {
         idempotent bool get();
     };
     interface W {
-        ["freeze:write"]
         void set(bool v, Ice::Identity oid);
     };
 };
