@@ -1,2 +1,6 @@
-The BidirAdapter provide Ice object registration for client using a bidir conecction.
-Try "./js" for a running example.
+The BidirAdapter registers objects living in clients that can not accept
+incoming connections (i.e. web browsers). Those clients register their objects
+using a bidirectional connection and the BidirAdapter forwards to them any
+invocation it receives.
+
+See ../js for a running example.

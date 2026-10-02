@@ -2,8 +2,9 @@
 
 import sys
 import Ice
+from pathlib import Path
 
-Ice.loadSlice('-I{} BidirAdapter.ice'.format(Ice.getSliceDir()))
+Ice.loadSlice('-I{} {}'.format(Ice.getSliceDir(), Path(__file__).parent / 'BidirAdapter.ice'))
 import Utils
 
 
@@ -53,18 +54,21 @@ class BidirAdapterI(Utils.BidirAdapter):
         return self.adapter.find(identity)
 
 
-class Server(Ice.Application):
-    def run(self, args):
-        broker = self.communicator()
-        adapter = broker.createObjectAdapter("Adapter")
+def main(ic):
+    adapter = ic.createObjectAdapter("Adapter")
 
-        servant = BidirAdapterI(adapter)
-        proxy = adapter.add(servant, broker.stringToIdentity("bidir-adapter"))
-        print(proxy)
+    servant = BidirAdapterI(adapter)
+    proxy = adapter.add(servant, ic.stringToIdentity("bidir-adapter"))
+    print(proxy)
 
-        adapter.activate()
-        broker.waitForShutdown()
+    adapter.activate()
+    ic.waitForShutdown()
+    return 0
 
 
-server = Server()
-sys.exit(server.main(sys.argv))
+if __name__ == "__main__":
+    try:
+        with Ice.initialize(sys.argv) as communicator:
+            sys.exit(main(communicator))
+    except KeyboardInterrupt:
+        print("\nShutting down server...")
