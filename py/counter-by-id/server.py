@@ -18,8 +18,8 @@ class CounterI(Example.Counter):
         return self.value
 
 
-with Ice.initialize(sys.argv) as communicator:
-    adapter = communicator.createObjectAdapter('CounterAdapter')
+def main(ic):
+    adapter = ic.createObjectAdapter('CounterAdapter')
 
     proxy1 = adapter.add(CounterI(), Ice.stringToIdentity('counter1'))
     proxy2 = adapter.add(CounterI(), Ice.stringToIdentity('counter2'))
@@ -28,4 +28,13 @@ with Ice.initialize(sys.argv) as communicator:
     print(proxy2)
 
     adapter.activate()
-    communicator.waitForShutdown()
+    ic.waitForShutdown()
+    return 0
+
+
+if __name__ == '__main__':
+    try:
+        with Ice.initialize(sys.argv) as communicator:
+            sys.exit(main(communicator))
+    except KeyboardInterrupt:
+        print("\nShutting down server...")

@@ -5,8 +5,9 @@ import sys
 import Ice
 import Example
 
-with Ice.initialize(sys.argv) as communicator:
-    proxy = communicator.stringToProxy(sys.argv[1])
+
+def main(ic):
+    proxy = ic.stringToProxy(sys.argv[1])
     counter = Example.CounterPrx.checkedCast(proxy)
 
     if counter is None:
@@ -16,3 +17,8 @@ with Ice.initialize(sys.argv) as communicator:
     print("increment() = '{}'".format(counter.increment()))
     print("increment() = '{}'".format(counter.increment()))
     print("get() = '{}'".format(counter.get()))
+
+
+if __name__ == '__main__':
+    with Ice.initialize(sys.argv) as communicator:
+        main(communicator)
