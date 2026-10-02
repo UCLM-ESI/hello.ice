@@ -1,0 +1,17 @@
+Ruby client for the Printer interface. Debian does not package the Ice for Ruby
+binding, install it with:
+
+  $ sudo apt install ruby-dev g++ libssl-dev libbz2-dev
+  $ sudo gem install zeroc-ice -v 3.7.10 -- --with-cflags="\
+      -Wno-error=implicit-function-declaration \
+      -Wno-error=incompatible-pointer-types -Wno-error=int-conversion"
+
+(the cflags are required to build it with GCC >= 14)
+
+Run any Printer server, for example:
+
+  py$ make run-server
+
+and then:
+
+  ruby$ make run-client
