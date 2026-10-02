@@ -3,34 +3,31 @@
 import sys
 import Ice
 import IceStorm
+from pathlib import Path
 
-Ice.loadSlice('printer.ice')
+Ice.loadSlice(str(Path(__file__).parent / 'printer.ice'))
 import Example  # noqa
 
 
-class Publisher(Ice.Application):
-    def run(self, args):
-        printer = self.get_publisher("PrinterTopic")
+def get_topic(ic, topic_name):
+    mgr = ic.propertyToProxy("IceStorm.TopicManager.Proxy")
+    mgr = IceStorm.TopicManagerPrx.checkedCast(mgr)
 
-        print("publishing 10 'Hello World' events")
-        for i in range(10):
-            printer.write("Hello World %s!" % i)
+    try:
+        return mgr.retrieve(topic_name)
+    except IceStorm.NoSuchTopic:
+        return mgr.create(topic_name)
 
-    def get_publisher(self, topic):
-        topic = self.get_topic(topic)
-        pub = topic.getPublisher()
-        return Example.PrinterPrx.uncheckedCast(pub)
 
-    def get_topic(self, topic_name):
-        ic = self.communicator()
-        mgr = ic.propertyToProxy("IceStorm.TopicManager.Proxy")
-        mgr = IceStorm.TopicManagerPrx.checkedCast(mgr)
+def main(ic):
+    topic = get_topic(ic, "PrinterTopic")
+    printer = Example.PrinterPrx.uncheckedCast(topic.getPublisher())
 
-        try:
-            return mgr.retrieve(topic_name)
-        except IceStorm.NoSuchTopic:
-            return mgr.create(topic_name)
+    print("publishing 10 'Hello World' events")
+    for i in range(10):
+        printer.write("Hello World %s!" % i)
 
 
 if __name__ == "__main__":
-    Publisher().main(sys.argv)
+    with Ice.initialize(sys.argv) as communicator:
+        main(communicator)

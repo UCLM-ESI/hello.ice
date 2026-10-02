@@ -1,2 +1,17 @@
-public: IceStorm and Glacier2 are in a public network
-private: IceStorm subscribers are in a private network, use Vagrant here to simulate it.
+IceStorm subscriber in a private network, reachable only through Glacier2.
+
+- public: IceStorm, Glacier2 and the publisher
+- private: the subscriber, that only sees Glacier2
+
+compose.yml simulates both networks. Glacier2 is attached to both of them, as a
+firewall with two interfaces. The subscriber creates a Glacier2 session and
+registers its servant in an object adapter bound to the router: IceStorm sends
+the events to Glacier2, that forwards them through the connection opened by the
+subscriber.
+
+Procedure:
+
+  $ make up        # start icestorm, glacier2 and the subscriber
+  $ make logs      # keep it open to see the events
+  $ make publish   # (in other terminal) publish 10 events
+  $ make down

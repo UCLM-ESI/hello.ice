@@ -1,0 +1,62 @@
+# glacier2 is the only host on both networks, like a firewall with two NICs.
+# icestorm can not reach the subscriber, events arrive through glacier2.
+
+services:
+  icestorm:
+    image: zeroc/icestorm:3.7
+    hostname: icestorm
+    command: icebox --Ice.Config=/etc/icestorm.conf
+    networks:
+      - public
+    volumes:
+      - "./public/icestorm.config:/etc/icestorm.conf:ro"
+    healthcheck:
+      test: "bash -c ':> /dev/tcp/127.0.0.1/10000'"
+      interval: 1s
+
+  glacier2:
+    image: zeroc/glacier2:3.7
+    hostname: glacier2
+    networks:
+      - public
+      - private
+    volumes:
+      - "./public/glacier.config:/etc/glacier2router.conf:ro"
+    healthcheck:
+      test: "bash -c ':> /dev/tcp/127.0.0.1/4063'"
+      interval: 1s
+
+  subscriber:
+    build: docker/python
+    image: py-icestorm-glacier
+    hostname: subscriber
+    depends_on:
+      icestorm:
+        condition: service_healthy
+      glacier2:
+        condition: service_healthy
+    networks:
+      - private
+    volumes:
+      - ".:/app:ro"
+    working_dir: /app/private
+    command: ./subscriber.py --Ice.Config=subscriber.config
+
+  publisher:
+    image: py-icestorm-glacier
+    hostname: publisher
+    profiles:
+      - publisher
+    depends_on:
+      icestorm:
+        condition: service_healthy
+    networks:
+      - public
+    volumes:
+      - ".:/app:ro"
+    working_dir: /app/public
+    command: ./publisher.py --Ice.Config=publisher.config
+
+networks:
+  public:
+  private:

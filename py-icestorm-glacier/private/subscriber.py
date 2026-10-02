@@ -4,59 +4,66 @@ import sys
 import Ice
 import Glacier2
 import IceStorm
+from pathlib import Path
 
-Ice.loadSlice('printer.ice')
+Ice.loadSlice(str(Path(__file__).parent / 'printer.ice'))
 import Example  # noqa
 
 
 class PrinterI(Example.Printer):
     def write(self, message, current=None):
         print("Event received: {0}".format(message))
-        sys.stdout.flush()
 
 
-class Subscriber(Glacier2.Application):
-    def runWithSession(self, args):
-        servant_prx = self.register_servant()
-        print("Subscribed proxy: '{}'".format(servant_prx))
-        self.subscribe_to_topic(servant_prx, topic="PrinterTopic")
+def create_session(ic):
+    router = Glacier2.RouterPrx.checkedCast(ic.getDefaultRouter())
+    router.createSession("user", "passwd")
 
-        print("Ready, waiting events...")
-        self.shutdownOnInterrupt()
-        self.communicator().waitForShutdown()
+    # keep the session alive
+    timeout = router.getACMTimeout()
+    if timeout > 0:
+        connection = router.ice_getCachedConnection()
+        connection.setACM(timeout, Ice.Unset, Ice.ACMHeartbeat.HeartbeatAlways)
 
-    def createSession(self):
-        return self.router().createSession("user", "passwd")
+    return router
 
-    def register_servant(self):
-        ic = self.communicator()
-        # adapter = ic.createObjectAdapter("PrinterAdapter")
-        # adapter.activate()
-        # return adapter.addWithUUID(PrinterI())
 
-        # adapter = self.objectAdapter()
+def get_topic(ic, topic_name):
+    mgr = ic.propertyToProxy("IceStorm.TopicManager.Proxy")
+    mgr = IceStorm.TopicManagerPrx.checkedCast(mgr)
 
-        adapter = ic.createObjectAdapterWithRouter("Adapter", self.router())
-        adapter.activate()
+    print("Using IS: '{}'".format(mgr))
+    try:
+        return mgr.retrieve(topic_name)
+    except IceStorm.NoSuchTopic:
+        return mgr.create(topic_name)
 
-        oid = self.createCallbackIdentity("PrinterReceiver")
-        return adapter.add(PrinterI(), oid)
 
-    def subscribe_to_topic(self, proxy, topic):
-        topic = self.get_topic(topic)
-        topic.subscribeAndGetPublisher({}, proxy)
+def main(ic):
+    router = create_session(ic)
 
-    def get_topic(self, topic_name):
-        ic = self.communicator()
-        mgr = ic.propertyToProxy("IceStorm.TopicManager.Proxy")
-        mgr = IceStorm.TopicManagerPrx.checkedCast(mgr)
+    # objects in this adapter are reachable through the router
+    adapter = ic.createObjectAdapterWithRouter("Adapter", router)
+    adapter.activate()
 
-        print("Using IS: '{}'".format(mgr))
-        try:
-            return mgr.retrieve(topic_name)
-        except IceStorm.NoSuchTopic:
-            return mgr.create(topic_name)
+    # Glacier2 forwards callbacks to this client by the identity category
+    oid = Ice.Identity("PrinterReceiver", router.getCategoryForClient())
+    proxy = adapter.add(PrinterI(), oid)
+    print("Subscribed proxy: '{}'".format(proxy))
+
+    topic = get_topic(ic, "PrinterTopic")
+    topic.subscribeAndGetPublisher({}, proxy)
+
+    print("Ready, waiting events...")
+    try:
+        ic.waitForShutdown()
+    finally:
+        topic.unsubscribe(proxy)
 
 
 if __name__ == "__main__":
-    Subscriber().main(sys.argv)
+    try:
+        with Ice.initialize(sys.argv) as communicator:
+            main(communicator)
+    except KeyboardInterrupt:
+        pass
