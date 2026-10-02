@@ -1,0 +1,14 @@
+Browser client that invokes a standard Printer server through a Glacier2 router.
+The browser only connects to the router (using WebSocket), the router forwards
+the invocations to the server.
+
+Procedure:
+
+- Install DEPENDS
+- Run a Printer server (any language):
+  py/hello$ make run-server
+- Run the router:
+  js/glacier$ make start-glacier
+- Serve the web page:
+  js/glacier$ make run-server
+- Open http://localhost:8080, adjust the printer proxy if needed and click "Send"

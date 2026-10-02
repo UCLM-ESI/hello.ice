@@ -28,7 +28,7 @@ services:
       - icegrid
     volumes:
       - "./node1.config:/etc/icegridnode.conf:ro"
-      - "../py-upper:/app"
+      - "../py/upper:/app"
 
   node2:
     image: ignode
@@ -47,7 +47,7 @@ services:
       - icegrid
     volumes:
       - "./node2.config:/etc/icegridnode.conf:ro"
-      - "../py-upper:/app"
+      - "../py/upper:/app"
 
 networks:
   icegrid:

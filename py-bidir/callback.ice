@@ -1,1 +1,0 @@
-../cpp-bidir/callback.ice

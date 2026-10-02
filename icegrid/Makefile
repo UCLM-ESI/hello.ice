@@ -32,7 +32,7 @@ grid-stop:
 show-nodes:
 	$(call ig_admin, node list)
 
-app-deploy: ../py/dist/IcePatch2.sum
+app-deploy: ../py/hello/dist/IcePatch2.sum
 	-$(call ig_admin, application remove PrinterApp)
 	-$(call ig_admin, application add printerapp-py.xml)
 	$(call ig_admin, application update printerapp-py.xml)
@@ -47,17 +47,17 @@ show-server-stdout:
 	$(call ig_admin, server show -f PrinterServer1 stdout)
 
 run-client:
-	../py/client.py --Ice.Config=locator.config "printer1 @ PrinterServer1.PrinterAdapter" hello
+	../py/hello/client.py --Ice.Config=locator.config "printer1 @ PrinterServer1.PrinterAdapter" hello
 
 icegrridgui:
 	GDK_SCALE=2 icegridgui&
 
-../py/dist/IcePatch2.sum:
-	$(MAKE) -C ../py gen-dist
+../py/hello/dist/IcePatch2.sum:
+	$(MAKE) -C ../py/hello gen-dist
 
 /tmp/icedata/%:
 	mkdir -p $@
 
 clean: grid-stop
 	-$(RM) *~
-	-$(RM) -r /tmp/icedata ../py/dist
+	-$(RM) -r /tmp/icedata ../py/hello/dist

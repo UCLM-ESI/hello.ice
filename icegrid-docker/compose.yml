@@ -28,7 +28,7 @@ services:
       - icegrid
     volumes:
       - "./node1.config:/etc/icegridnode.conf:ro"
-      - "../py:/app"
+      - "../py/hello:/app"
 
   deployer:
     image: ignode

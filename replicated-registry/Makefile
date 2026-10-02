@@ -21,7 +21,7 @@ app-deploy: app.xml app-rm
 	$(call ig_admin, application add app.xml)
 
 run-client:
-	../py-upper/client.py --Ice.Config=locator.config "tool1 @ ToolServer1.ToolAdapter"
+	../py/upper/client.py --Ice.Config=locator.config "tool1 @ ToolServer1.ToolAdapter"
 
 clean: down
 	-$(RM) *~

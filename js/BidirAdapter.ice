@@ -1,1 +1,0 @@
-../bidir-adapter/BidirAdapter.ice

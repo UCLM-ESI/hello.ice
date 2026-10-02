@@ -1,5 +1,5 @@
-printer.h
-printer.cpp
-server
-server-uuid
-client
+/client
+/printer.cpp
+/printer.h
+/server
+/server-uuid

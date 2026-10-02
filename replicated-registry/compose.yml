@@ -44,7 +44,7 @@ services:
       - icegrid
     volumes:
       - "./node1.config:/etc/icegridnode.conf:ro"
-      - "../py-upper:/app"
+      - "../py/upper:/app"
 
 networks:
   icegrid:
