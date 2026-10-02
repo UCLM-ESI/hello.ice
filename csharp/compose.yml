@@ -1,0 +1,18 @@
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: csharp/Dockerfile
+    image: hello-csharp
+    command: dotnet bin/server.dll --Ice.Config=server.config
+    stop_signal: SIGINT
+    healthcheck:
+      test: "bash -c ':> /dev/tcp/127.0.0.1/7070'"
+      interval: 1s
+
+  client:
+    image: hello-csharp
+    depends_on:
+      server:
+        condition: service_healthy
+    command: dotnet bin/client.dll "printer1 -t:tcp -h server -p 7070"

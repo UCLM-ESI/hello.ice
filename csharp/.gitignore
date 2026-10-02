@@ -1,3 +1,6 @@
 printer.cs
 bin/
 obj/
+core.*
+__pycache__/
+proxy.out

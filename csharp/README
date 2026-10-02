@@ -1,0 +1,11 @@
+C# version of the Printer example (.NET 10 and the zeroc.ice.net NuGet package).
+
+With the .NET SDK installed (see DEPENDS):
+
+  $ make run-server
+  $ make run-client
+
+Without it, build and run server and client in Docker. The image installs
+dotnet-sdk-10.0 from the Microsoft repository for Debian 13:
+
+  $ make docker-run
