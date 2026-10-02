@@ -3,7 +3,8 @@ SUBDIRS = \
 	cpp/hello   cpp/icestorm  cpp/ami  cpp/amd  \
 	py/hello    py/icestorm   py/ami   py/amd \
 	java/hello  java/icestorm java/ami java/amd \
-	cpp/observer php py/counter-by-identity py/protobuff
+	cpp/observer php py/counter-by-id py/protobuff \
+	cpp/counter-by-id cpp/counter-by-key java/counter-by-id java/counter-by-key
 
 all:     RULE = all
 install: RULE = install
