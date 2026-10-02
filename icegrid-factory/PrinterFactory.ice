@@ -1,1 +1,1 @@
-../cpp-factory/PrinterFactory.ice
+../cpp/factory/PrinterFactory.ice

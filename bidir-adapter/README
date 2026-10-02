@@ -3,4 +3,4 @@ incoming connections (i.e. web browsers). Those clients register their objects
 using a bidirectional connection and the BidirAdapter forwards to them any
 invocation it receives.
 
-See ../js for a running example.
+See ../js/hello for a running example.

@@ -25,7 +25,7 @@ Deploy the application with:
 Run the client with:
 
     $ make run-client
-    ../py-upper/client.py --Ice.Config=locator.config "tool1 @ ToolServer1.ToolAdapter"
+    ../py/upper/client.py --Ice.Config=locator.config "tool1 @ ToolServer1.ToolAdapter"
     HELLO WORLD!
 
 Now you can stop the registry1 container (Master):
@@ -37,5 +37,5 @@ Now you can stop the registry1 container (Master):
 And verify that the client continues working:
 
     $ make run-client
-    ../py-upper/client.py --Ice.Config=locator.config "tool1 @ ToolServer1.ToolAdapter"
+    ../py/upper/client.py --Ice.Config=locator.config "tool1 @ ToolServer1.ToolAdapter"
     HELLO WORLD!

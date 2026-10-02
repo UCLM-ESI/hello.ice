@@ -1,1 +1,1 @@
-../cpp/printer.ice
+../cpp/hello/printer.ice

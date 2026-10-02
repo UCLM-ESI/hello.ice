@@ -35,10 +35,10 @@ Load the application into the Registry:
 
 File distribution. The application looks for programs to execute in ${application.distrib}, which is a variable containing the path where the IcePatch2 distribution service will place the files. Therefore, it's necessary to run the distribution first. This requires two steps:
 
-1. Prepare the files. For example, for `hello.ice/py` this can be done with:
+1. Prepare the files. For example, for `hello.ice/py/hello` this can be done with:
 
     ```bash
-    py$ make gen-dist
+    py/hello$ make gen-dist
     ```
 
     This creates a `py/dist` directory with the files ready for distribution and a link in `/tmp/printer-py`, which facilitates the IcePatch2 configuration.
@@ -64,7 +64,7 @@ You can see the server output (where the object proxy appears) with:
 
 Finally, you can invoke the PrinterServer1 server with:
 
-    $ ../py/client.py --Ice.Config=locator.config "printer1 -t -e 1.1 @ PrinterServer1.PrinterAdapter"
+    $ ../py/hello/client.py --Ice.Config=locator.config "printer1 -t -e 1.1 @ PrinterServer1.PrinterAdapter"
 
 And verify that it has been executed by checking the server output again:
 

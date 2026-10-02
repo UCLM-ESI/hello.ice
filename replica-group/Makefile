@@ -22,7 +22,7 @@ random round-robin ordered adaptive:
 	$(call ig_admin, application add $(@).xml)
 
 round-client:
-	../py-upper/client.py --Ice.Config=locator.config "tool1 @ ToolGroup"
+	../py/upper/client.py --Ice.Config=locator.config "tool1 @ ToolGroup"
 
 clean: down
 	-$(RM) *~

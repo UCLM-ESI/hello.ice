@@ -1,9 +1,9 @@
 
 SUBDIRS = \
-	cpp   cpp-icestorm  cpp-ami  cpp-amd  \
-	py    py-icestorm   py-ami   py-amd \
-	java  java-icestorm java-ami java-amd \
-	cpp-observer php py-counter-by-identity py-protobuff
+	cpp/hello   cpp/icestorm  cpp/ami  cpp/amd  \
+	py/hello    py/icestorm   py/ami   py/amd \
+	java/hello  java/icestorm java/ami java/amd \
+	cpp/observer php py/counter-by-identity py/protobuff
 
 all:     RULE = all
 install: RULE = install

@@ -21,10 +21,10 @@ app-deploy: up app-rm app.xml
 	$(call ig_admin, application add app.xml)
 
 run-client:
-	../py/client.py --Ice.Config=locator.config "printer1 @ PrinterServer1.PrinterAdapter"
+	../py/hello/client.py --Ice.Config=locator.config "printer1 @ PrinterServer1.PrinterAdapter"
 
 run-client-wko:
-	../py/client.py --Ice.Config=locator.config printer1
+	../py/hello/client.py --Ice.Config=locator.config printer1
 
 clean: down
 	-$(RM) *~

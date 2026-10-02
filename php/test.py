@@ -5,4 +5,4 @@ from _test import ClientServerMixin
 
 class Hello(ClientServerMixin):
     def test_client_server(self):
-        self.make_client_server('./client.php', '../py/server.py', '../py/server.config')
+        self.make_client_server('./client.php', '../py/hello/server.py', '../py/hello/server.config')
