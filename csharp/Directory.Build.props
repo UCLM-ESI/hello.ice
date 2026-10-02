@@ -1,0 +1,6 @@
+<Project>
+  <!-- server.csproj and client.csproj share this directory -->
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>

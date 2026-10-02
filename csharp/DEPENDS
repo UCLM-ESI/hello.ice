@@ -1,1 +1,1 @@
-deb:mono-gmcs
+deb:dotnet-sdk-8.0 (https://learn.microsoft.com/dotnet/core/install/linux-debian)

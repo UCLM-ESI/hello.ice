@@ -1,18 +1,23 @@
-using Ice;
+using System;
 using Example;
 
-public class Client: Application {
-  public override int run(string[] args) {
-    ObjectPrx proxy = communicator().stringToProxy(args[0]);
-    PrinterPrx printer = PrinterPrxHelper.checkedCast(proxy);
+public class Client {
+  public static int Main(string[] args) {
+    using (Ice.Communicator communicator = Ice.Util.initialize(ref args)) {
+      if (args.Length != 1) {
+        Console.Error.WriteLine("usage: client <proxy>");
+        return 1;
+      }
 
-    printer.write("Hello, World!");
+      Ice.ObjectPrx proxy = communicator.stringToProxy(args[0]);
+      PrinterPrx printer = PrinterPrxHelper.checkedCast(proxy);
+      if (printer == null) {
+        Console.Error.WriteLine("invalid proxy");
+        return 1;
+      }
 
+      printer.write("Hello World!");
+    }
     return 0;
-  }
-
-  public static void Main(string[] args) {
-    Application app = new Client();
-    System.Environment.Exit(app.main(args));
   }
 }

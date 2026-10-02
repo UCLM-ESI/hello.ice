@@ -1,19 +1,19 @@
+#!/usr/bin/make -f
 
-all: server.exe client.exe
-server.exe: server.cs printer.cs
-client.exe: client.cs printer.cs
+all: bin/server.dll bin/client.dll
 
-%.exe: %.cs
-	mono-csc -out:$@ -pkg:Ice-3.5 $^
+bin/%.dll: %.csproj %.cs printer.cs
+	dotnet build $< -o bin
 
-%.cs: %.ice
+printer.cs: printer.ice
 	slice2cs $<
 
 clean:
-	$(RM) *~ *.exe proxy.out printer.cs
+	$(RM) *~ proxy.out printer.cs
+	$(RM) -r bin obj
 
-run-server: server.exe
-	mono server.exe --Ice.Config=server.config | tee proxy.out
+run-server: bin/server.dll
+	dotnet bin/server.dll --Ice.Config=server.config | tee proxy.out
 
-run-client: client.exe
-	mono client.exe '$(shell head -1 proxy.out)'
+run-client: bin/client.dll
+	dotnet bin/client.dll '$(shell head -1 proxy.out)'
