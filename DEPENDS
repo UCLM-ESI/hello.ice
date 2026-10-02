@@ -13,12 +13,18 @@ python:
 - python3-zeroc-ice
 
 c++:
-- zeroc-ice37
+- libzeroc-ice-dev
 - g++
 
 java:
-- libdb5.3-java
 - libzeroc-ice3.7-java
 
-c#:
-- mono-devel/testing (~106MB)
+php:
+- php-cli
+- php-zeroc-ice
+
+ruby:
+- ruby-dev
+- libssl-dev
+- libbz2-dev
+- gem: zeroc-ice (3.7)

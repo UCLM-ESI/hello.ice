@@ -1,10 +1,9 @@
-# -*- mode: makefile-gmake; coding: utf-8 -*-
 
-SUBDIRS = $(shell ls -d */)
 SUBDIRS = \
 	cpp   cpp-icestorm  cpp-ami  cpp-amd  \
 	py    py-icestorm   py-ami   py-amd \
-	java  java-icestorm java-ami java-amd
+	java  java-icestorm java-ami java-amd \
+	cpp-observer php py-counter-by-identity py-protobuff
 
 all:     RULE = all
 install: RULE = install

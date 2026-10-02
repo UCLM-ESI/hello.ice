@@ -7,7 +7,6 @@ proxy.out
 **/err.txt
 **/out.txt
 **/db
-icegrid-docker-full
 
 *.o
 *.class
