@@ -1,29 +1,22 @@
-#!/usr/bin/php5 -d ice.slice=printer.ice
+#!/usr/bin/env php
 <?php
-require 'Ice.php';
-require 'printer.php';
+require_once 'Ice.php';
+require_once 'printer.php';
 
-$ic = null;
+if ($argc != 2) {
+    fwrite(STDERR, "usage: {$argv[0]} <proxy>\n");
+    exit(1);
+}
+
+$communicator = Ice\initialize($argv);
 try {
-    $ic = Ice_initialize();
-    $base = $ic->stringToProxy($argv[1]);
-    $printer = Example_PrinterPrxHelper::checkedCast($base);
-    if(!$printer)
+    $proxy = $communicator->stringToProxy($argv[1]);
+    $printer = Example\PrinterPrxHelper::checkedCast($proxy);
+    if (!$printer) {
         throw new RuntimeException("Invalid proxy");
+    }
 
     $printer->write("Hello World!");
+} finally {
+    $communicator->destroy();
 }
-catch(Exception $ex) {
-    echo $ex;
-}
-
-if ($ic) {
-    // Clean up
-    try {
-        $ic->destroy();
-    }
-    catch(Exception $ex) {
-        echo $ex;
-    }
-}
-?>

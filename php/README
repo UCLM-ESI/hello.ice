@@ -1,0 +1,7 @@
+PHP client for the Printer interface. Run any Printer server, for example:
+
+  py$ make run-server
+
+and then:
+
+  php$ make run-client
