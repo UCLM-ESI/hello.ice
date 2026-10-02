@@ -2,7 +2,7 @@
 
 CLASSPATH=-classpath .:/usr/share/java/ice-3.7.10.jar
 
-all: Example Server.class Client.class
+all: Example Server.class ServerUUID.class Client.class
 
 %.class: %.java
 	javac $(CLASSPATH) $<
