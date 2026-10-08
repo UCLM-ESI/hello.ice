@@ -5,9 +5,7 @@ import time
 from functools import cached_property
 
 import Ice
-from IceGrid import (LocatorPrx, ServerInstanceDescriptor,
-                     NodeUpdateDescriptor, ApplicationUpdateDescriptor,
-                     NodeObserver)
+from IceGrid import LocatorPrx, ServerInstanceDescriptor
 import IceGrid
 
 
@@ -28,23 +26,6 @@ def ensure_proxy(proxy, cls):
         raise RuntimeError(f'Invalid proxy for {cls.__name__}')
 
     return retval
-
-
-class NodeObserverI(NodeObserver):
-    def __init__(self, factory):
-        self.factory = factory
-
-    def updateServer(self, node, updated_info, current=None):
-        print("update server: new state:", node, updated_info.state)
-
-    def nodeInit(self, node, current=None):
-        print("node init:", node)
-
-    def nodeDown(self, node_name, current=None):
-        print("node down:", node_name)
-
-    def updateAdapter(self, node, adapter, current=None):
-        print("update adapter:", node, adapter)
 
 
 class FactoryI(Example.PrinterFactory):
@@ -105,17 +86,6 @@ class FactoryI(Example.PrinterFactory):
 
         self.admin.instantiateServer(self.app, node, server_instance_desc)
         self.admin.startServer(name)
-
-    def remove_server(self, server_name):
-        node_update_desc = NodeUpdateDescriptor()
-        node_update_desc.name = self.deploy_node
-        node_update_desc.removeServers = [server_name]
-
-        app_update_desc = ApplicationUpdateDescriptor()
-        app_update_desc.name = self.app
-        app_update_desc.nodes = [node_update_desc]
-
-        self.admin.updateApplication(app_update_desc)
 
 
 def run(ic):

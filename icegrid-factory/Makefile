@@ -18,10 +18,10 @@ stop:
 	-killall icegridnode
 	@echo -- ok
 
-app-rm:
+rm-app:
 	-$(call ig_admin, application remove App)
 
-app-deploy: start app-rm app.xml
+load-app: start rm-app app.xml
 	$(call ig_admin, application add app.xml)
 
 run-client:
