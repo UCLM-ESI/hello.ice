@@ -18,9 +18,9 @@ run-server: bin/server.dll
 run-client: bin/client.dll
 	dotnet bin/client.dll '$(shell head -1 proxy.out)'
 
-docker-run:
+run-docker:
 	docker compose up --build --abort-on-container-exit --exit-code-from client
 	docker compose down
 
-docker-clean:
+clean-docker:
 	docker compose down --rmi all

@@ -8,4 +8,4 @@ With the .NET SDK installed (see DEPENDS):
 Without it, build and run server and client in Docker. The image installs
 dotnet-sdk-10.0 from the Microsoft repository for Debian 13:
 
-  $ make docker-run
+  $ make run-docker

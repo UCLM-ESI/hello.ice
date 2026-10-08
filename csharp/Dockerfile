@@ -13,7 +13,7 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_NOLOGO=1
 
 WORKDIR /src
-COPY cpp/printer.ice cpp/server.config cpp/
+COPY cpp/hello/printer.ice cpp/hello/server.config cpp/hello/
 COPY csharp/Makefile csharp/Directory.Build.props \
      csharp/server.csproj csharp/client.csproj \
      csharp/server.cs csharp/client.cs \
