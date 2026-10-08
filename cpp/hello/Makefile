@@ -19,21 +19,14 @@ server.cpp client.cpp: $(STUBS)
 %.cpp %.h: %.ice
 	slice2cpp $<
 
-dist:
+gen-dist: all
+	$(RM) -r dist
 	mkdir dist
-
-gen-dist: clean all dist
-	cp client server server-uuid dist/
-	icepatch2calc dist/
-	ln -sf $(CURDIR)/dist /tmp/printer-server-cpp
+	cp server server-uuid dist/
 
 clean:
 	$(RM) $(TARGET) $(STUBS) *.o *~
-	$(RM) *.bz2 IcePatch2.sum
-	$(RM) -r dist /tmp/printer-server-cpp
-
-calc:
-	icepatch2calc .
+	$(RM) -r dist
 
 run-server: server
 	./server --Ice.Config=server.config | tee proxy.out

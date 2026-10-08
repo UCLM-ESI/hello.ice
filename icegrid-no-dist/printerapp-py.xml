@@ -3,7 +3,7 @@
 <icegrid>
    <application name="PrinterApp">
       <node name="node1">
-         <server id="PrinterServer1" activation="on-demand" exe="./server.py" pwd="../py">
+         <server id="PrinterServer1" activation="on-demand" exe="../py/hello/server.py" pwd="../py">
             <properties>
                <property name="Ice.StdOut"/>
                <property name="Ice.StdErr"/>
@@ -14,7 +14,7 @@
          </server>
       </node>
       <node name="node2">
-         <server id="PrinterServer2" activation="manual" exe="./server-uuid.py" pwd="../py">
+         <server id="PrinterServer2" activation="manual" exe="../py/hello/server-uuid.py" pwd="../py">
             <properties>
                <property name="Ice.StdOut"/>
                <property name="Ice.StdErr"/>

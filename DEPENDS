@@ -8,6 +8,7 @@ common:
 - zeroc-glacier2
 - libzeroc-icestorm3.7t64
 - iproute2
+- ansible
 
 python:
 - python3-zeroc-ice

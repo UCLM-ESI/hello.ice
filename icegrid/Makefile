@@ -8,9 +8,8 @@ define ig_admin
 endef
 
 
-grid-start: /tmp/icedata/registry $(NODE_DIRS)
+start-grid: /tmp/icedata/registry $(NODE_DIRS)
 	reset
-	cp default-templates.xml /tmp/icedata/
 	icegridnode --Ice.Config=node1.config &
 
 	@echo -- waiting registry to start...
@@ -23,7 +22,7 @@ grid-start: /tmp/icedata/registry $(NODE_DIRS)
 
 	@echo -- ok
 
-grid-stop:
+stop-grid:
 	-$(call ig_admin, node shutdown node1)
 	@while bash -c ':> /dev/tcp/127.0.0.1/4061' 2>/dev/null; do sleep 1; done
 	-killall icegridnode
@@ -32,15 +31,15 @@ grid-stop:
 show-nodes:
 	$(call ig_admin, node list)
 
-app-deploy: ../py/hello/dist/IcePatch2.sum
+deploy-app:
 	-$(call ig_admin, application remove PrinterApp)
 	-$(call ig_admin, application add printerapp-py.xml)
 	$(call ig_admin, application update printerapp-py.xml)
 
-app-distrib: app-deploy
-	$(call ig_admin, application patch PrinterApp)
+distrib-app: deploy-app
+	ansible-playbook -i inventory.ini deploy.yml
 
-server-start:
+start-server:
 	$(call ig_admin, server start PrinterServer1)
 
 show-server-stdout:
@@ -49,15 +48,12 @@ show-server-stdout:
 run-client:
 	../py/hello/client.py --Ice.Config=locator.config "printer1 @ PrinterServer1.PrinterAdapter" hello
 
-icegrridgui:
+icegridgui:
 	GDK_SCALE=2 icegridgui&
-
-../py/hello/dist/IcePatch2.sum:
-	$(MAKE) -C ../py/hello gen-dist
 
 /tmp/icedata/%:
 	mkdir -p $@
 
-clean: grid-stop
+clean: stop-grid
 	-$(RM) *~
-	-$(RM) -r /tmp/icedata ../py/hello/dist
+	-$(RM) -r /tmp/icedata /tmp/printer-py

@@ -2,42 +2,20 @@
 <!-- This file was written by IceGrid Admin -->
 <icegrid>
    <application name="PrinterApp">
-      <distrib icepatch="${application}.IcePatch2/server"/>
-      <server-template id="IcePatch2">
-         <parameter name="instance-name" default="${application}.IcePatch2"/>
-         <parameter name="endpoints" default="default"/>
-         <parameter name="directory"/>
-         <server id="${instance-name}" activation="on-demand" application-distrib="false" exe="icepatch2server">
-            <properties>
-               <property name="IcePatch2.InstanceName" value="${instance-name}"/>
-               <property name="IcePatch2.Directory" value="${directory}"/>
-            </properties>
-            <adapter name="IcePatch2" endpoints="${endpoints}" id="${server}.IcePatch2">
-               <object identity="${instance-name}/server" type="::IcePatch2::FileServer"/>
-            </adapter>
-         </server>
-      </server-template>
       <node name="node1">
-         <server-instance template="IcePatch2" directory="/tmp/printer-server-cpp">
+         <server id="PrinterServer1" activation="manual" exe="./server" pwd="/tmp/printer-cpp/${node}">
             <properties>
-               <property name="Ice.ServerIdleTime" value="5"/>
+               <property name="Ice.StdOut" value="/tmp/printer-cpp/${node}/server-out.txt"/>
+               <property name="Ice.StdErr" value="/tmp/printer-cpp/${node}/server-err.txt"/>
             </properties>
-         </server-instance>
-         <server id="PrinterServer1" activation="manual" exe="./server" pwd="${application.distrib}">
-            <properties>
-               <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
-               <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
-            </properties>
-            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter">
-               <object identity="printer1" type="::Example::Printer"/>
-            </adapter>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
          </server>
       </node>
       <node name="node2">
-         <server id="PrinterServer2" activation="manual" exe="./server-uuid" pwd="${application.distrib}">
+         <server id="PrinterServer2" activation="manual" exe="./server-uuid" pwd="/tmp/printer-cpp/${node}">
             <properties>
-               <property name="Ice.StdOut" value="${application.distrib}/server-out.txt"/>
-               <property name="Ice.StdErr" value="${application.distrib}/server-err.txt"/>
+               <property name="Ice.StdOut" value="/tmp/printer-cpp/${node}/server-out.txt"/>
+               <property name="Ice.StdErr" value="/tmp/printer-cpp/${node}/server-err.txt"/>
             </properties>
             <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
          </server>

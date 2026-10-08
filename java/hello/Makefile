@@ -10,18 +10,15 @@ all: Example Server.class ServerUUID.class Client.class
 Example: printer.ice
 	slice2java $<
 
-dist:
+gen-dist: all
+	$(RM) -r dist
 	mkdir dist
-
-gen-dist: clean all dist
-	cp -r *.class Example dist/
-	icepatch2calc dist/
-	ln -sf $(CURDIR)/dist /tmp/printer-server-java
+	cp -r Server.class ServerUUID.class PrinterI.class Example dist/
 
 clean:
 	$(RM) *.class proxy.out *~
 	$(RM) -r Example
-	$(RM) -r dist /tmp/printer-server-java
+	$(RM) -r dist
 
 run-server: Server.class
 	java $(CLASSPATH) \

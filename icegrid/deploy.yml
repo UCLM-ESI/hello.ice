@@ -1,0 +1,57 @@
+---
+# Prepare the distribution (make gen-dist), disable and stop the servers,
+# copy the distribution to every node and enable the servers again. The
+# language is selected with the "lang" variable:
+#
+#   ansible-playbook -i inventory.ini deploy.yml -e lang=cpp
+
+- name: Prepare the distribution and stop servers
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Prepare the distribution
+      ansible.builtin.command:
+        cmd: make gen-dist
+        chdir: "{{ playbook_dir }}/../{{ lang }}/hello"
+
+    - name: Disable servers
+      ansible.builtin.command: "{{ icegridadmin }} 'server disable {{ item }}'"
+      loop: "{{ servers }}"
+
+    - name: Get server state
+      ansible.builtin.command: "{{ icegridadmin }} 'server state {{ item }}'"
+      loop: "{{ servers }}"
+      register: server_state
+      changed_when: false
+
+    - name: Stop active servers
+      ansible.builtin.command: "{{ icegridadmin }} 'server stop {{ item.item }}'"
+      loop: "{{ server_state.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+      when: item.stdout is match('active')
+
+- name: Copy the programs to the nodes
+  hosts: nodes
+  vars:
+    src: "{{ playbook_dir }}/../{{ lang }}/hello/dist/"
+    dest: "/tmp/printer-{{ lang }}/{{ inventory_hostname }}"
+  tasks:
+    - name: Create the destination directory
+      ansible.builtin.file:
+        path: "{{ dest }}"
+        state: directory
+
+    - name: Copy the distribution
+      ansible.builtin.copy:
+        src: "{{ src }}"
+        dest: "{{ dest }}/"
+        mode: preserve
+
+- name: Enable servers
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Enable servers
+      ansible.builtin.command: "{{ icegridadmin }} 'server enable {{ item }}'"
+      loop: "{{ servers }}"

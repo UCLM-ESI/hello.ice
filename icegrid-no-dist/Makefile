@@ -30,12 +30,15 @@ stop-grid:
 show-nodes:
 	$(call ig_admin, node list)
 
-app-deploy:
+deploy-app:
 	-$(call ig_admin, application remove PrinterApp)
 	$(call ig_admin, application add printerapp-py.xml)
 
+
+PRINTER1_PROXY = "printer1 @ PrinterServer1.PrinterAdapter"
+
 run-client:
-	../py/client.py --Ice.Config=locator.config ""
+	../py/hello/client.py --Ice.Config=locator.config ${PRINTER1_PROXY} hello
 
 /tmp/icedata/%:
 	mkdir -p $@
