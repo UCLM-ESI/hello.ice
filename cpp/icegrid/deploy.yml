@@ -1,0 +1,51 @@
+---
+# Disable and stop the servers, copy the distribution (../hello/dist, made
+# with "make gen-dist") to every node and enable the servers again:
+#
+#   ansible-playbook -i inventory.ini deploy.yml
+
+- name: Stop servers
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Disable servers
+      ansible.builtin.command: "{{ icegridadmin }} 'server disable {{ item }}'"
+      loop: "{{ servers }}"
+
+    - name: Get server state
+      ansible.builtin.command: "{{ icegridadmin }} 'server state {{ item }}'"
+      loop: "{{ servers }}"
+      register: server_state
+      changed_when: false
+
+    - name: Stop active servers
+      ansible.builtin.command: "{{ icegridadmin }} 'server stop {{ item.item }}'"
+      loop: "{{ server_state.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+      when: item.stdout is match('active')
+
+- name: Copy the programs to the nodes
+  hosts: nodes
+  vars:
+    src: "{{ playbook_dir }}/../hello/dist/"
+    dest: "/tmp/printer-cpp/{{ inventory_hostname }}"
+  tasks:
+    - name: Create the destination directory
+      ansible.builtin.file:
+        path: "{{ dest }}"
+        state: directory
+
+    - name: Copy the distribution
+      ansible.builtin.copy:
+        src: "{{ src }}"
+        dest: "{{ dest }}/"
+        mode: preserve
+
+- name: Enable servers
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Enable servers
+      ansible.builtin.command: "{{ icegridadmin }} 'server enable {{ item }}'"
+      loop: "{{ servers }}"

@@ -5,7 +5,7 @@ import Ice
 import IceGrid
 from pathlib import Path
 
-Ice.loadSlice(str(Path(__file__).parent.parent / 'py' / 'hello' / 'printer.ice'))
+Ice.loadSlice(str(Path(__file__).parent.parent / 'hello' / 'printer.ice'))
 import Example
 
 

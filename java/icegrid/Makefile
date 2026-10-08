@@ -1,14 +1,15 @@
 #!/usr/bin/make -f
 
+ICEDATA   := /tmp/icedata
 NODES     := $(basename $(sort $(wildcard node*.config)))
-NODE_DIRS := $(addprefix /tmp/icedata/, $(NODES))
+NODE_DIRS := $(addprefix $(ICEDATA)/, $(NODES))
 
 define ig_admin
 	icegridadmin --Ice.Config=locator.config -u user -p pass -e "$(1)"
 endef
 
 
-start-grid: /tmp/icedata/registry $(NODE_DIRS)
+start-grid: $(ICEDATA)/registry $(NODE_DIRS)
 	reset
 	icegridnode --Ice.Config=node1.config &
 
@@ -31,29 +32,33 @@ stop-grid:
 show-nodes:
 	$(call ig_admin, node list)
 
-deploy-app:
-	-$(call ig_admin, application remove PrinterApp)
-	-$(call ig_admin, application add printerapp-py.xml)
-	$(call ig_admin, application update printerapp-py.xml)
+load-app:
+	$(call ig_admin, application add printerapp.xml) 2>/dev/null || \
+	$(call ig_admin, application update printerapp.xml)
 
-distrib-app: deploy-app
+deploy:
 	ansible-playbook -i inventory.ini deploy.yml
 
-start-server:
+start-servers:
 	$(call ig_admin, server start PrinterServer1)
+	$(call ig_admin, server start PrinterServer2)
 
-show-server-stdout:
-	$(call ig_admin, server show -f PrinterServer1 stdout)
+show-server-out:
+	$(call ig_admin, server show PrinterServer1 stdout -f)
+
+clean-outs:
+	$(RM) /tmp/printer-java/*/server-out.txt /tmp/printer-java/*/server-err.txt
 
 run-client:
-	../py/hello/client.py --Ice.Config=locator.config "printer1 @ PrinterServer1.PrinterAdapter" hello
+	java -classpath ../hello:/usr/share/java/ice-3.7.10.jar \
+		Client --Ice.Config=locator.config "printer1 -t -e 1.1 @ PrinterServer1.PrinterAdapter"
 
 icegridgui:
 	GDK_SCALE=2 icegridgui&
 
-/tmp/icedata/%:
+$(ICEDATA)/%:
 	mkdir -p $@
 
 clean: stop-grid
 	-$(RM) *~
-	-$(RM) -r /tmp/icedata /tmp/printer-py
+	-$(RM) -r $(ICEDATA) /tmp/printer-java

@@ -1,19 +1,13 @@
 ---
-# Prepare the distribution (make gen-dist), disable and stop the servers,
-# copy the distribution to every node and enable the servers again. The
-# language is selected with the "lang" variable:
+# Disable and stop the servers, copy the distribution (../hello/dist, made
+# with "make gen-dist") to every node and enable the servers again:
 #
-#   ansible-playbook -i inventory.ini deploy.yml -e lang=cpp
+#   ansible-playbook -i inventory.ini deploy.yml
 
-- name: Prepare the distribution and stop servers
+- name: Stop servers
   hosts: localhost
   connection: local
   tasks:
-    - name: Prepare the distribution
-      ansible.builtin.command:
-        cmd: make gen-dist
-        chdir: "{{ playbook_dir }}/../{{ lang }}/hello"
-
     - name: Disable servers
       ansible.builtin.command: "{{ icegridadmin }} 'server disable {{ item }}'"
       loop: "{{ servers }}"
@@ -34,8 +28,8 @@
 - name: Copy the programs to the nodes
   hosts: nodes
   vars:
-    src: "{{ playbook_dir }}/../{{ lang }}/hello/dist/"
-    dest: "/tmp/printer-{{ lang }}/{{ inventory_hostname }}"
+    src: "{{ playbook_dir }}/../hello/dist/"
+    dest: "/tmp/printer-java/{{ inventory_hostname }}"
   tasks:
     - name: Create the destination directory
       ansible.builtin.file:
