@@ -30,7 +30,7 @@ stop-grid:
 show-nodes:
 	$(call ig_admin, node list)
 
-deploy-app:
+load-app:
 	-$(call ig_admin, application remove PrinterApp)
 	$(call ig_admin, application add printerapp-py.xml)
 
