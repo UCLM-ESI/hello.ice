@@ -7,10 +7,10 @@
             <properties>
                <property name="Ice.StdOut"/>
                <property name="Ice.StdErr"/>
-               <property name="Redis.Sentinels" value="
-                  sentinel-1
-                  sentinel-2
-                  sentinel-3"/>
+               <property name="Redis.ClusterNodes" value="
+                  redis-node-1
+                  redis-node-2
+                  redis-node-3"/>
             </properties>
             <adapter name="CounterAdapter" id="${server}.CounterAdapter"
                endpoints="default -t 5000" replica-group="CounterGroup"/>

@@ -23,8 +23,8 @@ rm-app:
 load-app: app.xml rm-app
 	$(call ig_admin, application add app.xml)
 
-sentinel-status:
-	docker compose exec sentinel-1 redis-cli -p 26379 SENTINEL get-master-addr-by-name mymaster
+cluster-status:
+	docker compose exec redis-node-1 redis-cli cluster nodes
 
 run-client:
 	counter/client.py --Ice.Config=locator.config "counter @ CounterGroup"

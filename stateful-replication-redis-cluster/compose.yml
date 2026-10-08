@@ -1,0 +1,147 @@
+x-redis-healthcheck: &redis-healthcheck
+  test: "redis-cli ping"
+  interval: 1s
+
+services:
+
+  ## - application plane -
+
+  registry:
+    image: zeroc/icegridregistry:3.7
+    container_name: registry
+    hostname: registry
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.10
+    volumes:
+      - "./registry.config:/etc/icegridregistry.conf:ro"
+    healthcheck:
+      test: "bash -c ':> /dev/tcp/127.0.0.1/4061'"
+      interval: 1s
+
+  node1:
+    build: ../docker/ignode
+    image: hello-ice/ignode
+    pull_policy: never
+    container_name: node1
+    hostname: node1
+    depends_on:
+      registry:
+        condition: service_healthy
+      cluster-creator:
+        condition: service_completed_successfully
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 1024
+    networks: [icegrid]
+    volumes:
+      - "./node1.config:/etc/icegridnode.conf:ro"
+      - "./counter:/app"
+
+  node2:
+    build: ../docker/ignode
+    image: hello-ice/ignode
+    pull_policy: never
+    container_name: node2
+    hostname: node2
+    depends_on:
+      registry:
+        condition: service_healthy
+      cluster-creator:
+        condition: service_completed_successfully
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 1024
+    networks: [icegrid]
+    volumes:
+      - "./node2.config:/etc/icegridnode.conf:ro"
+      - "./counter:/app"
+
+  ## - Redis data plane -
+
+  redis-node-1:
+    image: redis:7
+    container_name: redis-node-1
+    hostname: redis-node-1
+    command: ["redis-server", "--cluster-enabled", "yes", "--cluster-config-file", "nodes.conf", "--cluster-node-timeout", "5000", "--appendonly", "yes", "--cluster-announce-ip", "172.28.0.21"]
+    healthcheck: *redis-healthcheck
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.21
+
+  redis-node-2:
+    image: redis:7
+    container_name: redis-node-2
+    hostname: redis-node-2
+    command: ["redis-server", "--cluster-enabled", "yes", "--cluster-config-file", "nodes.conf", "--cluster-node-timeout", "5000", "--appendonly", "yes", "--cluster-announce-ip", "172.28.0.22"]
+    healthcheck: *redis-healthcheck
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.22
+
+  redis-node-3:
+    image: redis:7
+    container_name: redis-node-3
+    hostname: redis-node-3
+    command: ["redis-server", "--cluster-enabled", "yes", "--cluster-config-file", "nodes.conf", "--cluster-node-timeout", "5000", "--appendonly", "yes", "--cluster-announce-ip", "172.28.0.23"]
+    healthcheck: *redis-healthcheck
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.23
+
+  redis-node-4:
+    image: redis:7
+    container_name: redis-node-4
+    hostname: redis-node-4
+    command: ["redis-server", "--cluster-enabled", "yes", "--cluster-config-file", "nodes.conf", "--cluster-node-timeout", "5000", "--appendonly", "yes", "--cluster-announce-ip", "172.28.0.24"]
+    healthcheck: *redis-healthcheck
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.24
+
+  redis-node-5:
+    image: redis:7
+    container_name: redis-node-5
+    hostname: redis-node-5
+    command: ["redis-server", "--cluster-enabled", "yes", "--cluster-config-file", "nodes.conf", "--cluster-node-timeout", "5000", "--appendonly", "yes", "--cluster-announce-ip", "172.28.0.25"]
+    healthcheck: *redis-healthcheck
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.25
+
+  redis-node-6:
+    image: redis:7
+    container_name: redis-node-6
+    hostname: redis-node-6
+    command: ["redis-server", "--cluster-enabled", "yes", "--cluster-config-file", "nodes.conf", "--cluster-node-timeout", "5000", "--appendonly", "yes", "--cluster-announce-ip", "172.28.0.26"]
+    healthcheck: *redis-healthcheck
+    networks:
+      icegrid:
+        ipv4_address: 172.28.0.26
+
+  cluster-creator:
+    image: redis:7
+    container_name: cluster-creator
+    depends_on:
+      redis-node-1: {condition: service_healthy}
+      redis-node-2: {condition: service_healthy}
+      redis-node-3: {condition: service_healthy}
+      redis-node-4: {condition: service_healthy}
+      redis-node-5: {condition: service_healthy}
+      redis-node-6: {condition: service_healthy}
+    # create the cluster only if it does not exist yet (i.e. "make up" again)
+    command: >
+      bash -c "redis-cli -h 172.28.0.21 cluster info | grep -q cluster_state:ok ||
+      redis-cli --cluster create 172.28.0.21:6379 172.28.0.22:6379 172.28.0.23:6379 172.28.0.24:6379 172.28.0.25:6379 172.28.0.26:6379 --cluster-replicas 1 --cluster-yes"
+    networks:
+      icegrid:
+
+networks:
+  icegrid:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1
