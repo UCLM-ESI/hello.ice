@@ -29,8 +29,9 @@ services:
       interval: 1s
 
   node1:
-    build: docker/ignode
-    image: ignode
+    build: ../docker/ignode
+    image: hello-ice/ignode
+    pull_policy: never
     container_name: node1
     hostname: node1
     depends_on:

@@ -18,9 +18,9 @@ You can view the service logs with:
     registry1  | -- 12/14/25 10:19:16.642 icegridregistry: Node: node `node1' up
     registry1  | -- 12/14/25 10:19:16.665 icegridregistry: Replica: replica `Slave1' up
 
-Deploy the application with:
+Load the application into the Registry with:
 
-    $ make app-deploy
+    $ make load-app
 
 Run the client with:
 
@@ -30,7 +30,7 @@ Run the client with:
 
 Now you can stop the registry1 container (Master):
 
-    $ $ docker compose stop registry1
+    $ docker compose stop registry1
     [+] Stopping 1/1
     ✔ Container registry1 Stopped
 

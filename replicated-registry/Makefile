@@ -14,10 +14,10 @@ down:
 logs:
 	docker compose logs -f
 
-app-rm:
+rm-app:
 	-$(call ig_admin, application remove App)
 
-app-deploy: app.xml app-rm
+load-app: app.xml rm-app
 	$(call ig_admin, application add app.xml)
 
 run-client:
