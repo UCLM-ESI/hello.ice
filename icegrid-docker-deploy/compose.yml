@@ -1,11 +1,22 @@
+x-node: &node
+  build: ../docker/ignode
+  image: hello-ice/ignode
+  pull_policy: never
+  depends_on:
+    registry:
+      condition: service_healthy
+  ulimits:
+    nofile:
+      soft: 1024
+      hard: 1024
+
 services:
   registry:
     image: zeroc/icegridregistry:3.7
-    container_name: registry
     hostname: registry
     networks:
       icegrid:
-        ipv4_address: 172.28.0.10
+        ipv4_address: 172.29.0.10
     volumes:
       - "./registry.config:/etc/icegridregistry.conf:ro"
     healthcheck:
@@ -13,29 +24,29 @@ services:
       interval: 1s
 
   node1:
-    build: ../docker/ignode
-    image: hello-ice/ignode
-    pull_policy: never
-    container_name: node1
+    <<: *node
     hostname: node1
-    depends_on:
-      registry:
-        condition: service_healthy
-    ulimits:
-      nofile:
-        soft: 1024
-        hard: 1024
     networks:
-      - icegrid
+      icegrid:
+        ipv4_address: 172.29.0.11
     volumes:
       - "./node1.config:/etc/icegridnode.conf:ro"
-      - "../py/hello:/app"
+      - "./ssh/id_ed25519.pub:/run/authorized_key.pub:ro"
+
+  node2:
+    <<: *node
+    hostname: node2
+    networks:
+      icegrid:
+        ipv4_address: 172.29.0.12
+    volumes:
+      - "./node2.config:/etc/icegridnode.conf:ro"
+      - "./ssh/id_ed25519.pub:/run/authorized_key.pub:ro"
 
   loader:
     build: ../docker/ignode
     image: hello-ice/ignode
     pull_policy: never
-    container_name: loader
     hostname: loader
     networks:
       - icegrid
@@ -53,15 +64,13 @@ services:
         condition: service_healthy
       node1:
         condition: service_started
-    develop:
-      watch:
-        - action: restart
-          path: ./app.xml
+      node2:
+        condition: service_started
 
 networks:
   icegrid:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.28.0.0/16
-          gateway: 172.28.0.1
+        - subnet: 172.29.0.0/16
+          gateway: 172.29.0.1

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<icegrid>
+   <application name="PrinterApp">
+      <node name="node1">
+         <server id="PrinterServer1" activation="manual" exe="./server.py" pwd="/var/lib/ice/printer">
+            <properties>
+               <property name="Ice.StdOut" value="/var/lib/ice/printer/server-out.txt"/>
+               <property name="Ice.StdErr" value="/var/lib/ice/printer/server-err.txt"/>
+            </properties>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
+         </server>
+      </node>
+      <node name="node2">
+         <server id="PrinterServer2" activation="manual" exe="./server.py" pwd="/var/lib/ice/printer">
+            <properties>
+               <property name="Ice.StdOut" value="/var/lib/ice/printer/server-out.txt"/>
+               <property name="Ice.StdErr" value="/var/lib/ice/printer/server-err.txt"/>
+            </properties>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
+         </server>
+      </node>
+   </application>
+</icegrid>

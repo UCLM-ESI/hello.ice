@@ -1,0 +1,9 @@
+---
+# icegridadmin runs on the host and finds the Registry (the "registry"
+# container) by means of the Locator in locator.config
+icegridadmin: "icegridadmin --Ice.Config={{ playbook_dir }}/locator.config -u user -p pass -e"
+
+# IceGrid servers stopped and disabled while the programs are copied
+servers:
+  - PrinterServer1
+  - PrinterServer2
