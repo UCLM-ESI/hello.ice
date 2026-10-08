@@ -2,7 +2,9 @@
 
 CLASSPATH=-classpath .:/usr/share/java/ice-3.7.10.jar
 
-all: Example Server.class ServerUUID.class Client.class
+all: build
+
+build: Example Server.class ServerUUID.class Client.class
 
 %.class: %.java
 	javac $(CLASSPATH) $<
@@ -10,10 +12,11 @@ all: Example Server.class ServerUUID.class Client.class
 Example: printer.ice
 	slice2java $<
 
-gen-dist: all
+gen-dist: build
 	$(RM) -r dist
-	mkdir dist
-	cp -r Server.class ServerUUID.class PrinterI.class Example dist/
+	mkdir -p dist/Example
+	cp Server.class ServerUUID.class PrinterI.class dist/
+	cp Example/*.class dist/Example/
 
 clean:
 	$(RM) *.class proxy.out *~

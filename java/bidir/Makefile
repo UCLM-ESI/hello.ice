@@ -10,12 +10,10 @@ all: Example Server.class Client.class PrinterI.class
 Example: printer.ice callback.ice
 	slice2java -I/usr/share/ice/slice $^
 
-dist:
+gen-dist: all
+	$(RM) -r dist
 	mkdir dist
-
-gen-dist: all dist
 	cp -r *.class Example dist/
-	icepatch2calc dist/
 
 clean:
 	$(RM) *.class proxy.out *~

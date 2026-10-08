@@ -2,12 +2,10 @@
 
 all:
 
-dist:
+gen-dist:
+	$(RM) -r dist
 	mkdir dist
-
-gen-dist: dist
 	cp client.py server.py printer.ice dist/
-	icepatch2calc dist/
 
 clean:
 	$(RM) *~ proxy.out

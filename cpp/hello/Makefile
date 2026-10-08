@@ -8,7 +8,9 @@ SLICE=printer
 STUBS=$(addprefix $(SLICE), .h .cpp)
 TARGET=server server-uuid client
 
-all: $(TARGET)
+all: build
+
+build: $(TARGET)
 
 server: server.o $(SLICE)I.o $(SLICE).o
 server-uuid: server-uuid.o $(SLICE)I.o $(SLICE).o
@@ -19,7 +21,7 @@ server.cpp client.cpp: $(STUBS)
 %.cpp %.h: %.ice
 	slice2cpp $<
 
-gen-dist: all
+gen-dist: build
 	$(RM) -r dist
 	mkdir dist
 	cp server server-uuid dist/
