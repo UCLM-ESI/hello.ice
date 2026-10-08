@@ -1,0 +1,45 @@
+#!/usr/bin/make -f
+
+NODES     := $(basename $(sort $(wildcard node*.config)))
+NODE_DIRS := $(addprefix /tmp/icedata/, $(NODES))
+
+define ig_admin
+	icegridadmin --Ice.Config=locator.config -u user -p pass -e "$(1)"
+endef
+
+
+start-grid: /tmp/icedata/registry $(NODE_DIRS)
+	icegridnode --Ice.Config=node1.config &
+
+	@echo -- waiting registry to start...
+	@while ! ss -ltnH 2>/dev/null | grep -q ':4061'; do sleep 1; done
+
+	@for node in $(filter-out node1, $(NODES)); do \
+		icegridnode --Ice.Config=$$node.config & \
+		echo -- $$node started; \
+	done
+
+	@echo -- ok
+
+stop-grid:
+	$(call ig_admin, node shutdown node1)
+	@while ss -ltnH | grep -q ":4061"; do sleep 1; done
+	-killall icegridnode
+	@echo -- ok
+
+show-nodes:
+	$(call ig_admin, node list)
+
+app-deploy:
+	-$(call ig_admin, application remove PrinterApp)
+	$(call ig_admin, application add printerapp-py.xml)
+
+run-client:
+	../py/client.py --Ice.Config=locator.config ""
+
+/tmp/icedata/%:
+	mkdir -p $@
+
+clean: stop-grid
+	-$(RM) *~
+	-$(RM) -r /tmp/icedata
