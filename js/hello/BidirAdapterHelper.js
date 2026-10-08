@@ -1,5 +1,5 @@
 // Register objects living in the browser in a remote BidirAdapter
-// (see ../../bidir-adapter), so that any Ice client can invoke them.
+// (see ../../py/bidir-adapter), so that any Ice client can invoke them.
 
 class BidirAdapter {
     constructor(localAdapter, remoteAdapter) {

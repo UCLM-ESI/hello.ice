@@ -1,1 +1,1 @@
-../../bidir-adapter/BidirAdapter.ice
+../../py/bidir-adapter/BidirAdapter.ice
