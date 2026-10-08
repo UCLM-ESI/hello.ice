@@ -38,7 +38,7 @@ In the source code, there are two programs that use this interface following the
 
 <pre>
 $ ./standard-dispatching.py
-Use proxy: 'StandardDispatching -t:tcp -h 192.168.1.130 -p 1234'
+Use proxy: 'StandardDispatching -t -e 1.1:tcp -h 127.0.0.1 -p 1234 -t 60000'
 </pre>
 
 It tells you the proxy where is waiting events. As it is a standard example, I will not explain it. If you have any doubt about what is doing, just see the code! :) Now, launch the client (in other console), as follows:
@@ -46,14 +46,14 @@ It tells you the proxy where is waiting events. As it is a standard example, I w
 <pre>
 $ ./standard-invocation.py
 usage: ./standard-invocation.py <proxy> <message>
-$ ./standard-invocation.py 'StandardDispatching -t:tcp -h 192.168.1.130 -p 1234' 'Hello World!'
+$ ./standard-invocation.py 'StandardDispatching -t:tcp -h 127.0.0.1 -p 1234' 'Hello World!'
 </pre>
 
 As you can see, the client expect two arguments: a @proxy@ and a @message@. If you look at the server's console, you will find something like that:
 
 <pre>
 $ ./standard-dispatching.py
-Use proxy: 'StandardDispatching -t:tcp -h 192.168.1.130 -p 1234'
+Use proxy: 'StandardDispatching -t -e 1.1:tcp -h 127.0.0.1 -p 1234 -t 60000'
 say: Hello World!
 </pre>
 
@@ -102,6 +102,8 @@ In this case (Dynamic Invocation as a pure client), we really know what the serv
 
 For this example, I've writen a simple marshaller. It is a very simple and rude implementation of what would be the InputStream for Python, but it works as expected. Only supports what was needed for this tutorial. I presume you wouldn't need it for real scenarios. Otherwise, you should build a good one, using TDD and every other tool you need.
 
+Note that @ice_invoke@ does not send and receive just the encoded parameters, but an _encapsulation_: a 6 bytes header (the total size as an int and the major and minor versions of the encoding, 1.1) followed by the encoded data. @OutputStream.finished()@ adds that header and @InputStream@ skips it. In the data, a string is its size (a byte, or 255 followed by an int if it is bigger than 254) and its UTF-8 bytes, and a bool is a byte.
+
 h3. Invoke Ice
 
 Ok, as far as this point, we haven't done anything. Time to code! This is the only interesting part:
@@ -110,19 +112,20 @@ Ok, as far as this point, we haven't done anything. Time to code! This is the on
     ...
     operation = "say"
     mode = Ice.OperationMode.Normal
-    inParams = OutputStream()
-    inParams.writeString(args[2])
+    out = OutputStream()
+    out.writeString(self.args[2])
+    inParams = out.finished()
 
     ok, outParams = self.prx.ice_invoke(operation, mode, inParams)
     if ok:
         result = InputStream(outParams).readBool()
-	assert result
+        assert result
 
     else:
-        print "An error ocurred!"
+        print("There were an error!")
 </pre>
 
-We build the operation name and mode without problems. Then, build an @OutputStream@ called @inParams@. This is _output_ in the sense of _marshalling_, which has methods to _write_ data. We pass the given string and call @ice_invoke@. If everything is ok, we read the method return value, a bool, which indicates whether the operation could be performed or not. If @ok@ is False, then there were some error, and I omit it.
+We build the operation name and mode without problems. Then, build an @OutputStream@. This is _output_ in the sense of _marshalling_, which has methods to _write_ data. We pass the given string, get the encapsulation (@inParams@) and call @ice_invoke@. If everything is ok, we read the method return value, a bool, which indicates whether the operation could be performed or not. If @ok@ is False, then there were some error, and I omit it.
 
 As you can see, the only special things here are the marshaller and unmarshaller needed to send the arguments and read the return value of the remote method. If this is implemented inside another object which uses Dynamic Dispatching, these arguments are received directly, as we will see in the next section.
 
@@ -143,7 +146,7 @@ As we will be using Python, the out param is return directly, after the return v
 <pre>
     def ice_invoke(self, inParams, current):
         ...
-	return retval, outParams
+        return retval, outParams
 </pre>
 
 The name of the operation, the mode and some other information is delegated on the Context (here, accesible by the @current@ argument). You just need add whatever you need to do. If you need to unmarshall data, you'll have the same problem as above. Check the code for an ad-hoc implementation of this Stream Interfaces:
@@ -152,7 +155,7 @@ The name of the operation, the mode and some other information is delegated on t
     inParams = InputStream(bytes)
     message = inParams.readString()
 
-    print "{0}: {1}".format(current.operation, message)
+    print("{0}: {1}".format(current.operation, message))
 
     out = OutputStream()
     out.writeBool(True)
@@ -177,20 +180,20 @@ On one console, launch the server:
 
 <pre>
 $ ./dynamic-dispatching.py
-Use proxy: 'DynamicDispatching -t:tcp -h 192.168.1.130 -p 1234'
+Use proxy: 'DynamicDispatching -t -e 1.1:tcp -h 127.0.0.1 -p 1234 -t 60000'
 </pre>
 
 On another console, launch the client:
 
 <pre>
-$ ./dynamic-invocation.py 'DynamicDispatching -t:tcp -h 192.168.1.130 -p 1234' 'Hello Dynamic World!'
+$ ./dynamic-invocation.py 'DynamicDispatching -t:tcp -h 127.0.0.1 -p 1234' 'Hello Dynamic World!'
 </pre>
 
 And you should get in the first console something like this:
 
 <pre>
 $ ./dynamic-dispatching.py
-Use proxy: 'DynamicDispatching -t:tcp -h 192.168.1.130 -p 1234'
+Use proxy: 'DynamicDispatching -t -e 1.1:tcp -h 127.0.0.1 -p 1234 -t 60000'
 say: Hello Dynamic World!
 </pre>
 
@@ -206,5 +209,5 @@ h2. References
 This documentation and full source code (located on @py/dynamic/@ folder) can be retrieved using the following command:
 
 <pre>
-hg clone ssh://hg@bitbucket.org/arco_group/ice-hello
+git clone https://github.com/UCLM-ESI/hello.ice.git
 </pre>

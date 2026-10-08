@@ -42,4 +42,4 @@ class DynamicInvocation(Ice.Application):
 
 
 if __name__ == "__main__":
-    DynamicInvocation().main(sys.argv)
+    sys.exit(DynamicInvocation().main(sys.argv))
