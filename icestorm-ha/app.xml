@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file was written by IceGrid GUI -->
+<icegrid>
+   <application name="App">
+      <service-template id="IceStorm-HA">
+         <parameter name="instance-name" default="${application}.IceStorm"/>
+         <parameter name="node-id"/>
+         <parameter name="topic-manager-endpoints" default="default"/>
+         <parameter name="publish-endpoints" default="default"/>
+         <parameter name="node-endpoints" default="default"/>
+         <parameter name="flush-timeout" default="1000"/>
+         <parameter name="publish-replica-group"/>
+         <parameter name="topic-manager-replica-group"/>
+         <service name="${instance-name}${node-id}" entry="IceStormService,37:createIceStorm">
+            <properties>
+               <property name="${service}.LMDB.Path" value="${service.data}"/>
+               <property name="${service}.InstanceName" value="${instance-name}"/>
+               <property name="${service}.NodeId" value="${node-id}"/>
+               <property name="${service}.Flush.Timeout" value="${flush-timeout}"/>
+            </properties>
+            <adapter name="${service}.Node" endpoints="${node-endpoints}" id="${instance-name}${node-id}.Node"/>
+            <adapter name="${service}.Publish" endpoints="${publish-endpoints}" id="${instance-name}${node-id}.Publish" replica-group="${publish-replica-group}"/>
+            <adapter name="${service}.TopicManager" endpoints="${topic-manager-endpoints}" id="${instance-name}${node-id}.TopicManager" replica-group="${topic-manager-replica-group}"/>
+         </service>
+      </service-template>
+      <server-template id="IceStorm-HA">
+         <parameter name="instance-name" default="${application}.IceStorm"/>
+         <parameter name="node-id"/>
+         <parameter name="topic-manager-endpoints" default="default"/>
+         <parameter name="publish-endpoints" default="default"/>
+         <parameter name="node-endpoints" default="default"/>
+         <parameter name="flush-timeout" default="1000"/>
+         <parameter name="publish-replica-group"/>
+         <parameter name="topic-manager-replica-group"/>
+         <icebox id="${instance-name}${node-id}" activation="on-demand" exe="icebox">
+            <service-instance template="IceStorm-HA" instance-name="${instance-name}" node-id="${node-id}" topic-manager-endpoints="${topic-manager-endpoints}" publish-endpoints="${publish-endpoints}" node-endpoints="${node-endpoints}" flush-timeout="${flush-timeout}" publish-replica-group="${publish-replica-group}" topic-manager-replica-group="${topic-manager-replica-group}"/>
+         </icebox>
+      </server-template>
+      <replica-group id="publish-rg">
+         <load-balancing type="random" n-replicas="0"/>
+      </replica-group>
+      <replica-group id="topic-manager-rg">
+         <load-balancing type="random" n-replicas="0"/>
+         <object identity="${application}.IceStorm/TopicManager" type="::IceStorm::TopicManager"/>
+      </replica-group>
+      <node name="node1">
+         <server-instance template="IceStorm-HA" node-id="1" publish-replica-group="publish-rg" topic-manager-replica-group="topic-manager-rg"/>
+         <server id="EventServer1" activation="always" exe="/app/publisher.py">
+            <properties>
+               <property name="Ice.StdOut" value=""/>
+               <property name="Ice.StdErr" value=""/>
+               <property name="IceStorm.TopicManager.Proxy" value="${application}.IceStorm/TopicManager"/>
+            </properties>
+         </server>
+      </node>
+      <node name="node2">
+         <server-instance template="IceStorm-HA" node-id="2" publish-replica-group="publish-rg" topic-manager-replica-group="topic-manager-rg"/>
+         <server id="EventServer2" activation="always" exe="/app/subscriber.py">
+            <properties>
+               <property name="Ice.StdOut" value=""/>
+               <property name="Ice.StdErr" value=""/>
+               <property name="IceStorm.TopicManager.Proxy" value="${application}.IceStorm/TopicManager"/>
+            </properties>
+            <adapter name="PrinterAdapter" endpoints="default" id="${server}.PrinterAdapter"/>
+         </server>
+      </node>
+      <node name="node3">
+         <server-instance template="IceStorm-HA" node-id="3" publish-replica-group="publish-rg" topic-manager-replica-group="topic-manager-rg"/>
+      </node>
+   </application>
+</icegrid>
