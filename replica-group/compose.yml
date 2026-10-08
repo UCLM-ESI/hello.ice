@@ -13,8 +13,9 @@ services:
       interval: 1s
 
   node1:
-    build: docker/ignode
-    image: ignode
+    build: ../docker/ignode
+    image: hello-ice/ignode
+    pull_policy: never
     container_name: node1
     hostname: node1
     depends_on:
@@ -31,7 +32,9 @@ services:
       - "../py/upper:/app"
 
   node2:
-    image: ignode
+    build: ../docker/ignode
+    image: hello-ice/ignode
+    pull_policy: never
     container_name: node2
     hostname: node2
     depends_on:

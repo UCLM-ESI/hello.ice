@@ -14,11 +14,11 @@ down:
 logs:
 	docker compose logs -f
 
-app-rm:
+rm-app:
 	-$(call ig_admin, application remove App)
 
 random round-robin ordered adaptive:
-%: %.xml app-rm
+%: %.xml rm-app
 	$(call ig_admin, application add $(@).xml)
 
 round-client:

@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <icegrid>
    <application name="App">
-      <replica-group id="ToolGroup">
-         <load-balancing type="round-robin"/>
-      </replica-group>
-      <node name="node1">
-         <server id="ToolServer1" activation="always" user="ice" exe="/app/server.py">
+      <server-template id="ToolServerTemplate">
+         <parameter name="index"/>
+         <server id="ToolServer${index}" activation="always" exe="/app/server.py">
             <properties>
-               <property name="Ice.StdOut" value=""/>
-               <property name="Ice.StdErr" value=""/>
+               <property name="Ice.StdOut"/>
+               <property name="Ice.StdErr"/>
             </properties>
-            <adapter name="ToolAdapter" replica-group="ToolGroup"/>
+            <adapter name="ToolAdapter" id="${server}.ToolAdapter"
+               endpoints="default" replica-group="ToolGroup"/>
          </server>
+      </server-template>
+      <node name="node1">
+         <server-instance template="ToolServerTemplate" index="1"/>
       </node>
       <node name="node2">
-         <server id="ToolServer2" activation="always" user="ice" exe="/app/server.py">
-            <properties>
-               <property name="Ice.StdOut" value=""/>
-               <property name="Ice.StdErr" value=""/>
-            </properties>
-            <adapter name="ToolAdapter" replica-group="ToolGroup"/>
-         </server>
+         <server-instance template="ToolServerTemplate" index="2"/>
       </node>
+      <replica-group id="ToolGroup">
+         <load-balancing type="round-robin" n-replicas="1"/>
+      </replica-group>
    </application>
 </icegrid>
