@@ -37,7 +37,7 @@ def main(ic):
     printer = Example.PrinterPrx.uncheckedCast(publisher)
 
     print("publishing events")
-    for i in range(1000):
+    for i in range(10):
         printer.write(f"Hello World #{i}")
         time.sleep(1)
 
