@@ -11,6 +11,6 @@ tmux set-option -g set-titles off
 tmux split-window -h
 
 tmux send-keys -t session:0.0 "make run-server" C-m
-tmux send-keys -t session:0.1 "sleep 1; make run-client" C-m
+tmux send-keys -t session:0.1 "sleep 1" C-m "make run-client" C-m
 
 tmux attach-session -t session
