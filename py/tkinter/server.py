@@ -14,13 +14,15 @@ import Example
 class PrinterI(Example.Printer):
     n = 0
 
-    def __init__(self, callback):
+    def __init__(self, root, callback):
+        self.root = root
         self.on_message = callback
 
     def write(self, message, current=None):
         message = f"{self.n}: {message}"
         print(message)
-        self.on_message(message)
+        # Tk is not thread-safe: the window is changed in its own loop
+        self.root.after(0, self.on_message, message)
         self.n += 1
 
 
@@ -38,18 +40,23 @@ if __name__ == '__main__':
         text.insert('end', message + '\n')
         text.see('end')
 
-    # run Ice dispatches in the Tk main loop (Tk is not thread-safe)
-    init = Ice.InitializationData()
-    init.dispatcher = lambda call, con: root.after(0, call)
-
-    with Ice.initialize(sys.argv, init) as communicator:
+    with Ice.initialize(sys.argv) as communicator:
         adapter = communicator.createObjectAdapter("PrinterAdapter")
-        proxy = adapter.add(PrinterI(add_message),
+        proxy = adapter.add(PrinterI(root, add_message),
                             communicator.stringToIdentity("printer1"))
 
         print(proxy)
         add_message(str(proxy) + '\n----')
 
-        adapter.activate()
+
+        def quit_on_shutdown():
+            if communicator.isShutdown():
+                root.quit()
+            else:
+                root.after(250, quit_on_shutdown)
+
+        # once the Tk loop runs, which then shows what the requests write
+        root.after(0, adapter.activate)
+        root.after(0, quit_on_shutdown)
         signal.signal(signal.SIGINT, lambda sig, frame: root.quit())
         root.mainloop()
