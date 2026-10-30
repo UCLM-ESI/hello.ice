@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="PrinterServerWindow" parent="GtkApplicationWindow">
+    <property name="title">Printer Server</property>
+    <property name="default-width">400</property>
+    <property name="default-height">150</property>
+    <child>
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="GtkTextView" id="text_view">
+            <property name="editable">False</property>
+            <property name="cursor-visible">False</property>
+            <property name="wrap-mode">word</property>
+            <property name="left-margin">4</property>
+            <property name="right-margin">4</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

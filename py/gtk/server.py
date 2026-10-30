@@ -3,12 +3,13 @@
 
 import sys
 import signal
-
+from time import sleep
 import gi
-gi.require_version('Gtk', '4.0')
-from gi.repository import Gtk
-
 import Ice
+
+gi.require_version('Gtk', '4.0')
+from gi.repository import Gtk, GLib
+
 Ice.loadSlice('printer.ice')
 import Example
 
@@ -22,21 +23,23 @@ class PrinterI(Example.Printer):
         self.on_message(message)
 
 
+@Gtk.Template(filename='server.ui')
 class PrinterServerWindow(Gtk.ApplicationWindow):
-    def __init__(self, app):
-        super().__init__(application=app, title="Printer Server")
-        self.set_default_size(300, 100)
-        self.set_resizable(False)
+    __gtype_name__ = 'PrinterServerWindow'
+    text_view = Gtk.Template.Child()
 
-        self.text_view = Gtk.TextView()
-        self.text_view.set_editable(False)
-        self.text_view.set_wrap_mode(Gtk.WrapMode.WORD)
+    def __init__(self, app):
+        super().__init__(application=app)
+        for side in Gtk.TextWindowType.TOP, Gtk.TextWindowType.BOTTOM:
+            self.text_view.set_gutter(side, Gtk.Box(height_request=4))
         self.buffer = self.text_view.get_buffer()
-        self.set_child(self.text_view)
+        self.buffer.create_tag('big', scale=1.3)
+        self.end = self.buffer.create_mark(None, self.buffer.get_end_iter(), False)
 
     def add_message(self, message):
-        end_iter = self.buffer.get_end_iter()
-        self.buffer.insert(end_iter, message + '\n')
+        self.buffer.insert_with_tags_by_name(
+            self.buffer.get_end_iter(), message + '\n', 'big')
+        self.text_view.scroll_mark_onscreen(self.end)
 
 
 class PrinterServerApp(Gtk.Application):
@@ -67,7 +70,10 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         sys.exit("Usage: server.py --Ice.Config=<config-file>")
 
-    with Ice.initialize(sys.argv) as communicator:
+    init = Ice.InitializationData()
+    init.dispatcher = lambda call, con: GLib.idle_add(call)
+
+    with Ice.initialize(sys.argv, init) as communicator:
         app = PrinterServerApp(communicator)
         signal.signal(signal.SIGINT, lambda sig, frame: app.quit())
         app.run(None)
