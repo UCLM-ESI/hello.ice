@@ -15,12 +15,16 @@ import Example
 
 
 class PrinterI(Example.Printer):
+    n = 0
+
     def __init__(self, callback):
         self.on_message = callback
 
     def write(self, message, current=None):
-        print(f"Client says: {message}")
+        message = f"{self.n}: {message}"
+        print(message)
         self.on_message(message)
+        self.n += 1
 
 
 @Gtk.Template(filename='server.ui')
